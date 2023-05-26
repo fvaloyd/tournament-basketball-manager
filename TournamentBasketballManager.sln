@@ -3,6 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B7ADB71B-3BA3-4ECC-A39C-1EE624E8FEC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{68C59EFA-F701-4D28-81E2-A463BD33FF26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AFFB9D27-27C7-4D86-BE7F-468508EB1763}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{B87B5A4E-2403-4BBE-A8AB-6D88E817CA03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.UnitTests", "tests\UnitTests\Domain.UnitTests\Domain.UnitTests.csproj", "{392307EC-B48A-498E-96F6-FDFE8373145C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +20,20 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68C59EFA-F701-4D28-81E2-A463BD33FF26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C59EFA-F701-4D28-81E2-A463BD33FF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C59EFA-F701-4D28-81E2-A463BD33FF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C59EFA-F701-4D28-81E2-A463BD33FF26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{392307EC-B48A-498E-96F6-FDFE8373145C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{392307EC-B48A-498E-96F6-FDFE8373145C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{392307EC-B48A-498E-96F6-FDFE8373145C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{392307EC-B48A-498E-96F6-FDFE8373145C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68C59EFA-F701-4D28-81E2-A463BD33FF26} = {B7ADB71B-3BA3-4ECC-A39C-1EE624E8FEC4}
+		{B87B5A4E-2403-4BBE-A8AB-6D88E817CA03} = {AFFB9D27-27C7-4D86-BE7F-468508EB1763}
+		{392307EC-B48A-498E-96F6-FDFE8373145C} = {B87B5A4E-2403-4BBE-A8AB-6D88E817CA03}
 	EndGlobalSection
 EndGlobal
