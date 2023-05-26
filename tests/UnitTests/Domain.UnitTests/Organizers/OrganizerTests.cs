@@ -85,7 +85,7 @@ public class OrganizerTests
 
         Action action = () => organizer.RegisterTeam(null!);
 
-        action.Should().Throw<OrganizerDoesNotHaveTournament>();
+        action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class OrganizerTests
 
         Action action = () => organizer.DiscardTeam(Guid.Empty);
 
-        action.Should().Throw<OrganizerDoesNotHaveTournament>();
+        action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class OrganizerTests
 
         Action action = () => organizer.GetTournamentMatches(new RandomTeamMatchMaker());
 
-        action.Should().Throw<OrganizerDoesNotHaveTournament>();
+        action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class OrganizerTests
 
         Action action = () => organizer.FinishTournament();
 
-        action.Should().Throw<OrganizerDoesNotHaveTournament>();
+        action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
     }
 
     [Fact]

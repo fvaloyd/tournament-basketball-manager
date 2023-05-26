@@ -32,21 +32,21 @@ public sealed class Organizer : Entity
     public void RegisterTeam(Team team)
     {
         if (Tournament is null && TournamentId == Guid.Empty)
-            throw new OrganizerDoesNotHaveTournament();
+            throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.RegisterTeam(team);
     }
 
     public void DiscardTeam(Guid teamId)
     {
         if (Tournament is null && TournamentId == Guid.Empty)
-            throw new OrganizerDoesNotHaveTournament();
+            throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.DiscardTeam(teamId);
     }
 
     public void FinishTournament()
     {
         if (Tournament is null && TournamentId == Guid.Empty)
-            throw new OrganizerDoesNotHaveTournament();
+            throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.ReleaseAllTeams();
         RaiseEvent(new TournamentFinishedDomainEvent(TournamentId, Id));
         Tournament = default!;
@@ -56,7 +56,7 @@ public sealed class Organizer : Entity
     public IEnumerable<Match> GetTournamentMatches(ITeamMatchMaker teamMatchMaker)
     {
         if (Tournament is null && TournamentId == Guid.Empty)
-            throw new OrganizerDoesNotHaveTournament();
+            throw new OrganizerDoesNotHaveTournamentException();
         if (Tournament!.Matches.Any())
             return Tournament.Matches;
         Tournament.Match(teamMatchMaker);
