@@ -478,3 +478,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# excalidraw & drawio
+*.drawio
+*.excalidraw
