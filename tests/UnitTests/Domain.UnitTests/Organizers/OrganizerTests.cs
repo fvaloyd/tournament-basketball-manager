@@ -125,11 +125,32 @@ public class OrganizerTests
     }
 
     [Fact]
+    public void MatchTeams_ShouldThrowAnOrganizerDoesNotHaveTournamentException_WhenTheOrganizerDoesNotHaveATournament()
+    {
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+
+        Action action = () => organizer.MatchTeams(new RandomTeamMatchMaker());
+
+        action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
+    }
+
+    [Fact]
+    public void MatchTeams_ShouldMatchTheTeams_WhenTheTeamsAreNotPairedYet()
+    {
+        var organizer = GetOrganizerWithTournamentAndTeams();
+
+        organizer.MatchTeams(new RandomTeamMatchMaker());
+
+        organizer.Tournament!.Matches.Should().NotBeNull();
+        organizer.Tournament.Matches.Should().NotBeEmpty();
+    }
+
+    [Fact]
     public void GetTournamentMatches_ShouldThrowAOrganizerDoesNotHaveTournament_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
         var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
 
-        Action action = () => organizer.GetTournamentMatches(new RandomTeamMatchMaker());
+        Action action = () => organizer.GetTournamentMatches();
 
         action.Should().Throw<OrganizerDoesNotHaveTournamentException>();
     }
@@ -138,8 +159,9 @@ public class OrganizerTests
     public void GetTournamentMatches_ShouldGetTheTournamentMatches_WhenTheOrganizerHaveATournamentAndValidArgumentArePassed()
     {
         var organizer = GetOrganizerWithTournamentAndTeams();
+        organizer.MatchTeams(new RandomTeamMatchMaker());
 
-        var matches = organizer.GetTournamentMatches(new RandomTeamMatchMaker());
+        var matches = organizer.GetTournamentMatches();
 
         matches.Should().NotBeNull();
         matches.Should().HaveCountGreaterThanOrEqualTo(1);

@@ -53,13 +53,21 @@ public sealed class Organizer : Entity
         TournamentId = Guid.Empty;
     }
 
-    public IEnumerable<Match> GetTournamentMatches(ITeamMatchMaker teamMatchMaker)
+    public void MatchTeams(ITeamMatchMaker teamMatchMaker)
     {
         if (Tournament is null && TournamentId == Guid.Empty)
             throw new OrganizerDoesNotHaveTournamentException();
         if (Tournament!.Matches.Any())
-            return Tournament.Matches;
-        Tournament.Match(teamMatchMaker);
+            return;
+        Tournament!.Match(teamMatchMaker);
+    }
+
+    public IEnumerable<Match> GetTournamentMatches()
+    {
+        if (Tournament is null && TournamentId == Guid.Empty)
+            throw new OrganizerDoesNotHaveTournamentException();
+        if (!Tournament!.Matches.Any())
+            throw new TeamsAreNotPairedYetException();
         return Tournament.Matches;
     }
 }
