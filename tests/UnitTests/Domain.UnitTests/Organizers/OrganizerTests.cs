@@ -3,6 +3,7 @@ using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Domain.Organizers.DomainEvents;
+using Domain.Services;
 
 namespace Domain.UnitTests.Organizers;
 public class OrganizerTests

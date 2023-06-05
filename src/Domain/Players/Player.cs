@@ -1,5 +1,5 @@
-using Domain.Managers;
 using Domain.Common;
+using Domain.Managers;
 using Domain.Players.Exceptions;
 using Domain.Players.DomainEvents;
 

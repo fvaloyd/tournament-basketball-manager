@@ -1,6 +1,7 @@
+using Domain.Organizers;
 using Domain.Common.Extensions;
 
-namespace Domain.Organizers;
+namespace Domain.Services;
 public class RandomTeamMatchMaker : ITeamMatchMaker
 {
     public IEnumerable<Match> CreateMatches(Tournament tournament)
