@@ -5,8 +5,8 @@ public sealed record PlayerPersonalInfo(
     string FirstName,
     string LastName,
     string Email,
-    DateTime DateOfBirht,
+    DateTime DateOfBirth,
     Address Address,
     float Height,
     float Weight
-) : PersonalInfo(FirstName: FirstName, LastName: LastName, Email: Email, DateOfBirht: DateOfBirht, Address: Address);
+) : PersonalInfo(FirstName: FirstName, LastName: LastName, Email: Email, DateOfBirth: DateOfBirth, Address: Address);

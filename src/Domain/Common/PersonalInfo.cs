@@ -3,6 +3,6 @@ public abstract record PersonalInfo(
     string FirstName,
     string LastName,
     string Email,
-    DateTime DateOfBirht,
+    DateTime DateOfBirth,
     Address Address
 );

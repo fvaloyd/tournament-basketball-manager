@@ -74,6 +74,6 @@ public sealed record ManagerPersonalInfo(
     string FirstName,
     string LastName,
     string Email,
-    DateTime DateOfBirht,
+    DateTime DateOfBirth,
     Address Address
-) : PersonalInfo(FirstName: FirstName, LastName: LastName, Email: Email, DateOfBirht: DateOfBirht, Address: Address);
+) : PersonalInfo(FirstName: FirstName, LastName: LastName, Email: Email, DateOfBirth: DateOfBirth, Address: Address);
