@@ -28,7 +28,7 @@ public class CreateManagerCommandTests
         var unitOfWorkMock = UnitOfWorkMock.Instance;
         var managerRepoMock = new Mock<IManagerRepository>();
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
-        var validManagerPersonalInfo = new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Today, new Address("test", "test", "test", "test", "test"));
+        var validManagerPersonalInfo = new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Today, "test", "test", "test", "test", "test");
         var createManagerCommand = new CreateManagerCommand{ManagerPersonalInfo = validManagerPersonalInfo};
         var createManagerCommandHandler = new CreateManagerCommandHandler(unitOfWorkMock.Object);
         return(

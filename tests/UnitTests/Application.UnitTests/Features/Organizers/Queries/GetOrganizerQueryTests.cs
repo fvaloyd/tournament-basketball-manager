@@ -73,9 +73,9 @@ public class GetOrganizerQueryTests
 
     static Organizer GetOrganizerWithTournamentAndTeams()
     {
-        var t1 = Team.Create("test", Manager.Create(new("test1", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var t2 = Team.Create("test", Manager.Create(new("test2", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var t1 = Team.Create("test", Manager.Create(new("test1", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var t2 = Team.Create("test", Manager.Create(new("test2", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("test tournament");
         organizer.RegisterTeam(t1);
         organizer.RegisterTeam(t2);

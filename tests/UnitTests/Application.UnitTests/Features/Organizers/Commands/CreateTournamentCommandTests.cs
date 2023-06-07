@@ -40,7 +40,7 @@ public class CreateTournamentCommandTests
     {
         Organizer? organizer = option switch{
             HandlerCallOption.NullOrganizer => null,
-            HandlerCallOption.Valid => Organizer.Create(new OrganizerPersonalInfo("", "", "", DateTime.Today, new("", "", "", "", ""))),
+            HandlerCallOption.Valid => Organizer.Create(new OrganizerPersonalInfo("", "", "", DateTime.Today, "", "", "", "", "")),
             _ => throw new NotImplementedException()
         };
         var unitOfWorkMock = UnitOfWorkMock.Instance;

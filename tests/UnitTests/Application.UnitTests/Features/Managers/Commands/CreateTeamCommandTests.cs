@@ -49,7 +49,7 @@ public class CreateTeamCommandHandlerBuilder
 
     public CreateTeamCommandHandlerBuilder WithValidManager()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "", "", DateTime.Today, new Domain.Common.Address("", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "", "", DateTime.Today, "test", "test", "test", "test", "test"));
         _managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager);
         return this;
     }

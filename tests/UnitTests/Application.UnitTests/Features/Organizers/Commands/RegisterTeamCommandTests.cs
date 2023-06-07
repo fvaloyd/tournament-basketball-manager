@@ -57,8 +57,8 @@ public class RegisterTeamCommandTests
         Organizer? organizer = option switch
         {
             HandlerCallOption.NullOrganizer => null,
-            HandlerCallOption.NullTeam => Organizer.Create(new("", "", "", DateTime.Today, new("", "", "", "", ""))),
-            HandlerCallOption.Valid => Organizer.Create(new("", "", "", DateTime.Today, new("", "", "", "", ""))),
+            HandlerCallOption.NullTeam => Organizer.Create(new("", "", "", DateTime.Today, "", "", "", "", "")),
+            HandlerCallOption.Valid => Organizer.Create(new("", "", "", DateTime.Today, "", "", "", "", "")),
             _ => throw new NotImplementedException()
         };
         if (option is HandlerCallOption.Valid || option is HandlerCallOption.NullTeam)
@@ -66,8 +66,8 @@ public class RegisterTeamCommandTests
         Team? team = option switch
         {
             HandlerCallOption.NullTeam => null,
-            HandlerCallOption.NullOrganizer => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, new("", "", "", "", "")))),
-            HandlerCallOption.Valid => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, new("", "", "", "", "")))),
+            HandlerCallOption.NullOrganizer => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, "", "", "", "", ""))),
+            HandlerCallOption.Valid => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, "", "", "", "", ""))),
             _ => throw new NotImplementedException()
         };
         var unitOfWorkMock = UnitOfWorkMock.Instance;

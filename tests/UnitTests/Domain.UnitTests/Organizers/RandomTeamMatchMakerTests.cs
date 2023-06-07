@@ -33,9 +33,9 @@ public class RandomTeamMatchMakerTests
         List<Team> teams = new();
         for (var i = 1; i <= numbOfTeams; i++)
         {
-            teams.Add(Team.Create($"team:{i}", Manager.Create(new($"organizer:{i}", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test")))));
+            teams.Add(Team.Create($"team:{i}", Manager.Create(new($"organizer:{i}", "test", "test", DateTime.Now, "", "", "", "", ""))));
         }
-        var organizer = Organizer.Create(new ("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new ("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("test tournament");
         var tournament = organizer.Tournament;
 

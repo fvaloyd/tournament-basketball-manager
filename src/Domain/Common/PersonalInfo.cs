@@ -4,5 +4,9 @@ public abstract record PersonalInfo(
     string LastName,
     string Email,
     DateTime DateOfBirth,
-    Address Address
+    string Country,
+    string City,
+    string Street,
+    string HouseNumber,
+    string Code
 );

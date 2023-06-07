@@ -13,7 +13,7 @@ public class TeamTests
     [Fact]
     public void Create_ShouldCreateAnInstanceOfTeam()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
 
         var team = Team.Create("test", manager);
 
@@ -33,7 +33,7 @@ public class TeamTests
     [Fact]
     public void Create_ShouldRaiseATeamCreatedDomainEvent_WhenTheCreationIsSuccess()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
 
         var team = Team.Create("test", manager);
 
@@ -44,7 +44,7 @@ public class TeamTests
     [Fact]
     public void DraftPlayer_ShouldThrowAnPlayerNullException_WhenNullPlayerIsPassed()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         Action action = () => team.DraftPlayer(null!);
@@ -55,8 +55,8 @@ public class TeamTests
     [Fact]
     public void DraftPlayer_ShouldAddThePlayerToTheTeam_WhenTheTeamDoesNotHaveThatPlayerOnItsRoster()
     {
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.DraftPlayer(player);
@@ -67,8 +67,8 @@ public class TeamTests
     [Fact]
     public void DraftPlayer_ShouldReturnAPlayerAlreadyInTeamException_WhenPlayerAlreadyAreInTheRoster()
     {
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.DraftPlayer(player);
 
@@ -80,8 +80,8 @@ public class TeamTests
     [Fact]
     public void ReleasePlayer_ShouldThrowAPlayerNotFoundException_WhenThePlayerWasNotFound()
     {
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.DraftPlayer(player);
 
@@ -93,8 +93,8 @@ public class TeamTests
     [Fact]
     public void ReleasePlayer_ShouldReleaseThePlayer_WhenThePlayerIsFound()
     {
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.DraftPlayer(player);
 
@@ -110,7 +110,7 @@ public class TeamTests
     [InlineData("         ")]
     public void ModifyName_ShouldThrowAnInvalidTeamNameException_WhenInvalidNameIsPassed(string invalidName)
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         Action action = () => team.Modifyname(invalidName);
@@ -122,7 +122,7 @@ public class TeamTests
     public void ModifyName_ShouldModifyTheName_WhenValidNameIsPassed()
     {
         const string newName = "newName";
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.Modifyname(newName);
@@ -134,7 +134,7 @@ public class TeamTests
     public void ModifyName_ShouldRaiseATeamChangedItsNameDomainEvent()
     {
         const string newName = "newName";
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.Modifyname(newName);
@@ -146,7 +146,7 @@ public class TeamTests
     [Fact]
     public void RegisterInATournament_ShouldThrowAnTournamentNullExcpetion_WhenTournamentPassedIsNull()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         Action action = () => team.RegisterInATournament(null!);
@@ -157,8 +157,8 @@ public class TeamTests
     [Fact]
     public void RegisterInATournament_ShouldRegisterTheTeamInTheTournament_WhenTheTeamIsNotInATournamentAndAValidTournamentIsPassed()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.RegisterInATournament(tournament);
@@ -170,8 +170,8 @@ public class TeamTests
     [Fact]
     public void RegisterInATournament_ShouldRaiseATeamRegisteredInATournamentDomainEvent_WhenTheRegistrationSucceed()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.RegisterInATournament(tournament);
@@ -183,8 +183,8 @@ public class TeamTests
     [Fact]
     public void RegisterInTournament_ShouldThrowATeamAlreadyRegisteredInATournamentException_WhenTheTeamAlreadyRegisteredInATournament()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.RegisterInATournament(tournament);
 
@@ -196,8 +196,8 @@ public class TeamTests
     [Fact]
     public void LeaveTheTournament_ShouldCleanTheTournamentAndTournamentIdProperties_WhenTheTeamIsInATournament()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.RegisterInATournament(tournament);
 
@@ -210,8 +210,8 @@ public class TeamTests
     [Fact]
     public void LeaveTheTournament_ShouldRaiseATeamAbandonedTheTournamentDomainEvent_WhenTheTeamIsInATournament()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
         team.RegisterInATournament(tournament);
 
@@ -224,7 +224,7 @@ public class TeamTests
     [Fact]
     public void LeaveTheTournament_ShouldDoNothing_WhenATeamIsNotInATournamentYet()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
         var team = Team.Create("test", manager);
 
         team.LeaveTheTournament();
@@ -236,9 +236,9 @@ public class TeamTests
     [Fact]
     public void ReleaseAllPlayers_ShouldReleaseAllPlayerInTheTeam()
     {
-        var p1 = Player.Create(new("test1", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var p2 = Player.Create(new("test2", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
-        var team = Team.Create("myteam", Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
+        var p1 = Player.Create(new("test1", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var p2 = Player.Create(new("test2", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var team = Team.Create("myteam", Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", "")));
         team.DraftPlayer(p1);
         team.DraftPlayer(p2);
 

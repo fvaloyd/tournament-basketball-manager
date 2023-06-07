@@ -30,7 +30,7 @@ public class CreateOrganizerCommandTests
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var createOrganizerCommand = new CreateOrganizerCommand()
         {
-            OrganizerPersonalInfo = new OrganizerPersonalInfo("", "", "", DateTime.Today, new Address("", "", "", "", ""))
+            OrganizerPersonalInfo = new OrganizerPersonalInfo("", "", "", DateTime.Today, "", "", "", "", "")
         };
         var createOrganizerCommandHandler = new CreateOrganizerCommandHandler(unitOfWorkMock.Object);
 

@@ -29,8 +29,12 @@ public class CreateOrganizerCommandValidator : AbstractValidator<CreateOrganizer
     public CreateOrganizerCommandValidator()
     {
         RuleFor(c => c.OrganizerPersonalInfo).NotNull().WithMessage("Invalid OrganizerPersonalInfo.");
-        RuleFor(c => c.OrganizerPersonalInfo.Address).NotNull().WithMessage("Address is required.");
-        RuleFor(c => c.OrganizerPersonalInfo.DateOfBirht).NotNull().WithMessage("DateOfBirth is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.City).NotNull().WithMessage("City is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.Country).NotNull().WithMessage("Country is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.Code).NotNull().WithMessage("PostalCode is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.HouseNumber).NotNull().WithMessage("HouseNumber is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.Street).NotNull().WithMessage("Street is required.");
+        RuleFor(c => c.OrganizerPersonalInfo.DateOfBirth).NotNull().WithMessage("DateOfBirth is required.");
         RuleFor(c => c.OrganizerPersonalInfo.Email).EmailAddress().WithMessage("Email should be a valid email address.");
         RuleFor(c => c.OrganizerPersonalInfo.FirstName).NotNull().NotEmpty().WithMessage("FirstName is required.")
                                                     .MaximumLength(75).WithMessage("Max length for FirstName is 75 characters.")

@@ -9,7 +9,7 @@ public class MatchTests
     [Fact]
     public void Create_ShouldThrowAnTournamentNullException_WhenTournamentIsNull()
     {
-        Action actionWithTournamentNull = () => Match.Create(null!, Team.Create("", Manager.Create(new("", "", "", DateTime.Now, new("", "", "", "", "")))), Team.Create("", Manager.Create(new("", "", "", DateTime.Now, new("", "", "", "", "")))));
+        Action actionWithTournamentNull = () => Match.Create(null!, Team.Create("", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", ""))), Team.Create("", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", ""))));
 
         actionWithTournamentNull.Should().Throw<TournamentNullException>();
     }
@@ -43,9 +43,9 @@ public class MatchTests
 
     public static (Tournament tournament, Team teamA, Team teamB) GetValidArgumentForCreateAMatch()
     {
-        var teamA = Team.Create("teamA", Manager.Create(new("", "", "", DateTime.Now, new("", "", "", "", ""))));
-        var teamB = Team.Create("teamB", Manager.Create(new("", "", "", DateTime.Now, new("", "", "", "", ""))));
-        var tournament = Tournament.Create("tournament", Organizer.Create(new("", "", "", DateTime.Now, new("", "", "", "", ""))));
+        var teamA = Team.Create("teamA", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var teamB = Team.Create("teamB", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("tournament", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
 
         return (tournament, teamA, teamB);
     }

@@ -10,8 +10,8 @@ public class PlayerTests
     [Fact]
     public void IsInTeam_ShouldBeTrue_WhenPlayerIsInATeam()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
         player.JoinATeam(team);
 
         player.IsInTeam.Should().BeTrue();
@@ -20,7 +20,7 @@ public class PlayerTests
     [Fact]
     public void IsInTeam_ShouldBeFalse_WhenPlayerIsNotInATeam()
     {
-        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f), Position.PointGuard);
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
 
         player.IsInTeam.Should().BeFalse();
     }
@@ -28,7 +28,7 @@ public class PlayerTests
     [Fact]
     public void Create_ShouldCreateAPlayerInstance()
     {
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         const Position position = Position.PointGuard;
 
         var player = Player.Create(playerPersonalInfo, position);
@@ -51,7 +51,7 @@ public class PlayerTests
     [Fact]
     public void Create_ShouldRaiseAPlayerCreatedEvent()
     {
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
 
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
 
@@ -62,8 +62,8 @@ public class PlayerTests
     [Fact]
     public void JoinATeam_ShouldAssignATeamToThePlayer_WhenThePlayerIsNotCurrentlyOnATeam()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
 
         player.JoinATeam(team);
@@ -76,8 +76,8 @@ public class PlayerTests
     [Fact]
     public void JoinATeam_ShouldThrowAPlayerAlreadyInATeamException_WhenThePlayerAlreadyAreInATeam()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
         player.JoinATeam(team);
 
@@ -89,8 +89,8 @@ public class PlayerTests
     [Fact]
     public void JoinATeam_ShouldRaiseAPlayerJoinedATeamDomainEvent()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
 
         player.JoinATeam(team);
@@ -103,8 +103,8 @@ public class PlayerTests
     [Fact]
     public void LeaveTheTeam_ShouldClearTheTeamAndTeamIdPorperties()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
         player.JoinATeam(team);
 
@@ -117,8 +117,8 @@ public class PlayerTests
     [Fact]
     public void LeaveTheTeam_ShouldRaiseAPlayerLeavedTheTeamDomainEvent_WhenThePlayerBelongsToATeam()
     {
-        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, new Address("test", "test", "test", "test", "test"))));
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        var team = Team.Create("Team test", Manager.Create(new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Now, "test", "test", "test", "test", "test")));
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
         player.JoinATeam(team);
 
@@ -131,7 +131,7 @@ public class PlayerTests
     [Fact]
     public void LeaveTheTeam_ShouldNotRaiseAPlayerLeavedTheTeamDomainEvent_WhenThePlayerDoesNotBelongsToATeam()
     {
-        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, new Address("RD", "SJO", "S", "57", "93000"), 1.80f, 80.5f);
+        PlayerPersonalInfo playerPersonalInfo = new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000");
         var player = Player.Create(playerPersonalInfo, Position.PointGuard);
 
         player.LeaveTheTeam();

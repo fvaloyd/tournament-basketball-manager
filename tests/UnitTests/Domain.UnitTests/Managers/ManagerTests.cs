@@ -11,7 +11,7 @@ public class ManagerTests
     [Fact]
     public void AreLeadingATeam_ShouldBeTrue_WhenManagerHaveATeamAssociated()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
         manager.CreateTeam("tt");
 
         manager.AreLeadingATeam.Should().BeTrue();
@@ -20,7 +20,7 @@ public class ManagerTests
     [Fact]
     public void AreLeadingATeam_ShouldBeFalse_WhenManagerDoesNotHaveATeamAssociated()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         manager.AreLeadingATeam.Should().BeFalse();
     }
@@ -28,7 +28,7 @@ public class ManagerTests
     [Fact]
     public void Create_ShouldReturnAManagerInstance()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         manager.Should().NotBeNull();
         manager.GetType().Should().Be(typeof(Manager));
@@ -45,7 +45,7 @@ public class ManagerTests
     [Fact]
     public void Create_ShouldRaiseAManagerCreatedDomainEvent_WhenValidArgumentIsPassed()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamtest");
 
         var @event = manager.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(ManagerCreatedDomainEvent));
         @event.Should().NotBeNull();
@@ -56,7 +56,7 @@ public class ManagerTests
     {
         const string teamName = "test team name";
 
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), teamName);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), teamName);
 
         manager.Team.Should().NotBeNull();
         manager.Team!.Name.Should().Be(teamName);
@@ -66,7 +66,7 @@ public class ManagerTests
     [Fact]
     public void DraftPlayer_ShouldThrowAException_WhenNullPlayerIsPassed()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         Action action = () => manager.DraftPlayer(null!);
 
@@ -76,9 +76,9 @@ public class ManagerTests
     [Fact]
     public void DraftPlayer_ShouldThrowAManagerDoesNotHaveATeamException_WhenTheManagerDoesNotHaveAnAssignedTeam()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
-        Action action = () => manager.DraftPlayer(Player.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""), 7f, 7f), Position.PointGuard));
+        Action action = () => manager.DraftPlayer(Player.Create(new("", "", "", DateTime.Now, 7f, 7f, "test", "test", "test", "test", "test"), Position.PointGuard));
 
         action.Should().Throw<ManagerDoesNotHaveATeamException>();
     }
@@ -86,7 +86,7 @@ public class ManagerTests
     [Fact]
     public void ReleasePlayer_ShouldThrowAManagerDoesNotHaveATeamException_WhenTheManagerDoesNotHaveAnAssignedTeam()
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         Action action = () => manager.ReleasePlayer(Guid.NewGuid());
 
@@ -99,7 +99,7 @@ public class ManagerTests
     [InlineData("        ")]
     public void CreateTeam_ShouldThrowAInvalidTeamNameException_WhenInvalidTeamNameIsPassed(string invalidTeamName)
     {
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         Action action = () => manager.CreateTeam(invalidTeamName);
 
@@ -109,7 +109,7 @@ public class ManagerTests
     [Fact]
     public void CreateTeam_ShouldThrowAManagerAlreadyHaveATeamException_WhenManagerAlreadyHaveATeam()
     {
-        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName");
+        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "team");
 
         Action action = () => managerWithTeam.CreateTeam("team");
 
@@ -120,7 +120,7 @@ public class ManagerTests
     public void CreateTeam_ShouldCreateAndAssignATeamToTheManager_WhenTheManagerDoesntHaveATeamAndAValidTeamNameIsPassed()
     {
         const string validTeamName = "myteam";
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         manager.CreateTeam(validTeamName);
 
@@ -131,7 +131,7 @@ public class ManagerTests
     [Fact]
     public void DissolveTheTeam_ShouldThrowATeamDoesNotHaveATeamException_WhenTheManagerDoesntHaveATeam()
     {
-        var managerWithOutTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")));
+        var managerWithOutTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
 
         Action action = () => managerWithOutTeam.DissolveTheTeam();
 
@@ -141,9 +141,9 @@ public class ManagerTests
     [Fact]
     public void DissolveTheTeam_ShouldRemoveTheTeamAndBreakTheRelationWithThePlayers()
     {
-        var p1 = Player.Create(new("player1", "test", "player1@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.1f, 80.5f), Position.PointGuard);
-        var p2 = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.6f, 90.5f), Position.ShootingGuard);
-        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName");
+        var p1 = Player.Create(new("player1", "test", "player1@gmail.com", DateTime.Now, 6.1f, 80.5f, "test", "test", "test", "test", "test"), Position.PointGuard);
+        var p2 = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "test", "test", "test", "test", "test"), Position.ShootingGuard);
+        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName");
         managerWithTeam.DraftPlayer(p1);
         managerWithTeam.DraftPlayer(p2);
 
@@ -160,9 +160,9 @@ public class ManagerTests
     [Fact]
     public void DissolveTheTeam_ShouldRaiseATeamDissolvedDomainEvent_WhenDissolveTheTeamWasSuccess()
     {
-        var p1 = Player.Create(new("player1", "test", "player1@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.1f, 80.5f), Position.PointGuard);
-        var p2 = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.6f, 90.5f), Position.ShootingGuard);
-        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName");
+        var p1 = Player.Create(new("player1", "test", "player1@gmail.com", DateTime.Now, 6.1f, 80.5f, "test", "test", "test", "test", "test"), Position.PointGuard);
+        var p2 = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "test", "test", "test", "test", "test"), Position.ShootingGuard);
+        var managerWithTeam = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName");
         managerWithTeam.DraftPlayer(p1);
         managerWithTeam.DraftPlayer(p2);
 

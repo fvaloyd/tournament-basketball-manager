@@ -54,14 +54,14 @@ public class DraftPlayerCommandTests
     {
         Player? player = option switch {
             HandlerCallOption.NullPlayer => null,
-            HandlerCallOption.Valid => Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.6f, 90.5f), Position.ShootingGuard),
-            HandlerCallOption.NullManager => Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.6f, 90.5f), Position.ShootingGuard),
+            HandlerCallOption.Valid => Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "1", "2", "3", "4", "5"), Position.ShootingGuard),
+            HandlerCallOption.NullManager => Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "1", "2", "3", "4", "5"), Position.ShootingGuard),
             _ => throw new NotImplementedException()
         };
         Manager? manager = option switch {
             HandlerCallOption.NullManager => null,
-            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName"),
-            HandlerCallOption.NullPlayer => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName"),
+            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
+            HandlerCallOption.NullPlayer => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
         var unitOfWorkMock = UnitOfWorkMock.Instance;

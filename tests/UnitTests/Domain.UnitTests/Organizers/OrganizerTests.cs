@@ -1,9 +1,9 @@
 using Domain.Common;
+using Domain.Services;
 using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Domain.Organizers.DomainEvents;
-using Domain.Services;
 
 namespace Domain.UnitTests.Organizers;
 public class OrganizerTests
@@ -11,7 +11,7 @@ public class OrganizerTests
     [Fact]
     public void IsOrganizingATournament_ShouldBeTrue_WhenOrganizerHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("tt");
 
         organizer.IsOrganizingATournament.Should().BeTrue();
@@ -20,7 +20,7 @@ public class OrganizerTests
     [Fact]
     public void IsOrganizingATournament_ShoulBeFalse_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         organizer.IsOrganizingATournament.Should().BeFalse();
     }
@@ -36,7 +36,7 @@ public class OrganizerTests
     [Fact]
     public void Create_ShouldReturnAnInstanceOfOrganizer_WhenValidOrganizerPersonalInfoIsPassed()
     {
-        var validOrganizerPersonalInfo = new OrganizerPersonalInfo("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", ""));
+        var validOrganizerPersonalInfo = new OrganizerPersonalInfo("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", "");
 
         var organizer = Organizer.Create(validOrganizerPersonalInfo);
 
@@ -47,7 +47,7 @@ public class OrganizerTests
     [Fact]
     public void Create_ShouldRaiseAOrganizerCreatedDomainEvent_WhenValidOrganizerPersonalInfoIsPassed()
     {
-        var validOrganizerPersonalInfo = new OrganizerPersonalInfo("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", ""));
+        var validOrganizerPersonalInfo = new OrganizerPersonalInfo("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", "");
 
         var organizer = Organizer.Create(validOrganizerPersonalInfo);
 
@@ -61,7 +61,7 @@ public class OrganizerTests
     [InlineData("       ")]
     public void CreateTournament_ShouldThrowAInvalidTournamentNameException_WhenInvalidTournamentNameIsPassed(string invalidName)
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.CreateTournament(invalidName);
 
@@ -72,7 +72,7 @@ public class OrganizerTests
     public void CreateTournament_ShouldCreateATournamentAndAddedToTheOrganizer_WhenValidTournamentNameIsPassed()
     {
         const string validTeamName = "valid team name";
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         organizer.CreateTournament(validTeamName);
 
@@ -82,7 +82,7 @@ public class OrganizerTests
     [Fact]
     public void RegisterTeam_ShouldThrowAOrganizerDoesNotHaveTournamentException_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.RegisterTeam(null!);
 
@@ -92,8 +92,8 @@ public class OrganizerTests
     [Fact]
     public void RegisterTeam_ShouldRegisterATeamInTheTournament_WhenTheOrganizerHaveATeamAndValidArgumentArePassed()
     {
-        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("tournament");
 
         organizer.RegisterTeam(validTeam);
@@ -105,7 +105,7 @@ public class OrganizerTests
     [Fact]
     public void DiscardTeam_ShouldThrowAOrganizerDoesNotHaveTournament_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.DiscardTeam(Guid.Empty);
 
@@ -115,8 +115,8 @@ public class OrganizerTests
     [Fact]
     public void DiscardTeam_ShouldDiscardTheTeamFromTheTournament_WhenTheOrganizerHaveATournamentAndValidArgumentArePassed()
     {
-        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("tournament");
         organizer.RegisterTeam(validTeam);
 
@@ -128,7 +128,7 @@ public class OrganizerTests
     [Fact]
     public void MatchTeams_ShouldThrowAnOrganizerDoesNotHaveTournamentException_WhenTheOrganizerDoesNotHaveATournament()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.MatchTeams(new RandomTeamMatchMaker());
 
@@ -149,7 +149,7 @@ public class OrganizerTests
     [Fact]
     public void GetTournamentMatches_ShouldThrowAOrganizerDoesNotHaveTournament_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.GetTournamentMatches();
 
@@ -171,7 +171,7 @@ public class OrganizerTests
     [Fact]
     public void FinishTournament_ShouldThrowAOrganizerDoesNotHaveTournament_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
 
         Action action = () => organizer.FinishTournament();
 
@@ -208,9 +208,9 @@ public class OrganizerTests
 
     private static Organizer GetOrganizerWithTournamentAndTeams()
     {
-        var t1 = Team.Create("test", Manager.Create(new("test1", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var t2 = Team.Create("test", Manager.Create(new("test2", "test", "test", DateTime.Now, new("test", "test", "test", "test", "test"))));
-        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, new Address("", "", "", "", "")));
+        var t1 = Team.Create("test", Manager.Create(new("test1", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var t2 = Team.Create("test", Manager.Create(new("test2", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
         organizer.CreateTournament("test tournament");
         organizer.RegisterTeam(t1);
         organizer.RegisterTeam(t2);

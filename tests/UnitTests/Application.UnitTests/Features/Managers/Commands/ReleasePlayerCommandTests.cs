@@ -42,12 +42,12 @@ public class ReleasePlayerCommandTests
         Manager? manager = option switch
         {
             HandlerCallOption.NullManager => null,
-            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName"),
+            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
         if (option is HandlerCallOption.Valid)
         {
-            player = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, new Address("1", "2", "3", "4", "5"), 6.6f, 90.5f), Position.ShootingGuard);
+            player = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "test", "test", "test", "test", "test"), Position.ShootingGuard);
             manager!.DraftPlayer(player);
         }
         var unitOfWorkMock = UnitOfWorkMock.Instance;

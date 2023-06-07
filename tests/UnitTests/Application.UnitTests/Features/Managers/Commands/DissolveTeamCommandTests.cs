@@ -39,7 +39,7 @@ public class DissolveTeamCommandTests
     {
         Manager? manager = option switch {
             HandlerCallOption.NullManager => null,
-            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, new Address("test", "test", "test", "test", "test")), "teamName"),
+            HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
         var unitOfWorkMock = UnitOfWorkMock.Instance;

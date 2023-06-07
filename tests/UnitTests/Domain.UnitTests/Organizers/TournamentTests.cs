@@ -12,7 +12,7 @@ public class TournamentTests
     [Fact]
     public void Create_ShouldReturnAnInstanceOfTournamentWithTheSpecifiedOrganizer()
     {
-        var organizer = Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", ""));
 
         var tournament = Tournament.Create("test", organizer);
 
@@ -32,7 +32,7 @@ public class TournamentTests
     [Fact]
     public void Create_ShouldRaiseATournamentCreatedDomainEvent_WhenCreateTheTournamentWasSuccess()
     {
-        var organizer = Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", "")));
+        var organizer = Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", ""));
 
         var tournament = Tournament.Create("test", organizer);
 
@@ -43,7 +43,7 @@ public class TournamentTests
     [Fact]
     public void RegisterTeam_ShouldThrowATeamNullException_WhenNullTeamIsPassed()
     {
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
 
         Action action = () => tournament.RegisterTeam(null!);
 
@@ -53,8 +53,8 @@ public class TournamentTests
     [Fact]
     public void RegisterTeam_ShouldAddTheTeamToTheTournament_WhenValidTeamIsPassed()
     {
-        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
 
         tournament.RegisterTeam(team);
 
@@ -64,8 +64,8 @@ public class TournamentTests
     [Fact]
     public void RegisterTeam_ShouldThrowATeamAlreadyInTournamentException_WhenTeamAlReadyInTheTournament()
     {
-        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         tournament.RegisterTeam(team);
 
         Action action = () => tournament.RegisterTeam(team);
@@ -76,8 +76,8 @@ public class TournamentTests
     [Fact]
     public void DiscardTeam_ShouldThrowATeamNotFoundException_WhenInvalidTeamIdIsPassed()
     {
-        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         tournament.RegisterTeam(team);
 
         Action action = () => tournament.DiscardTeam(Guid.NewGuid());
@@ -88,8 +88,8 @@ public class TournamentTests
     [Fact]
     public void DiscardTeam_ShouldDiscardATeam_WhenAValidTeamIdIsPassed()
     {
-        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         tournament.RegisterTeam(team);
 
         tournament.DiscardTeam(team.Id);
@@ -100,8 +100,8 @@ public class TournamentTests
     [Fact]
     public void DiscardTeam_ShouldClearTheRelationBetweenTheTeamAndTournament_WhenAValidTeamIdIsPassed()
     {
-        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var team = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         tournament.RegisterTeam(team);
 
         tournament.DiscardTeam(team.Id);
@@ -112,9 +112,9 @@ public class TournamentTests
     [Fact]
     public void ReleaseAllTeams_ShouldDiscardAllTeamsInTheTournament_WhenTheTournamentContainsTeams()
     {
-        var t1 = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var t2 = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var t1 = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var t2 = Team.Create("test", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         tournament.RegisterTeam(t1);
         tournament.RegisterTeam(t2);
 
@@ -131,7 +131,7 @@ public class TournamentTests
     public void Match_ShoudlMatchTheTeams_WhenTheyAreNotMatches()
     {
         var teams = GetTeamCollection().ToList();
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         RegisterTeamCollection(tournament, teams);
 
         tournament.Match(new RandomTeamMatchMaker());
@@ -143,7 +143,7 @@ public class TournamentTests
     public void Match_ShouldThrowATeamsAreAlreadyPairedException_WhenTeamsAlreadyPaired()
     {
         var teams = GetTeamCollection().ToList();
-        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, new Address("", "", "", "", ""))));
+        var tournament = Tournament.Create("test", Organizer.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         RegisterTeamCollection(tournament, teams);
         tournament.Match(new RandomTeamMatchMaker());
 
@@ -164,7 +164,7 @@ public class TournamentTests
     {
         for (var i = 1; i <= 10; i++)
         {
-            yield return Team.Create($"Team Name: {i}", Manager.Create(new("", "", "", DateTime.Now, new("", "", "", "", ""))));
+            yield return Team.Create($"Team Name: {i}", Manager.Create(new("", "", "", DateTime.Now, "", "", "", "", "")));
         }
     }
 }

@@ -29,7 +29,7 @@ public class CreatePlayerCommandTests
         unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
         var createPlayerCommand = new CreatePlayerCommand()
         {
-            PlayerPersonalInfo = new PlayerPersonalInfo("", "", "", DateTime.Today, new Address("", "", "", "", ""), 1.80f, 80.1f),
+            PlayerPersonalInfo = new PlayerPersonalInfo("", "", "", DateTime.Today, 1.80f, 80.1f, "", "", "", "", ""),
             Position = Position.PointGuard
         };
         var createPlayerCommandHandler = new CreatePlayerCommandHandler(unitOfWorkMock.Object);

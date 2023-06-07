@@ -30,8 +30,12 @@ public class CreatePlayerCommandValidator : AbstractValidator<CreatePlayerComman
     public CreatePlayerCommandValidator()
     {
         RuleFor(c => c.PlayerPersonalInfo).NotNull().WithMessage("Invalid PlayerPersonalInfo.");
-        RuleFor(c => c.PlayerPersonalInfo.Address).NotNull().WithMessage("Address is required.");
-        RuleFor(c => c.PlayerPersonalInfo.DateOfBirht).NotNull().WithMessage("DateOfBirth is required.");
+        RuleFor(c => c.PlayerPersonalInfo.City).NotNull().WithMessage("City is required.");
+        RuleFor(c => c.PlayerPersonalInfo.Country).NotNull().WithMessage("Country is required.");
+        RuleFor(c => c.PlayerPersonalInfo.Code).NotNull().WithMessage("PostalCode is required.");
+        RuleFor(c => c.PlayerPersonalInfo.HouseNumber).NotNull().WithMessage("HouseNumber is required.");
+        RuleFor(c => c.PlayerPersonalInfo.Street).NotNull().WithMessage("Street is required.");
+        RuleFor(c => c.PlayerPersonalInfo.DateOfBirth).NotNull().WithMessage("DateOfBirth is required.");
         RuleFor(c => c.PlayerPersonalInfo.Email).EmailAddress().WithMessage("Email should be a valid email address.");
         RuleFor(c => c.PlayerPersonalInfo.FirstName).NotNull().NotEmpty().WithMessage("FirstName is required.")
                                                     .MaximumLength(75).WithMessage("Max length for FirstName is 75 characters.")
