@@ -84,6 +84,17 @@ public class ManagerTests
     }
 
     [Fact]
+    public void DraftPlayer_ShouldRaiseAManagerDraftedAPlayerDomainEvent_WhenManagerHasATeamAssigned()
+    {
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "team test");
+
+        manager.DraftPlayer(Player.Create(new("", "", "", DateTime.Now, 7f, 7f, "test", "test", "test", "test", "test"), Position.PointGuard));
+
+        var @event = manager.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(ManagerDraftedAPlayerDomainEvent));
+        @event.Should().NotBeNull();
+    }
+
+    [Fact]
     public void ReleasePlayer_ShouldThrowAManagerDoesNotHaveATeamException_WhenTheManagerDoesNotHaveAnAssignedTeam()
     {
         var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"));
@@ -91,6 +102,19 @@ public class ManagerTests
         Action action = () => manager.ReleasePlayer(Guid.NewGuid());
 
         action.Should().Throw<ManagerDoesNotHaveATeamException>();
+    }
+
+    [Fact]
+    public void ReleasePlayer_ShouldRaiseAManagerReleaseAPlayer_WhenTeamHasThePlayerToRelease()
+    {
+        var player = Player.Create(new("test", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard);
+        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName");
+        manager.DraftPlayer(player);
+
+        manager.ReleasePlayer(player.Id);
+
+        var @event = manager.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(ManagerReleaseAPlayerDomainEvent));
+        @event.Should().NotBeNull();
     }
 
     [Theory]

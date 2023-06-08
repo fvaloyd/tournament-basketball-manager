@@ -4,6 +4,7 @@ using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Domain.Organizers.DomainEvents;
+using Domain.Managers.DomainEvents;
 
 namespace Domain.UnitTests.Organizers;
 public class OrganizerTests
@@ -103,6 +104,19 @@ public class OrganizerTests
     }
 
     [Fact]
+    public void RegisterTeam_ShouldRaiseATeamRegisteredInATournamentDomainEvent_WhenTheOrganizerHaveATeamAndValidArgumentArePassed()
+    {
+        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
+        organizer.CreateTournament("tournament");
+
+        organizer.RegisterTeam(validTeam);
+
+        var @event = organizer.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(TeamRegisteredInATournamentDomainEvent));
+        @event.Should().NotBeNull();
+    }
+
+    [Fact]
     public void DiscardTeam_ShouldThrowAOrganizerDoesNotHaveTournament_WhenTheOrganizerDoesNotHaveATournamentAssociated()
     {
         var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
@@ -123,6 +137,20 @@ public class OrganizerTests
         organizer.DiscardTeam(validTeam.Id);
 
         organizer.Tournament!.Teams.Should().NotContain(validTeam);
+    }
+
+    [Fact]
+    public void DiscardTeam_ShouldRaiseATeamEliminatedFromTheTournamentDomainEvent_WhenTheOrganizerHaveATournamentAndValidArgumentArePassed()
+    {
+        var validTeam = Team.Create("test", Manager.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
+        var organizer = Organizer.Create(new("test", "test", "test@gamil.com", DateTime.Now, "", "", "", "", ""));
+        organizer.CreateTournament("tournament");
+        organizer.RegisterTeam(validTeam);
+
+        organizer.DiscardTeam(validTeam.Id);
+
+        var @event = organizer.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(TeamEliminatedFromTheTournamentDomainEvent));
+        @event.Should().NotBeNull();
     }
 
     [Fact]

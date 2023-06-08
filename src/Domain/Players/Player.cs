@@ -11,6 +11,8 @@ public sealed class Player : Entity
     public Guid TeamId { get; private set; }
     public Team? Team { get; private set; }
     public bool IsInTeam => Team is not null;
+
+    #pragma warning disable CS8618
     private Player(){}
     private Player(
         PlayerPersonalInfo personalInfo,
@@ -34,14 +36,14 @@ public sealed class Player : Entity
             throw new PlayerAlreadyInATeamException(Id, TeamId);
         TeamId = team.Id;
         Team = team;
-        RaiseEvent(new PlayerJoinedATeamDomainEvent(Id, TeamId));
+        // RaiseEvent(new PlayerJoinedATeamDomainEvent(Id, TeamId));
     }
 
     public void LeaveTheTeam()
     {
         if (Team is null)
             return;
-        RaiseEvent(new PlayerLeavedTheTeamDomainEvent(Id, TeamId));
+        // RaiseEvent(new PlayerLeavedTheTeamDomainEvent(Id, TeamId));
         TeamId = Guid.Empty;
         Team = default;
     }

@@ -12,6 +12,7 @@ public sealed class Manager : Entity
     public Team? Team { get; private set; }
     public bool AreLeadingATeam => Team is not null;
 
+    #pragma warning disable CS8618
     private Manager(){}
     private Manager(ManagerPersonalInfo personalInfo)
         => PersonalInfo = personalInfo;
@@ -51,6 +52,7 @@ public sealed class Manager : Entity
         if (Team is null)
             throw new ManagerDoesNotHaveATeamException();
         Team.DraftPlayer(player);
+        RaiseEvent(new ManagerDraftedAPlayerDomainEvent(ManagerId: Id, PlayerId: player.Id));
     }
 
     public void ReleasePlayer(Guid playerId)
@@ -58,6 +60,7 @@ public sealed class Manager : Entity
         if (Team is null)
             throw new ManagerDoesNotHaveATeamException();
         Team.ReleasePlayer(playerId);
+        RaiseEvent(new ManagerReleaseAPlayerDomainEvent(ManagerId: Id, PlayerId: playerId));
     }
 
     public void DissolveTheTeam()

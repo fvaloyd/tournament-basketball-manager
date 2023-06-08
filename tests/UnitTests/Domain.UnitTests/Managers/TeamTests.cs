@@ -168,19 +168,6 @@ public class TeamTests
     }
 
     [Fact]
-    public void RegisterInATournament_ShouldRaiseATeamRegisteredInATournamentDomainEvent_WhenTheRegistrationSucceed()
-    {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
-        var team = Team.Create("test", manager);
-
-        team.RegisterInATournament(tournament);
-
-        var @event = team.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(TeamRegisteredInATournamentDomainEvent));
-        @event.Should().NotBeNull();
-    }
-
-    [Fact]
     public void RegisterInTournament_ShouldThrowATeamAlreadyRegisteredInATournamentException_WhenTheTeamAlreadyRegisteredInATournament()
     {
         var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
@@ -205,20 +192,6 @@ public class TeamTests
 
         team.Tournament.Should().BeNull();
         team.TournamentId.Should().Be(Guid.Empty);
-    }
-
-    [Fact]
-    public void LeaveTheTournament_ShouldRaiseATeamAbandonedTheTournamentDomainEvent_WhenTheTeamIsInATournament()
-    {
-        var tournament = Tournament.Create("test", Organizer.Create(new("test", "test", "test", DateTime.Now, "", "", "", "", "")));
-        var manager = Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "", "", "", "", ""));
-        var team = Team.Create("test", manager);
-        team.RegisterInATournament(tournament);
-
-        team.LeaveTheTournament();
-
-        var @event = team.DomainEvents.FirstOrDefault(de => de.GetType() == typeof(TeamAbandonedTheTournamentDomainEvent));
-        @event.Should().NotBeNull();
     }
 
     [Fact]

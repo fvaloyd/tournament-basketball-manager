@@ -3,6 +3,7 @@ using Domain.Services;
 using Domain.Managers;
 using Domain.Organizers.Exceptions;
 using Domain.Organizers.DomainEvents;
+using Domain.Managers.DomainEvents;
 
 namespace Domain.Organizers;
 public sealed class Organizer : Entity
@@ -12,6 +13,7 @@ public sealed class Organizer : Entity
     public Tournament? Tournament { get; private set; }
     public bool IsOrganizingATournament => Tournament is not null;
 
+    #pragma warning disable CS8618
     public Organizer(){}
     private Organizer(OrganizerPersonalInfo personalInfo)
         => PersonalInfo = personalInfo;
@@ -36,6 +38,7 @@ public sealed class Organizer : Entity
         if (Tournament is null && TournamentId == Guid.Empty)
             throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.RegisterTeam(team);
+        RaiseEvent(new TeamRegisteredInATournamentDomainEvent(Id, TournamentId));
     }
 
     public void DiscardTeam(Guid teamId)
@@ -43,6 +46,7 @@ public sealed class Organizer : Entity
         if (Tournament is null && TournamentId == Guid.Empty)
             throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.DiscardTeam(teamId);
+        RaiseEvent(new TeamEliminatedFromTheTournamentDomainEvent(teamId, TournamentId));
     }
 
     public void FinishTournament()

@@ -17,6 +17,7 @@ public sealed class Team : Entity
     public Guid TournamentId { get; private set; }
     public Tournament? Tournament { get; private set; }
 
+    #pragma warning disable CS8618
     private Team(){}
     private Team(
         string name,
@@ -77,14 +78,13 @@ public sealed class Team : Entity
             throw new TeamAlreadyRegisteredInATournamentException(Id, tournament.Id);
         Tournament = tournament;
         TournamentId = tournament.Id;
-        RaiseEvent(new TeamRegisteredInATournamentDomainEvent(Id, TournamentId));
     }
 
     public void LeaveTheTournament()
     {
         if (Tournament is null && TournamentId == Guid.Empty)
             return;
-        RaiseEvent(new TeamAbandonedTheTournamentDomainEvent(Id, TournamentId));
+        // RaiseEvent(new TeamAbandonedTheTournamentDomainEvent(Id, TournamentId));
         Tournament = default;
         TournamentId = Guid.Empty;
     }
