@@ -13,6 +13,7 @@ public sealed class Match : Entity
     public Guid TeamBId { get; private set; }
     public Team TeamB { get; private set; }
 
+    private Match(){}
     private Match(Tournament tournament, Team teamA, Team teamB)
     {
         Tournament = tournament;

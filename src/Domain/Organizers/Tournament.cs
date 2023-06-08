@@ -16,6 +16,7 @@ public sealed class Tournament : Entity
     private readonly HashSet<Match> _matches = new();
     public IReadOnlySet<Match> Matches => _matches;
 
+    private Tournament(){}
     private Tournament(string name, Organizer organizer) : base()
     {
         Name = name;

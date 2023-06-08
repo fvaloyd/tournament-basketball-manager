@@ -12,6 +12,7 @@ public sealed class Organizer : Entity
     public Tournament? Tournament { get; private set; }
     public bool IsOrganizingATournament => Tournament is not null;
 
+    public Organizer(){}
     private Organizer(OrganizerPersonalInfo personalInfo)
         => PersonalInfo = personalInfo;
 

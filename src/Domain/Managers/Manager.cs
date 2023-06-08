@@ -12,6 +12,7 @@ public sealed class Manager : Entity
     public Team? Team { get; private set; }
     public bool AreLeadingATeam => Team is not null;
 
+    private Manager(){}
     private Manager(ManagerPersonalInfo personalInfo)
         => PersonalInfo = personalInfo;
 

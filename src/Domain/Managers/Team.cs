@@ -17,6 +17,7 @@ public sealed class Team : Entity
     public Guid TournamentId { get; private set; }
     public Tournament? Tournament { get; private set; }
 
+    private Team(){}
     private Team(
         string name,
         Manager manager

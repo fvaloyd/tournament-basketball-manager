@@ -11,7 +11,7 @@ public sealed class Player : Entity
     public Guid TeamId { get; private set; }
     public Team? Team { get; private set; }
     public bool IsInTeam => Team is not null;
-
+    private Player(){}
     private Player(
         PlayerPersonalInfo personalInfo,
         Position position) : base()
