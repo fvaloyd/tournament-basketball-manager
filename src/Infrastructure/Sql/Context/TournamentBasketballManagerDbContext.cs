@@ -2,7 +2,6 @@ using Domain.Players;
 using Domain.Managers;
 using Domain.Organizers;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure.Sql.EntitiesConfigurations;
 
 namespace Infrastructure.Sql.Context;
 public class TournamentBasketballManagerDbContext : DbContext
