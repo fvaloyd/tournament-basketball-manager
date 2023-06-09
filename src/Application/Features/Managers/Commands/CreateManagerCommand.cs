@@ -18,7 +18,7 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommand,
     public async Task<Guid> Handle(CreateManagerCommand request, CancellationToken cancellationToken)
     {
         var manager = Manager.Create(request.ManagerPersonalInfo);
-        await _unitOfWork.Managers.CreateManagerAsync(manager, cancellationToken);
+        await _unitOfWork.Managers.CreateAsync(manager, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return manager.Id;
     }
