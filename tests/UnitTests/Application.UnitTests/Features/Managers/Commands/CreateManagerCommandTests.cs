@@ -13,7 +13,7 @@ public class CreateManagerCommandTests
         Guid managerCreatedId = await createManagerCommandHandler.Handle(createManagerCommand, default);
 
         managerCreatedId.Should().NotBeEmpty();
-        managerRepoMock.Verify(mr => mr.CreateManagerAsync(It.IsAny<Manager>(), default), Times.Once);
+        managerRepoMock.Verify(mr => mr.CreateAsync(It.IsAny<Manager>(), default), Times.Once);
         unitOfWorkMock.Verify(tuow => tuow.SaveChangesAsync(default), Times.Once);
     }
 
