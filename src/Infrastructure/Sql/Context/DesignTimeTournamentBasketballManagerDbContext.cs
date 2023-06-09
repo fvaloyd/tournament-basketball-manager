@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infrastructure;
 
-public class BloggingContextFactory : IDesignTimeDbContextFactory<TournamentBasketballManagerDbContext>
+public class DesignTimeTournamentBasketballManagerDbContext : IDesignTimeDbContextFactory<TournamentBasketballManagerDbContext>
 {
     public TournamentBasketballManagerDbContext CreateDbContext(string[] args)
     {
