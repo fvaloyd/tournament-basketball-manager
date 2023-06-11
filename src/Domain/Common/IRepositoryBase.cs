@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
 
 namespace Domain.Common;
-public interface IRepositoryBase<TEntity> where TEntity : Entity
+public interface IRepositoryBase<TEntity> 
+    where TEntity : class, IEntity
 {
     IQueryable<TEntity> FindAll();
     IQueryable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> filter);

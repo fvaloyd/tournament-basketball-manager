@@ -1,9 +1,11 @@
+using Domain;
 using Domain.Common;
 using System.Linq.Expressions;
 using Infrastructure.Sql.Context;
 
 namespace Infrastructure.Sql.Repositories;
-public class SqlRepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : Entity
+public class SqlRepositoryBase<TEntity> : IRepositoryBase<TEntity> 
+    where TEntity : class, IEntity
 {
     private readonly TournamentBasketballManagerDbContext _db;
 
