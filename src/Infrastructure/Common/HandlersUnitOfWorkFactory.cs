@@ -14,6 +14,6 @@ public class HandlersUnitOfWorkFactory : IUnitOfWorkFactory
         IEnumerable<IUnitOfWork> unitOfWorkImplementations = _serviceProvider.GetServices<IUnitOfWork>();
         return criteria.Contains("command", StringComparison.InvariantCultureIgnoreCase)
             ? unitOfWorkImplementations.FirstOrDefault(s => s.GetType() == typeof(SqlUnitOfWork)) ?? throw new Exception("Service not registed.")
-            : throw new NotImplementedException(); // other implementation
+            : unitOfWorkImplementations.FirstOrDefault(s => s.GetType() == typeof(MongoUnitOfWork)) ?? throw new Exception("Service not registed.");
     }
 }
