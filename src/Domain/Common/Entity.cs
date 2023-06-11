@@ -1,5 +1,5 @@
 namespace Domain.Common;
-public abstract class Entity
+public abstract class Entity : IEntity
 {
     private readonly List<DomainEvent> _domainEvents = new();
     public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
