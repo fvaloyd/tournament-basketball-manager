@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Domain.Managers;
 using Infrastructure.NoSql.Models;
 using Microsoft.Extensions.Options;
+using Domain.Organizers.Exceptions;
 
 namespace Infrastructure;
 public class MongoTeamRepository : ITeamRepository
@@ -20,7 +21,9 @@ public class MongoTeamRepository : ITeamRepository
     public async Task<Team> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.TeamId, id);
-        var mongoTeam = await _collection.Find(filter).FirstOrDefaultAsync();
-        return _mapper.Map<Team>(mongoTeam.Team!);
+        var organizer = await _collection.Find(filter).FirstOrDefaultAsync();
+        return organizer.Team is null
+            ? throw new TeamNotFoundException(id)
+            : _mapper.Map<Team>(organizer.Team!);
     }
 }

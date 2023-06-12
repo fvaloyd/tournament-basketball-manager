@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Infrastructure.NoSql.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Domain.Managers.Exceptions;
 
 namespace Infrastructure.NoSql.Repositories;
 public class MongoPlayerRepository : IPlayerRepository
@@ -31,7 +32,10 @@ public class MongoPlayerRepository : IPlayerRepository
 
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var mongoPlayer = await _collection.AsQueryable().FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
-        return _mapper.Map<Player>(mongoPlayer!);
+        var filter = Builders<MongoPlayer>.Filter.Eq(m => m.TeamId, id);
+        var mongoPlayer = await _collection.Find(filter).FirstOrDefaultAsync();
+        return mongoPlayer is null
+            ? throw new PlayerNotFoundException(id)
+            : _mapper.Map<Player>(mongoPlayer);
     }
 }
