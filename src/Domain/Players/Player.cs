@@ -13,7 +13,7 @@ public sealed class Player : Entity
     public bool IsInTeam => Team is not null;
 
     #pragma warning disable CS8618
-    private Player(){}
+    public Player(){}
     private Player(
         PlayerPersonalInfo personalInfo,
         Position position) : base()
@@ -36,14 +36,12 @@ public sealed class Player : Entity
             throw new PlayerAlreadyInATeamException(Id, TeamId);
         TeamId = team.Id;
         Team = team;
-        // RaiseEvent(new PlayerJoinedATeamDomainEvent(Id, TeamId));
     }
 
     public void LeaveTheTeam()
     {
         if (Team is null)
             return;
-        // RaiseEvent(new PlayerLeavedTheTeamDomainEvent(Id, TeamId));
         TeamId = Guid.Empty;
         Team = default;
     }
