@@ -1,18 +1,24 @@
 using Domain.Managers;
+using Domain.Managers.Exceptions;
 using Infrastructure.Sql.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Sql.Repositories;
-public class SqlManagerRepository : SqlRepositoryBase<Manager>, IManagerRepository
+public class SqlManagerRepository : IManagerRepository
 {
-    public SqlManagerRepository(TournamentBasketballManagerDbContext db) : base(db) {}
+    private readonly TournamentBasketballManagerDbContext _db;
+    public SqlManagerRepository(TournamentBasketballManagerDbContext db) => _db = db;
 
-    public Task CreateAsync(Manager manager, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Manager manager, CancellationToken cancellationToken = default) => await _db.Managers.AddAsync(manager, cancellationToken);
+
+    public async Task<Manager> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        Create(manager);
-        return Task.CompletedTask;
+        var manager = await _db.Managers
+            .Include(m => m.Team).ThenInclude(t => t!.Tournament)
+            .Include(m => m.Team).ThenInclude(t => t!.Players)
+            .SingleOrDefaultAsync(m => m.Id == id);
+        return manager is null
+            ? throw new ManagerNotFoundException(id)
+            : manager;
     }
-
-    public Task<Manager> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        => FindByCondition(m => m.Id == id).SingleOrDefaultAsync(cancellationToken);
 }
