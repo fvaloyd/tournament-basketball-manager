@@ -17,5 +17,7 @@ public static class ConfigureServices
         services.AddScoped<IUnitOfWork, MongoUnitOfWork>();
 
         services.AddSingleton<ILoggerManager, SerilogLoggerManager>();
+
+        services.ConfigureOptions<MongoDatabaseSettingsSetup>();
     }
 }
