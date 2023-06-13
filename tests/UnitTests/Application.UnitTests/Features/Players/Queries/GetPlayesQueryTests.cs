@@ -2,6 +2,7 @@ using Domain.Players;
 using Application.Features.Players;
 using Application.Features.Players.Queries;
 using AutoMapper;
+using Domain.Common;
 
 namespace Application.UnitTests.Features.Players.Queries;
 public class GetPlayersQueryTests
@@ -25,13 +26,15 @@ public class GetPlayersQueryTests
     )
     GetHandlerAndMocks()
     {
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var mapperMock = new Mock<IMapper>();
         var playerRepoMock = new Mock<IPlayerRepository>();
         playerRepoMock.Setup(m => m.GetAllAsync(It.IsAny<CancellationToken>()).Result).Returns(new List<Player>());
         unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
         var getPlayersQuery = new GetPlayersQuery();
-        var getPlayersQueryHandler = new GetPlayersQueryHandler(unitOfWorkMock.Object, mapperMock.Object);
+        var getPlayersQueryHandler = new GetPlayersQueryHandler(unitOfWorkFactoryMock.Object, mapperMock.Object);
 
         return(
             getPlayersQueryHandler,

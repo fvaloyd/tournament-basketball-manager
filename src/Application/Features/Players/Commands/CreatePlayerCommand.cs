@@ -14,7 +14,8 @@ public class CreatePlayerCommandHandler : IRequestHandler<CreatePlayerCommand, G
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreatePlayerCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public CreatePlayerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) 
+        => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreatePlayerCommandHandler));
 
     public async Task<Guid> Handle(CreatePlayerCommand request, CancellationToken cancellationToken)
     {

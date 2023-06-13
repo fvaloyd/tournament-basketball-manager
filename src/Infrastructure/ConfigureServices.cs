@@ -17,8 +17,8 @@ public static class ConfigureServices
 
         services.AddSingleton<IUnitOfWorkFactory, HandlersUnitOfWorkFactory>();
 
-        services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
-        services.AddScoped<IUnitOfWork, MongoUnitOfWork>();
+        services.AddTransient<IUnitOfWork, SqlUnitOfWork>();
+        services.AddTransient<IUnitOfWork, MongoUnitOfWork>();
 
         services.AddSingleton<ILoggerManager, SerilogLoggerManager>();
 

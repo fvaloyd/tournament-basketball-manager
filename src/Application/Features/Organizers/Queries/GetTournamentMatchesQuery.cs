@@ -16,9 +16,9 @@ public class GetTournamentMatchesQueryHandler : IRequestHandler<GetTournamentMat
     private readonly IMapper _mapper;
     private readonly ILoggerManager _logger;
 
-    public GetTournamentMatchesQueryHandler(IUnitOfWork unitOfWork, ILoggerManager logger, IMapper mapper)
+    public GetTournamentMatchesQueryHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(GetTournamentMatchesQueryHandler));
         _logger = logger;
         _mapper = mapper;
     }

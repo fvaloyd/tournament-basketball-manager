@@ -14,10 +14,10 @@ public class DissolveTeamCommandHandler : IRequestHandler<DissolveTeamCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public DissolveTeamCommandHandler(ILoggerManager logger, IUnitOfWork unitOfWork)
+    public DissolveTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(DissolveTeamCommandHandler));
     }
 
     public async Task Handle(DissolveTeamCommand request, CancellationToken cancellationToken)

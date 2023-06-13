@@ -25,12 +25,14 @@ public class CreateManagerCommandTests
     )
     GetHandlerAndMocks()
     {
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var managerRepoMock = new Mock<IManagerRepository>();
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
         var validManagerPersonalInfo = new ManagerPersonalInfo("test", "test", "test@gmail.com", DateTime.Today, "test", "test", "test", "test", "test");
         var createManagerCommand = new CreateManagerCommand{ManagerPersonalInfo = validManagerPersonalInfo};
-        var createManagerCommandHandler = new CreateManagerCommandHandler(unitOfWorkMock.Object);
+        var createManagerCommandHandler = new CreateManagerCommandHandler(unitOfWorkFactoryMock.Object);
         return(
             createManagerCommandHandler,
             createManagerCommand,

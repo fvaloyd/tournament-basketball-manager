@@ -44,12 +44,14 @@ public class FinishTournamentCommandTests
             HandlerCallOption.Valid => GetOrganizerWithTournamentAndTeams(),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var finishTournamentCommand = new FinishTournamentCommand() { OrganizerId = Guid.NewGuid() };
-        var finishTournamentCommandHandler = new FinishTournamentCommandHandler(unitOfWorkMock.Object, new Mock<ILoggerManager>().Object);
+        var finishTournamentCommandHandler = new FinishTournamentCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object);
 
         return(
             finishTournamentCommandHandler,

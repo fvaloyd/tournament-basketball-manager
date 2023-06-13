@@ -25,14 +25,16 @@ public class CreateOrganizerCommandTests
     )
     GetHandlerAndMocks()
     {
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var createOrganizerCommand = new CreateOrganizerCommand()
         {
             OrganizerPersonalInfo = new OrganizerPersonalInfo("", "", "", DateTime.Today, "", "", "", "", "")
         };
-        var createOrganizerCommandHandler = new CreateOrganizerCommandHandler(unitOfWorkMock.Object);
+        var createOrganizerCommandHandler = new CreateOrganizerCommandHandler(unitOfWorkFactoryMock.Object);
 
         return(
             createOrganizerCommandHandler,

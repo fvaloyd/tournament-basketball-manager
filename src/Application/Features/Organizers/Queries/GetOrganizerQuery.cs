@@ -17,9 +17,9 @@ public class GetOrganizerQueryHandler : IRequestHandler<GetOrganizerQuery, Organ
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
 
-    public GetOrganizerQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
+    public GetOrganizerQueryHandler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, ILoggerManager logger)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(GetOrganizerQueryHandler));
         _mapper = mapper;
         _logger = logger;
     }

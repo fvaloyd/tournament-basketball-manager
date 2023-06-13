@@ -15,9 +15,9 @@ public class DiscardTeamCommandHandler : IRequestHandler<DiscardTeamCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public DiscardTeamCommandHandler(IUnitOfWork unitOfWork, ILoggerManager logger)
+    public DiscardTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(DiscardTeamCommandHandler));
         _logger = logger;
     }
 

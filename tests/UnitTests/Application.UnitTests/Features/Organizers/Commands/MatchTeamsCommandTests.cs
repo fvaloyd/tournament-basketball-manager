@@ -45,12 +45,14 @@ public class MatchTeamsCommandTests
             HandlerCallOption.Valid => GetOrganizerWithTournamentAndTeams(),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var matchTeamsCommand = new MatchTeamsCommand() { OrganizerId = Guid.NewGuid() };
-        var matchTeamsCommandHandler = new MatchTeamsCommandHandler(unitOfWorkMock.Object, new Mock<ILoggerManager>().Object, new RandomTeamMatchMaker());
+        var matchTeamsCommandHandler = new MatchTeamsCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object, new RandomTeamMatchMaker());
 
         return (
             matchTeamsCommandHandler,

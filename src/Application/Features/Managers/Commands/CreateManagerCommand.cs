@@ -13,7 +13,7 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommand,
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateManagerCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public CreateManagerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateManagerCommandHandler));
 
     public async Task<Guid> Handle(CreateManagerCommand request, CancellationToken cancellationToken)
     {

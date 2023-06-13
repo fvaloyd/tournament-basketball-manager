@@ -17,9 +17,9 @@ public class GetManagerQueryHandler : IRequestHandler<GetManagerQuery, ManagerRe
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
 
-    public GetManagerQueryHandler(IUnitOfWork unitOfWork, ILoggerManager logger, IMapper mapper)
+    public GetManagerQueryHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(GetManagerQueryHandler));
         _logger = logger;
         _mapper = mapper;
     }

@@ -70,7 +70,9 @@ public class RegisterTeamCommandTests
             HandlerCallOption.Valid => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, "", "", "", "", ""))),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         var teamRepoMock = new Mock<ITeamRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
@@ -78,7 +80,7 @@ public class RegisterTeamCommandTests
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         unitOfWorkMock.Setup(m => m.Teams).Returns(teamRepoMock.Object);
         var registerTeamCommand = new RegisterTeamCommand() { OrganizerId = Guid.NewGuid(), TeamId = team is null ? Guid.NewGuid() : team.Id };
-        var registerTeamCommandHandler = new RegisterTeamCommandHandler(unitOfWorkMock.Object, new Mock<ILoggerManager>().Object);
+        var registerTeamCommandHandler = new RegisterTeamCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object);
 
         return (
             registerTeamCommandHandler,

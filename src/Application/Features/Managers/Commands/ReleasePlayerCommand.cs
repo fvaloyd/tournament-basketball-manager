@@ -15,10 +15,10 @@ public class ReleasePlayerCommandHandler : IRequestHandler<ReleasePlayerCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public ReleasePlayerCommandHandler(ILoggerManager logger, IUnitOfWork unitOfWork)
+    public ReleasePlayerCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(ReleasePlayerCommandHandler));
     }
 
     public async Task Handle(ReleasePlayerCommand request, CancellationToken cancellationToken)

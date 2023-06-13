@@ -16,9 +16,9 @@ public class MatchTeamsCommandHandler : IRequestHandler<MatchTeamsCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public MatchTeamsCommandHandler(IUnitOfWork unitOfWork, ILoggerManager logger, ITeamMatchMaker teamMatchMaker)
+    public MatchTeamsCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, ITeamMatchMaker teamMatchMaker)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(MatchTeamsCommandHandler));
         _logger = logger;
         _teamMatchMaker = teamMatchMaker;
     }

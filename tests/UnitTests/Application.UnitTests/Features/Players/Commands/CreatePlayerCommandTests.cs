@@ -24,7 +24,9 @@ public class CreatePlayerCommandTests
         Mock<IPlayerRepository> playerRepoMock
     ) GetHandlerAndMocks()
     {
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var playerRepoMock = new Mock<IPlayerRepository>();
         unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
         var createPlayerCommand = new CreatePlayerCommand()
@@ -32,7 +34,7 @@ public class CreatePlayerCommandTests
             PlayerPersonalInfo = new PlayerPersonalInfo("", "", "", DateTime.Today, 1.80f, 80.1f, "", "", "", "", ""),
             Position = Position.PointGuard
         };
-        var createPlayerCommandHandler = new CreatePlayerCommandHandler(unitOfWorkMock.Object);
+        var createPlayerCommandHandler = new CreatePlayerCommandHandler(unitOfWorkFactoryMock.Object);
 
         return(
             createPlayerCommandHandler,

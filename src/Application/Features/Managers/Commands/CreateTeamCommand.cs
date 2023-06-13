@@ -15,10 +15,10 @@ public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid?
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public CreateTeamCommandHandler(ILoggerManager logger, IUnitOfWork unitOfWork)
+    public CreateTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateTeamCommandHandler));
     }
 
     public async Task<Guid?> Handle(CreateTeamCommand request, CancellationToken cancellationToken)

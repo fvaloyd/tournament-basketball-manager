@@ -10,9 +10,9 @@ public class GetPlayersQueryHandler : IRequestHandler<GetPlayersQuery, IEnumerab
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetPlayersQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetPlayersQueryHandler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(GetPlayersQueryHandler));
         _mapper = mapper;
     }
 

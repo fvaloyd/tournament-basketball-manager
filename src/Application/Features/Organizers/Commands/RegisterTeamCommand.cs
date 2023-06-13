@@ -15,9 +15,9 @@ public class RegisterTeamCommandHandler : IRequestHandler<RegisterTeamCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public RegisterTeamCommandHandler(IUnitOfWork unitOfWork, ILoggerManager logger)
+    public RegisterTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(RegisterTeamCommandHandler));
         _logger = logger;
     }
 

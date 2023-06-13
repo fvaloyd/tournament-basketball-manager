@@ -13,7 +13,7 @@ public class CreateOrganizerCommandHandler : IRequestHandler<CreateOrganizerComm
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateOrganizerCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public CreateOrganizerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateOrganizerCommandHandler));
 
     public async Task<Guid> Handle(CreateOrganizerCommand request, CancellationToken cancellationToken)
     {

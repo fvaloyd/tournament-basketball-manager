@@ -14,9 +14,9 @@ public class FinishTournamentCommandHandler : IRequestHandler<FinishTournamentCo
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public FinishTournamentCommandHandler(IUnitOfWork unitOfWork, ILoggerManager logger)
+    public FinishTournamentCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
     {
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(FinishTournamentCommandHandler));
         _logger = logger;
     }
     public async Task Handle(FinishTournamentCommand request, CancellationToken cancellationToken)

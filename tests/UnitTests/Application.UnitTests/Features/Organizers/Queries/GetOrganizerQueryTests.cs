@@ -47,14 +47,16 @@ public class GetOrganizerQueryTests
             HandlerCallOption.Valid => GetOrganizerWithTournamentAndTeams(),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var mapperMock = new Mock<IMapper>();
         mapperMock.Setup(m => m.Map<OrganizerResponse>(It.IsAny<Organizer>())).Returns(new OrganizerResponse());
         var getOrganizerQuery = new GetOrganizerQuery();
-        var getOrganizerQueryHandler = new GetOrganizerQueryHandler(unitOfWorkMock.Object, mapperMock.Object, new Mock<ILoggerManager>().Object);
+        var getOrganizerQueryHandler = new GetOrganizerQueryHandler(unitOfWorkFactoryMock.Object, mapperMock.Object, new Mock<ILoggerManager>().Object);
 
         return(
             getOrganizerQueryHandler,

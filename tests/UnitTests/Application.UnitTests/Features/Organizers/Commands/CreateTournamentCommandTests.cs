@@ -43,7 +43,9 @@ public class CreateTournamentCommandTests
             HandlerCallOption.Valid => Organizer.Create(new OrganizerPersonalInfo("", "", "", DateTime.Today, "", "", "", "", "")),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
@@ -52,7 +54,7 @@ public class CreateTournamentCommandTests
             OrganizerId = Guid.NewGuid(),
             TournamentName = "test"
         };
-        var createTournamentCommandHandler = new CreateTournamentCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkMock.Object);
+        var createTournamentCommandHandler = new CreateTournamentCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkFactoryMock.Object);
 
         return(
             createTournamentCommandHandler,

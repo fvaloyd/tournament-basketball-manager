@@ -15,10 +15,10 @@ public class DraftPlayerCommandHandler : IRequestHandler<DraftPlayerCommand>
     private readonly ILoggerManager _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-    public DraftPlayerCommandHandler(ILoggerManager logger, IUnitOfWork unitOfWork)
+    public DraftPlayerCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(DraftPlayerCommandHandler));
     }
 
     public async Task Handle(DraftPlayerCommand request, CancellationToken cancellationToken)

@@ -15,10 +15,10 @@ public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCo
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
 
-    public CreateTournamentCommandHandler(ILoggerManager logger, IUnitOfWork unitOfWork)
+    public CreateTournamentCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateTournamentCommandHandler));
     }
 
     public async Task<Guid?> Handle(CreateTournamentCommand request, CancellationToken cancellationToken)
