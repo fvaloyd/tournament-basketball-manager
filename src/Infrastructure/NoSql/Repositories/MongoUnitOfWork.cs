@@ -1,4 +1,4 @@
-﻿using MapsterMapper;
+﻿using AutoMapper;
 using Domain.Common;
 using Domain.Players;
 using Domain.Managers;

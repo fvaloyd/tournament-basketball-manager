@@ -1,10 +1,10 @@
 using Domain.Common;
-using MapsterMapper;
 using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Application.Features.Organizers.DTOs;
 using Application.Features.Organizers.Queries;
+using AutoMapper;
 
 namespace Application.UnitTests.Features.Organizers.Queries;
 public class GetOrganizerQueryTests

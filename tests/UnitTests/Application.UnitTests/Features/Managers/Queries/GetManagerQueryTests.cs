@@ -1,9 +1,9 @@
 using Domain.Common;
-using MapsterMapper;
 using Domain.Managers;
 using Domain.Managers.Exceptions;
 using Application.Features.Managers.DTOs;
 using Application.Features.Managers.Queries;
+using AutoMapper;
 
 namespace Application.UnitTests.Features.Managers.Queries;
 public class GetManagerQueryTests

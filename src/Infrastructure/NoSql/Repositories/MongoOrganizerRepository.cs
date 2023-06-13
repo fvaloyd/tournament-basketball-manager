@@ -1,8 +1,8 @@
-﻿using Mapster;
-using MapsterMapper;
+﻿using AutoMapper;
 using MongoDB.Driver;
 using Domain.Organizers;
 using Microsoft.Extensions.Options;
+using AutoMapper.QueryableExtensions;
 
 namespace Infrastructure;
 public class MongoOrganizerRepository : IOrganizerRepository
@@ -36,6 +36,6 @@ public class MongoOrganizerRepository : IOrganizerRepository
         var filter = Builders<MongoOrganizer>.Filter.Eq(m => m.Id, organizerId);
         var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync();
         var mongoMatches = mongoOrganizer.Tournament!.Matches.AsQueryable();
-        return mongoMatches.ProjectToType<Match>().ToList();
+        return mongoMatches.ProjectTo<Match>(_mapper.ConfigurationProvider).ToList();
     }
 }

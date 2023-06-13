@@ -1,9 +1,9 @@
 using MediatR;
 using Domain.Common;
-using MapsterMapper;
 using FluentValidation;
 using Domain.Organizers.Exceptions;
 using Application.Features.Organizers.DTOs;
+using AutoMapper;
 
 namespace Application.Features.Organizers.Queries;
 public record GetOrganizerQuery : IRequest<OrganizerResponse>

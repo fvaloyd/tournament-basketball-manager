@@ -1,8 +1,8 @@
-﻿using MapsterMapper;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Domain.Managers;
 using Infrastructure.NoSql.Models;
 using Microsoft.Extensions.Options;
+using AutoMapper;
 
 namespace Infrastructure;
 public class MongoManagerRepository : IManagerRepository

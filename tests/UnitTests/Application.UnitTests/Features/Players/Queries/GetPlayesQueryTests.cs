@@ -1,7 +1,7 @@
-using MapsterMapper;
 using Domain.Players;
 using Application.Features.Players;
 using Application.Features.Players.Queries;
+using AutoMapper;
 
 namespace Application.UnitTests.Features.Players.Queries;
 public class GetPlayersQueryTests

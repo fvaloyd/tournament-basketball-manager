@@ -1,6 +1,6 @@
 using MediatR;
-using MapsterMapper;
 using Domain.Common;
+using AutoMapper;
 
 namespace Application.Features.Players.Queries;
 public record GetPlayersQuery : IRequest<IEnumerable<PlayerResponse>>;

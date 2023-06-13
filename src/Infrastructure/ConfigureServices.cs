@@ -3,8 +3,6 @@ using Domain.Common;
 using Infrastructure.Common;
 using Infrastructure.Sql.Context;
 using Infrastructure.Sql.Repositories;
-using Mapster;
-using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,10 +13,7 @@ public static class ConfigureServices
     {
         var applicationLayerAssemby = typeof(ApplicationReference).Assembly;
         var infrastructureAssembly = typeof(InfrastructureReference).Assembly;
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(applicationLayerAssemby, infrastructureAssembly);
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
+        services.AddAutoMapper(applicationLayerAssemby, infrastructureAssembly);
 
         services.AddSqlServer<TournamentBasketballManagerDbContext>(configuration.GetConnectionString("TournamentBasketballManagerDb"));
         services.AddSingleton<IUnitOfWorkFactory, HandlersUnitOfWorkFactory>();

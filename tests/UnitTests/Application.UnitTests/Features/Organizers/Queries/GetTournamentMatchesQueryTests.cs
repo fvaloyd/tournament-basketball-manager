@@ -1,8 +1,8 @@
-using MapsterMapper;
 using Domain.Common;
 using Application.Features.Organizers.DTOs;
 using Application.Features.Organizers.Queries;
 using Domain.Organizers;
+using AutoMapper;
 
 namespace Application.UnitTests.Features.Organizers.Queries;
 public class GetTournamentMatchesTests

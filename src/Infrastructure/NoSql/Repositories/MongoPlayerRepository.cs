@@ -1,10 +1,10 @@
-using Mapster;
-using MapsterMapper;
-using Domain.Players;
+using AutoMapper;
 using MongoDB.Driver;
+using Domain.Players;
 using Domain.Managers.Exceptions;
 using Infrastructure.NoSql.Models;
 using Microsoft.Extensions.Options;
+using AutoMapper.QueryableExtensions;
 
 namespace Infrastructure.NoSql.Repositories;
 public class MongoPlayerRepository : IPlayerRepository
@@ -27,7 +27,7 @@ public class MongoPlayerRepository : IPlayerRepository
     }
 
     public async Task<IEnumerable<Player>> GetAllAsync(CancellationToken cancellationToken = default) 
-        => _collection.AsQueryable().ProjectToType<Player>();
+        => _collection.AsQueryable().ProjectTo<Player>(_mapper.ConfigurationProvider);
 
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
