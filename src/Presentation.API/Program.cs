@@ -7,11 +7,11 @@ using Application.Features.Players.Queries;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSqlServer<TournamentBasketballManagerDbContext>(
-    builder.Configuration.GetConnectionString("TournamentBasketballManagerDb"), 
+    builder.Configuration.GetConnectionString("TournamentBasketballManagerDb"),
     s => s.MigrationsAssembly(typeof(Program).Assembly.FullName));
 
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 
