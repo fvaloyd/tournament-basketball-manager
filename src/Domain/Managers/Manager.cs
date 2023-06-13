@@ -8,7 +8,7 @@ namespace Domain.Managers;
 public sealed class Manager : Entity
 {
     public ManagerPersonalInfo PersonalInfo { get; private set; }
-    public Guid TeamId { get; private set; }
+    public Guid? TeamId { get; private set; }
     public Team? Team { get; private set; }
     public bool AreLeadingATeam => Team is not null;
 
@@ -65,7 +65,7 @@ public sealed class Manager : Entity
 
     public void DissolveTheTeam()
     {
-        if (Team is null && TeamId == Guid.Empty)
+        if (Team is null && TeamId == Guid.Empty || Team is null)
             throw new ManagerDoesNotHaveATeamException();
         Team!.ReleaseAllPlayers();
         RaiseEvent(new TeamDissolvedDomainEvent(TeamId, Id));

@@ -54,11 +54,11 @@ public class CreateTeamCommandHandlerBuilder
         return this;
     }
 
-    public (Func<Task<Guid>> func, Mock<IManagerRepository> managerRepo) Build()
+    public (Func<Task<Guid?>> func, Mock<IManagerRepository> managerRepo) Build()
     {
         var createTeamCommand = new CreateTeamCommand(){ManagerId = Guid.NewGuid(), TeamName = "test"};
         var createTeamCommandHandler = new CreateTeamCommandHandler(new Mock<ILoggerManager>().Object, _unitOfWork.Object);
-        Task<Guid> func() => createTeamCommandHandler.Handle(createTeamCommand, default);
+        Task<Guid?> func() => createTeamCommandHandler.Handle(createTeamCommand, default);
 
         return (func, _managerRepoMock);
     }

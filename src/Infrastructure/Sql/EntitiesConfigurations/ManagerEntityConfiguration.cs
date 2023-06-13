@@ -8,9 +8,15 @@ public class ManagerEntityConfiguration : IEntityTypeConfiguration<Manager>
     public void Configure(EntityTypeBuilder<Manager> builder)
     {
         builder.HasKey(m => m.Id).HasName("ManagerId");
+        
         builder.Ignore(m => m.DomainEvents);
-        builder.HasOne(m => m.Team)
-            .WithOne(t => t.Manager);
+        
+        builder
+            .HasOne(m => m.Team)
+            .WithOne(t => t.Manager)
+            .HasForeignKey<Manager>(m => m.TeamId)
+            .OnDelete(DeleteBehavior.SetNull);
+        
         builder.OwnsOne(m => m.PersonalInfo, personalInfo => {
             EntityTypeConfigurationHelper.ConfigurePersonalInfo(personalInfo);
         });

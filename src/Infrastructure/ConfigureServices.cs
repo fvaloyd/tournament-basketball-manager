@@ -9,13 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Infrastructure;
 public static class ConfigureServices
 {
-    public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructureServices(this IServiceCollection services)
     {
         var applicationLayerAssemby = typeof(ApplicationReference).Assembly;
         var infrastructureAssembly = typeof(InfrastructureReference).Assembly;
         services.AddAutoMapper(applicationLayerAssemby, infrastructureAssembly);
 
-        services.AddSqlServer<TournamentBasketballManagerDbContext>(configuration.GetConnectionString("TournamentBasketballManagerDb"));
         services.AddSingleton<IUnitOfWorkFactory, HandlersUnitOfWorkFactory>();
 
         services.AddScoped<IUnitOfWork, SqlUnitOfWork>();

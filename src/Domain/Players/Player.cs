@@ -8,7 +8,7 @@ public sealed class Player : Entity
 {
     public PlayerPersonalInfo PersonalInfo { get; private set; }
     public Position Position { get; private set; }
-    public Guid TeamId { get; private set; }
+    public Guid? TeamId { get; private set; }
     public Team? Team { get; private set; }
     public bool IsInTeam => Team is not null;
 

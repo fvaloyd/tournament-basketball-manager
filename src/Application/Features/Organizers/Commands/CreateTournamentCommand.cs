@@ -4,13 +4,13 @@ using FluentValidation;
 using Domain.Organizers.Exceptions;
 
 namespace Application.Features.Organizers.Commands;
-public record CreateTournamentCommand : IRequest<Guid>
+public record CreateTournamentCommand : IRequest<Guid?>
 {
     public Guid OrganizerId { get; init; }
     public string TournamentName { get; init; } = string.Empty;
 }
 
-public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCommand, Guid>
+public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCommand, Guid?>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
@@ -21,7 +21,7 @@ public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(CreateTournamentCommand request, CancellationToken cancellationToken)
+    public async Task<Guid?> Handle(CreateTournamentCommand request, CancellationToken cancellationToken)
     {
         var organizer = await _unitOfWork.Organizers.GetByIdAsync(request.OrganizerId, cancellationToken);
         if (organizer is null)

@@ -9,7 +9,7 @@ namespace Domain.Organizers;
 public sealed class Organizer : Entity
 {
     public OrganizerPersonalInfo PersonalInfo { get; private set; }
-    public Guid TournamentId { get; private set; }
+    public Guid? TournamentId { get; private set; }
     public Tournament? Tournament { get; private set; }
     public bool IsOrganizingATournament => Tournament is not null;
 
@@ -35,7 +35,7 @@ public sealed class Organizer : Entity
 
     public void RegisterTeam(Team team)
     {
-        if (Tournament is null && TournamentId == Guid.Empty)
+        if (Tournament is null && TournamentId == Guid.Empty || TournamentId == null)
             throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.RegisterTeam(team);
         RaiseEvent(new TeamRegisteredInATournamentDomainEvent(Id, TournamentId));
@@ -43,7 +43,7 @@ public sealed class Organizer : Entity
 
     public void DiscardTeam(Guid teamId)
     {
-        if (Tournament is null && TournamentId == Guid.Empty)
+        if (Tournament is null && TournamentId == Guid.Empty || TournamentId == null)
             throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.DiscardTeam(teamId);
         RaiseEvent(new TeamEliminatedFromTheTournamentDomainEvent(teamId, TournamentId));
@@ -51,7 +51,7 @@ public sealed class Organizer : Entity
 
     public void FinishTournament()
     {
-        if (Tournament is null && TournamentId == Guid.Empty)
+        if (Tournament is null && TournamentId == Guid.Empty || TournamentId == null)
             throw new OrganizerDoesNotHaveTournamentException();
         Tournament!.ReleaseAllTeams();
         RaiseEvent(new TournamentFinishedDomainEvent(TournamentId, Id));
@@ -61,7 +61,7 @@ public sealed class Organizer : Entity
 
     public void MatchTeams(ITeamMatchMaker teamMatchMaker)
     {
-        if (Tournament is null && TournamentId == Guid.Empty)
+        if (Tournament is null && TournamentId == Guid.Empty || TournamentId == null)
             throw new OrganizerDoesNotHaveTournamentException();
         if (Tournament!.Matches.Any())
             return;
@@ -70,7 +70,7 @@ public sealed class Organizer : Entity
 
     public IEnumerable<Match> GetTournamentMatches()
     {
-        if (Tournament is null && TournamentId == Guid.Empty)
+        if (Tournament is null && TournamentId == Guid.Empty || TournamentId == null)
             throw new OrganizerDoesNotHaveTournamentException();
         if (!Tournament!.Matches.Any())
             throw new TeamsAreNotPairedYetException();

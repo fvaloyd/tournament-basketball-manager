@@ -14,7 +14,7 @@ public sealed class Team : Entity
     public IReadOnlySet<Player> Players => _players;
     public Guid ManagerId { get; private set; }
     public Manager Manager { get; private set; }
-    public Guid TournamentId { get; private set; }
+    public Guid? TournamentId { get; private set; }
     public Tournament? Tournament { get; private set; }
 
     #pragma warning disable CS8618

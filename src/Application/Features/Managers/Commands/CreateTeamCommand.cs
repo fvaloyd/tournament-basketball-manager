@@ -4,13 +4,13 @@ using FluentValidation;
 using Domain.Managers.Exceptions;
 
 namespace Application.Features.Managers.Commands;
-public record CreateTeamCommand : IRequest<Guid>
+public record CreateTeamCommand : IRequest<Guid?>
 {
     public Guid ManagerId { get; init; }
     public string? TeamName { get; init; }
 }
 
-public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid>
+public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid?>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
@@ -21,7 +21,7 @@ public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
+    public async Task<Guid?> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
     {
         var manager = await _unitOfWork.Managers.GetByIdAsync(request.ManagerId, cancellationToken);
         if (manager is null)

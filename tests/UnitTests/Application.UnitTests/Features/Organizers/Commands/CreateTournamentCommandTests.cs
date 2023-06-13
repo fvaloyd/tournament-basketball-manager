@@ -11,7 +11,7 @@ public class CreateTournamentCommandTests
     {
         var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
 
-        Func<Task<Guid>> handlerFunc = () => createTournamentCommandHandler.Handle(createTournamentCommand, default);
+        Func<Task<Guid?>> handlerFunc = () => createTournamentCommandHandler.Handle(createTournamentCommand, default);
 
         await handlerFunc.Should().ThrowAsync<OrganizerNotFoundException>();
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -23,7 +23,7 @@ public class CreateTournamentCommandTests
     {
         var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
-        Guid tournamentIdCreated = await createTournamentCommandHandler.Handle(createTournamentCommand, default);
+        Guid? tournamentIdCreated = await createTournamentCommandHandler.Handle(createTournamentCommand, default);
 
         tournamentIdCreated.Should().NotBeEmpty();
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
