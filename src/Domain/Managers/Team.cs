@@ -84,7 +84,6 @@ public sealed class Team : Entity
     {
         if (Tournament is null && TournamentId == Guid.Empty)
             return;
-        // RaiseEvent(new TeamAbandonedTheTournamentDomainEvent(Id, TournamentId));
         Tournament = default;
         TournamentId = Guid.Empty;
     }
