@@ -13,7 +13,7 @@ public sealed class Player : Entity
     public bool IsInTeam => Team is not null;
 
     #pragma warning disable CS8618
-    public Player(){}
+    private Player(){}
     private Player(
         PlayerPersonalInfo personalInfo,
         Position position) : base()
