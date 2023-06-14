@@ -64,7 +64,9 @@ public class DraftPlayerCommandTests
             HandlerCallOption.NullPlayer => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var managerRepoMock = new Mock<IManagerRepository>();
         var playerRepoMock = new Mock<IPlayerRepository>();
         managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager!);
@@ -72,7 +74,7 @@ public class DraftPlayerCommandTests
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
         unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
         var draftPlayerCommand = new DraftPlayerCommand(){ManagerId = Guid.NewGuid(), PlayerId = Guid.NewGuid()};
-        var draftPlayerCommandHandler = new DraftPlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkMock.Object);
+        var draftPlayerCommandHandler = new DraftPlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkFactoryMock.Object);
 
         return (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock);
     }

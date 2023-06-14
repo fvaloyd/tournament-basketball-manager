@@ -50,7 +50,9 @@ public class ReleasePlayerCommandTests
             player = Player.Create(new("player2", "test", "player2@gmail.com", DateTime.Now, 6.6f, 90.5f, "test", "test", "test", "test", "test"), Position.ShootingGuard);
             manager!.DraftPlayer(player);
         }
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var managerRepoMock = new Mock<IManagerRepository>();
         managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager!);
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
@@ -59,7 +61,7 @@ public class ReleasePlayerCommandTests
             ManagerId = Guid.NewGuid(),
             PlayerId = player is null ? Guid.NewGuid() : player.Id
         };
-        var releasePlayerCommandHandler = new ReleasePlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkMock.Object);
+        var releasePlayerCommandHandler = new ReleasePlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkFactoryMock.Object);
 
         return(
             releasePlayerCommandHandler,

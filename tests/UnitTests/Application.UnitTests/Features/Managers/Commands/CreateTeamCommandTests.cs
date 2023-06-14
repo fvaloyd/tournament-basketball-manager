@@ -35,10 +35,14 @@ public class CreateTeamCommandHandlerBuilder
 {
     private readonly Mock<IUnitOfWork> _unitOfWork;
     private readonly Mock<IManagerRepository> _managerRepoMock = new();
+    private readonly Mock<IUnitOfWorkFactory> _unitOfWorkFactoryMock;
     public CreateTeamCommandHandlerBuilder(Mock<IUnitOfWork> unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
+        // var unitOfWorkMock = UnitOfWorkMock.Instance;
         _unitOfWork.Setup(m => m.Managers).Returns(_managerRepoMock.Object);
+        _unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(_unitOfWork.Object);
     }
 
     public CreateTeamCommandHandlerBuilder WithNulldManager()
@@ -57,7 +61,7 @@ public class CreateTeamCommandHandlerBuilder
     public (Func<Task<Guid?>> func, Mock<IManagerRepository> managerRepo) Build()
     {
         var createTeamCommand = new CreateTeamCommand(){ManagerId = Guid.NewGuid(), TeamName = "test"};
-        var createTeamCommandHandler = new CreateTeamCommandHandler(new Mock<ILoggerManager>().Object, _unitOfWork.Object);
+        var createTeamCommandHandler = new CreateTeamCommandHandler(new Mock<ILoggerManager>().Object, _unitOfWorkFactoryMock.Object);
         Task<Guid?> func() => createTeamCommandHandler.Handle(createTeamCommand, default);
 
         return (func, _managerRepoMock);

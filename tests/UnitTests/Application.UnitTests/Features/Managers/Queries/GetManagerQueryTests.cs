@@ -43,14 +43,16 @@ public class GetManagerQueryTests
             HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
+        var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var managerRepoMock = new Mock<IManagerRepository>();
         var mapperMock = new Mock<IMapper>();
         managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager!);
         mapperMock.Setup(m => m.Map<ManagerResponse>(It.IsAny<Manager>())).Returns(new ManagerResponse());
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
         var getManagerQuery = new GetManagerQuery(){ManagerId = Guid.NewGuid()};
-        var getManagerQueryHandler = new GetManagerQueryHandler(unitOfWorkMock.Object, new Mock<ILoggerManager>().Object, mapperMock.Object);
+        var getManagerQueryHandler = new GetManagerQueryHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object, mapperMock.Object);
 
         return(
             getManagerQueryHandler,
