@@ -8,8 +8,8 @@ public record MongoManager
     [BsonId]
     [BsonRepresentation(BsonType.String)]
     public Guid Id { get; init; }
-    public ManagerPersonalInfo ManagerPersonalInfo { get; init; } = null!;
-    
+    public ManagerPersonalInfo PersonalInfo { get; init; } = null!;
+
     [BsonRepresentation(BsonType.String)]
     public Guid TeamId { get; init; }
     public MongoTeam? Team { get; init; }
