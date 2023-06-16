@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using Domain.Managers;
 using FluentValidation;
+using MassTransit;
 
 namespace Application.Features.Managers.Commands;
 public record CreateManagerCommand : IRequest<Guid>
@@ -12,17 +13,25 @@ public record CreateManagerCommand : IRequest<Guid>
 public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommand, Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBus _bus;
 
-    public CreateManagerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateManagerCommandHandler));
+    public CreateManagerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
+    {
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateManagerCommandHandler));
+        _bus = bus;
+    }
 
     public async Task<Guid> Handle(CreateManagerCommand request, CancellationToken cancellationToken)
     {
         var manager = Manager.Create(request.ManagerPersonalInfo);
         await _unitOfWork.Managers.CreateAsync(manager, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new ManagerCreatedEvent(manager.Id), cancellationToken);
         return manager.Id;
     }
 }
+
+public record ManagerCreatedEvent(Guid ManagerId);
 
 public class CreateManagerCommandValidator : AbstractValidator<CreateManagerCommand>
 {
