@@ -14,7 +14,7 @@ public class MongoOrganizerRepository : IOrganizerRepository
         var dbSettings = dbSettingsOptions.Value;
         var client = new MongoClient(dbSettings.ConnectionString);
         var db = client.GetDatabase(dbSettings.DataBaseName);
-        _collection = db.GetCollection<MongoOrganizer>(dbSettings.PlayerCollectionName);
+        _collection = db.GetCollection<MongoOrganizer>(dbSettings.OrganizerCollectionName);
         _mapper = mapper;
     }
 
@@ -27,14 +27,14 @@ public class MongoOrganizerRepository : IOrganizerRepository
     public async Task<Organizer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoOrganizer>.Filter.Eq(m => m.Id, id);
-        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync();
+        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         return _mapper.Map<Organizer>(mongoOrganizer);
     }
 
     public async Task<IEnumerable<Match>> GetTournamentMatches(Guid organizerId, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoOrganizer>.Filter.Eq(m => m.Id, organizerId);
-        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync();
+        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         var mongoMatches = mongoOrganizer.Tournament!.Matches.AsQueryable();
         return mongoMatches.ProjectTo<Match>(_mapper.ConfigurationProvider).ToList();
     }

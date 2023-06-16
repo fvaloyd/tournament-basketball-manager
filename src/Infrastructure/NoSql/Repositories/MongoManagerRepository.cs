@@ -14,7 +14,7 @@ public class MongoManagerRepository : IManagerRepository
         var dbSettings = dbSettingsOptions.Value;
         var client = new MongoClient(dbSettings.ConnectionString);
         var db = client.GetDatabase(dbSettings.DataBaseName);
-        _collection = db.GetCollection<MongoManager>(dbSettings.PlayerCollectionName);
+        _collection = db.GetCollection<MongoManager>(dbSettings.ManagerCollectionName);
         _mapper = mapper;
     }
     public async Task CreateAsync(Manager manager, CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ public class MongoManagerRepository : IManagerRepository
     public async Task<Manager> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.Id, id);
-        var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync();
+        var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         return _mapper.Map<Manager>(mongoManager!);
     }
 }
