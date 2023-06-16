@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using Domain.Players;
 using FluentValidation;
+using MassTransit;
 
 namespace Application.Features.Players.Commands;
 public record CreatePlayerCommand : IRequest<Guid>
@@ -13,18 +14,25 @@ public record CreatePlayerCommand : IRequest<Guid>
 public class CreatePlayerCommandHandler : IRequestHandler<CreatePlayerCommand, Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBus _bus;
 
-    public CreatePlayerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) 
-        => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreatePlayerCommandHandler));
+    public CreatePlayerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
+    {
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreatePlayerCommandHandler));
+        _bus = bus;
+    }
 
     public async Task<Guid> Handle(CreatePlayerCommand request, CancellationToken cancellationToken)
     {
         var player = Player.Create(request.PlayerPersonalInfo, request.Position);
         await _unitOfWork.Players.CreateAsync(player, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new PlayerCreatedEvent(player.Id), cancellationToken);
         return player.Id;
     }
 }
+
+public record PlayerCreatedEvent(Guid PlayerId);
 
 public class CreatePlayerCommandValidator : AbstractValidator<CreatePlayerCommand>
 {

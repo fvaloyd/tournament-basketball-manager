@@ -1,9 +1,9 @@
+using MassTransit;
 using Application;
 using Domain.Common;
 using Infrastructure.Common;
-using Infrastructure.Sql.Context;
+using Infrastructure.Messaging;
 using Infrastructure.Sql.Repositories;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure;
@@ -23,5 +23,20 @@ public static class ConfigureServices
         services.AddSingleton<ILoggerManager, SerilogLoggerManager>();
 
         services.ConfigureOptions<MongoDatabaseSettingsSetup>();
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumers(typeof(InfrastructureReference).Assembly);
+            x.UsingRabbitMq((ctx, cfg) =>
+            {
+                cfg.ConfigureEndpoints(ctx);
+                cfg.Host("localhost", r =>
+                {
+                    r.Username("user");
+                    r.Password("francis.123");
+                });
+            });
+        });
+
+        services.AddHostedService<MassTransitBackgroundService>();
     }
 }
