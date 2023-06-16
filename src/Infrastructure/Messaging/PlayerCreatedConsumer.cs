@@ -19,7 +19,7 @@ public class PlayerCreatedConsumer : IConsumer<PlayerCreatedEvent>
 
     public async Task Consume(ConsumeContext<PlayerCreatedEvent> context)
     {
-        var playerCreated = await _sqlUnitOfWork.Players.GetByIdAsync(context.Message.PlayerId);
-        await _mongoUnitOfWork.Players.CreateAsync(playerCreated);
+        var playerCreated = await _sqlUnitOfWork.Players.GetByIdAsync(context.Message.PlayerId, context.CancellationToken);
+        await _mongoUnitOfWork.Players.CreateAsync(playerCreated, context.CancellationToken);
     }
 }
