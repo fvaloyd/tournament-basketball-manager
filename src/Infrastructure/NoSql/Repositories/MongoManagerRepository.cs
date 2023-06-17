@@ -3,6 +3,7 @@ using Domain.Managers;
 using Infrastructure.NoSql.Models;
 using Microsoft.Extensions.Options;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Infrastructure;
 public class MongoManagerRepository : IManagerRepository
@@ -34,5 +35,13 @@ public class MongoManagerRepository : IManagerRepository
     {
         var mongoManager = _mapper.Map<MongoManager>(managerUpdated);
         await _collection.ReplaceOneAsync(m => m.Id == managerUpdated.Id, mongoManager, cancellationToken: cancellationToken);
+    }
+
+    public async Task<IEnumerable<Manager>> GetByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        var filter = Builders<MongoManager>.Filter.In(m => m.Id, ids);
+        var mongoManagersCursor = await _collection.FindAsync(filter, default, cancellationToken);
+        var mongoManagers = await mongoManagersCursor.ToListAsync(cancellationToken: cancellationToken);
+        return mongoManagers.AsQueryable().ProjectTo<Manager>(_mapper.ConfigurationProvider);
     }
 }

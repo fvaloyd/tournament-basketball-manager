@@ -3,6 +3,7 @@ using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Application.Features.Organizers.Commands;
+using MassTransit;
 
 namespace Application.UnitTests.Features.Organizers.Commands;
 public class RegisterTeamCommandTests
@@ -10,7 +11,7 @@ public class RegisterTeamCommandTests
     [Fact]
     public async Task ShouldThrowAOrganizerNotFoundException_WhenOrganizerNotFound()
     {
-        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
+        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
 
         Func<Task> handlerFunc = () => registerTeamCommandHandler.Handle(registerTeamCommand, default);
 
@@ -18,12 +19,13 @@ public class RegisterTeamCommandTests
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         teamRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<TeamRegisteredEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldThrowATeamNotFoundException_WhenTeamNotFound()
     {
-        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullTeam);
+        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullTeam);
 
         Func<Task> handlerFunc = () => registerTeamCommandHandler.Handle(registerTeamCommand, default);
 
@@ -31,18 +33,20 @@ public class RegisterTeamCommandTests
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         teamRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<TeamRegisteredEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldRegisterTheTeam_WhenOrganzierIsInValidState()
     {
-        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (registerTeamCommandHandler, registerTeamCommand, unitOfWorkMock, organizerRepoMock, teamRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
         await registerTeamCommandHandler.Handle(registerTeamCommand, default);
 
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         teamRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<TeamRegisteredEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     static (
@@ -50,7 +54,8 @@ public class RegisterTeamCommandTests
     RegisterTeamCommand matchTeamsCommand,
     Mock<IUnitOfWork> unitOfWorkMock,
     Mock<IOrganizerRepository> organizerRepoMock,
-    Mock<ITeamRepository> teamRepoMock
+    Mock<ITeamRepository> teamRepoMock,
+    Mock<IBus> busMock
     )
     GetHandlerAndMocks(HandlerCallOption option)
     {
@@ -70,6 +75,7 @@ public class RegisterTeamCommandTests
             HandlerCallOption.Valid => Team.Create("", Manager.Create(new("", "", "", DateTime.Today, "", "", "", "", ""))),
             _ => throw new NotImplementedException()
         };
+        var busMock = new Mock<IBus>();
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
         unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
@@ -80,14 +86,15 @@ public class RegisterTeamCommandTests
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         unitOfWorkMock.Setup(m => m.Teams).Returns(teamRepoMock.Object);
         var registerTeamCommand = new RegisterTeamCommand() { OrganizerId = Guid.NewGuid(), TeamId = team is null ? Guid.NewGuid() : team.Id };
-        var registerTeamCommandHandler = new RegisterTeamCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object);
+        var registerTeamCommandHandler = new RegisterTeamCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object, busMock.Object);
 
         return (
             registerTeamCommandHandler,
             registerTeamCommand,
             unitOfWorkMock,
             organizerRepoMock,
-            teamRepoMock
+            teamRepoMock,
+            busMock
         );
     }
 

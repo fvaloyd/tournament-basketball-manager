@@ -13,18 +13,25 @@ public class SqlOrganizerRepository : IOrganizerRepository
 
     public async Task<Organizer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var organizer = await _db.Organizers.Include(o => o.Tournament).SingleOrDefaultAsync(o => o.Id == id);
-        return organizer is null
-            ? throw new OrganizerNotFoundException(id)
-            : organizer;
+        var organizer = await _db.Organizers
+                    .Include(o => o.Tournament).ThenInclude(t => t!.Matches)
+                    .Include(o => o.Tournament).ThenInclude(t => t!.Teams)
+                    .SingleOrDefaultAsync(o => o.Id == id, cancellationToken: cancellationToken);
+        return organizer ?? throw new OrganizerNotFoundException(id);
     }
 
     public async Task<IEnumerable<Match>> GetTournamentMatches(Guid organizerId, CancellationToken cancellationToken = default)
     {
-        var tournament = await _db.Tournaments.SingleOrDefaultAsync(t => t.OrganizerId == organizerId) ?? throw new TournamentNotFoundException("The organizer has no team assigned.");
-        var matches = await _db.Matches.Where(m => m.TournamentId == tournament.Id).ToListAsync();
+        var tournament = await _db.Tournaments.SingleOrDefaultAsync(t => t.OrganizerId == organizerId, cancellationToken: cancellationToken) ?? throw new TournamentNotFoundException("The organizer has no team assigned.");
+        var matches = await _db.Matches.Where(m => m.TournamentId == tournament.Id).ToListAsync(cancellationToken: cancellationToken);
         return matches.Any()
             ? matches
             : throw new TeamsAreNotPairedYetException();
+    }
+
+    public Task UpdateAsync(Organizer organizerUpdated, CancellationToken cancellationToken)
+    {
+        _db.Organizers.Update(organizerUpdated);
+        return Task.CompletedTask;
     }
 }

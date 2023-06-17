@@ -3,6 +3,7 @@ using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
 using Application.Features.Organizers.Commands;
+using MassTransit;
 
 namespace Application.UnitTests.Features.Organizers.Commands;
 public class DiscardTeamCommandTests
@@ -10,31 +11,34 @@ public class DiscardTeamCommandTests
     [Fact]
     public async Task ShouldThrowAOrganizerNotFoundException_WhenOrganizerNotFound()
     {
-        var (discardTeamCommandHandler, discardTeamCommand, unitOfWorkMock, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
+        var (discardTeamCommandHandler, discardTeamCommand, unitOfWorkMock, organizerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
 
         Func<Task> handlerFunc = () => discardTeamCommandHandler.Handle(discardTeamCommand, default);
 
         await handlerFunc.Should().ThrowAsync<OrganizerNotFoundException>();
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<TeamDiscardedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldDiscardTheTeam_WhenOrganizerIsInValidState()
     {
-        var (discardTeamCommandHandler, discardTeamCommand, unitOfWorkMock, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (discardTeamCommandHandler, discardTeamCommand, unitOfWorkMock, organizerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
         await discardTeamCommandHandler.Handle(discardTeamCommand, default);
 
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<TeamDiscardedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     static(
         DiscardTeamCommandHandler discardTeamCommandHandler,
         DiscardTeamCommand discardTeamCommand,
         Mock<IUnitOfWork> unitOfWorkMock,
-        Mock<IOrganizerRepository> organizerRepoMock
+        Mock<IOrganizerRepository> organizerRepoMock,
+        Mock<IBus> busMock
     )
     GetHandlerAndMocks(HandlerCallOption option)
     {
@@ -44,6 +48,7 @@ public class DiscardTeamCommandTests
             HandlerCallOption.Valid => GetOrganizerWithTournamentAndTeams(),
             _ => throw new NotImplementedException()
         };
+        var busMock = new Mock<IBus>();
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
         unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
@@ -51,13 +56,14 @@ public class DiscardTeamCommandTests
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var discardTeamCommand = new DiscardTeamCommand() { OrganizerId = Guid.NewGuid(), TeamId = teamToDiscardId };
-        var discardTeamCommandHandler = new DiscardTeamCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object);
+        var discardTeamCommandHandler = new DiscardTeamCommandHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object, busMock.Object);
 
         return(
             discardTeamCommandHandler,
             discardTeamCommand,
             unitOfWorkMock,
-            organizerRepoMock
+            organizerRepoMock,
+            busMock
         );
     }
 

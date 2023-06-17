@@ -20,6 +20,9 @@ public class SqlManagerRepository : IManagerRepository
         return manager ?? throw new ManagerNotFoundException(id);
     }
 
+    public async Task<IEnumerable<Manager>> GetByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+        => await _db.Managers.Where(m => ids.Contains(m.Id)).ToListAsync(cancellationToken);
+
     public Task UpdateAsync(Manager managerUpdated, CancellationToken cancellationToken)
     {
         _db.Managers.Update(managerUpdated);

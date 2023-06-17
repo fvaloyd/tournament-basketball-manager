@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Organizers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Organizers.Commands;
 public record CreateTournamentCommand : IRequest<Guid?>
@@ -14,11 +15,13 @@ public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCo
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public CreateTournamentCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
+    public CreateTournamentCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
     {
         _logger = logger;
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateTournamentCommandHandler));
+        _bus = bus;
     }
 
     public async Task<Guid?> Handle(CreateTournamentCommand request, CancellationToken cancellationToken)
@@ -31,9 +34,12 @@ public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCo
         }
         organizer.CreateTournament(request.TournamentName);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TournamentCreatedEvent(request.OrganizerId), cancellationToken);
         return organizer.TournamentId;
     }
 }
+
+public record TournamentCreatedEvent(Guid OrganizerId);
 
 public class CreateTournamentCommandValidator : AbstractValidator<CreateTournamentCommand>
 {

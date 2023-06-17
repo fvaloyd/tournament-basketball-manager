@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Organizers;
+using MassTransit;
 
 namespace Application.Features.Organizers.Commands;
 public record CreateOrganizerCommand : IRequest<Guid>
@@ -12,17 +13,25 @@ public record CreateOrganizerCommand : IRequest<Guid>
 public class CreateOrganizerCommandHandler : IRequestHandler<CreateOrganizerCommand, Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBus _bus;
 
-    public CreateOrganizerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory) => _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateOrganizerCommandHandler));
+    public CreateOrganizerCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
+    {
+        _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateOrganizerCommandHandler));
+        _bus = bus;
+    }
 
     public async Task<Guid> Handle(CreateOrganizerCommand request, CancellationToken cancellationToken)
     {
         var organizer = Organizer.Create(request.OrganizerPersonalInfo);
         await _unitOfWork.Organizers.CreateAsync(organizer, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new OrganizerCreatedEvent(organizer.Id), cancellationToken);
         return organizer.Id;
     }
 }
+
+public record OrganizerCreatedEvent(Guid OrganizerId);
 
 public class CreateOrganizerCommandValidator : AbstractValidator<CreateOrganizerCommand>
 {

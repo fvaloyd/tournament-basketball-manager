@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Organizers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Organizers.Commands;
 public record RegisterTeamCommand : IRequest
@@ -14,11 +15,13 @@ public class RegisterTeamCommandHandler : IRequestHandler<RegisterTeamCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public RegisterTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
+    public RegisterTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, IBus bus)
     {
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(RegisterTeamCommandHandler));
         _logger = logger;
+        _bus = bus;
     }
 
     public async Task Handle(RegisterTeamCommand request, CancellationToken cancellationToken)
@@ -37,8 +40,11 @@ public class RegisterTeamCommandHandler : IRequestHandler<RegisterTeamCommand>
         }
         organizer.RegisterTeam(team!);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TeamRegisteredEvent(request.OrganizerId, request.TeamId), cancellationToken);
     }
 }
+
+public record TeamRegisteredEvent(Guid OrganizerId, Guid TeamId);
 
 public class RegisterTeamCommandValidator : AbstractValidator<RegisterTeamCommand>
 {

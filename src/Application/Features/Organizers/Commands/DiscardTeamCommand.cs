@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Organizers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Organizers.Commands;
 public record DiscardTeamCommand : IRequest
@@ -14,11 +15,13 @@ public class DiscardTeamCommandHandler : IRequestHandler<DiscardTeamCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public DiscardTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
+    public DiscardTeamCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, IBus bus)
     {
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(DiscardTeamCommandHandler));
         _logger = logger;
+        _bus = bus;
     }
 
     public async Task Handle(DiscardTeamCommand request, CancellationToken cancellationToken)
@@ -31,8 +34,11 @@ public class DiscardTeamCommandHandler : IRequestHandler<DiscardTeamCommand>
         }
         organizer.DiscardTeam(request.TeamId);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TeamDiscardedEvent(request.OrganizerId, request.TeamId), cancellationToken);
     }
 }
+
+public record TeamDiscardedEvent(Guid OrganizerId, Guid TeamId);
 
 public class DiscardTeamCommandValidator : AbstractValidator<DiscardTeamCommand>
 {

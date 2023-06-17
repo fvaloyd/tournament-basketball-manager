@@ -38,4 +38,10 @@ public class MongoOrganizerRepository : IOrganizerRepository
         var mongoMatches = mongoOrganizer.Tournament!.Matches.AsQueryable();
         return mongoMatches.ProjectTo<Match>(_mapper.ConfigurationProvider).ToList();
     }
+
+    public async Task UpdateAsync(Organizer organizerUpdated, CancellationToken cancellationToken)
+    {
+        var mongoOrganizer = _mapper.Map<MongoOrganizer>(organizerUpdated);
+        await _collection.ReplaceOneAsync(o => o.Id == organizerUpdated.Id, mongoOrganizer, cancellationToken: cancellationToken);
+    }
 }

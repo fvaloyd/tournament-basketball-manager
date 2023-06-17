@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Organizers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Organizers.Commands;
 public record FinishTournamentCommand : IRequest
@@ -13,11 +14,13 @@ public class FinishTournamentCommandHandler : IRequestHandler<FinishTournamentCo
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public FinishTournamentCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger)
+    public FinishTournamentCommandHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerManager logger, IBus bus)
     {
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(FinishTournamentCommandHandler));
         _logger = logger;
+        _bus = bus;
     }
     public async Task Handle(FinishTournamentCommand request, CancellationToken cancellationToken)
     {
@@ -27,10 +30,14 @@ public class FinishTournamentCommandHandler : IRequestHandler<FinishTournamentCo
             _logger.LogWarn($"Handler::{nameof(FinishTournamentCommandHandler)} - Organizer with id::{request.OrganizerId} was not found.");
             throw new OrganizerNotFoundException(request.OrganizerId);
         }
+        var managerIds = organizer.Tournament!.Teams.Select(t => t.ManagerId);
         organizer.FinishTournament();
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TournamentFinishedEvent(request.OrganizerId, managerIds), cancellationToken);
     }
 }
+
+public record TournamentFinishedEvent(Guid OrganizerId, IEnumerable<Guid> ManagerIds);
 
 public class FinishTournamentCommandValidator : AbstractValidator<FinishTournamentCommand>
 {
