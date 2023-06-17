@@ -32,9 +32,15 @@ public class MongoPlayerRepository : IPlayerRepository
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoPlayer>.Filter.Eq(m => m.TeamId, id);
-        var mongoPlayer = await _collection.Find(filter).FirstOrDefaultAsync();
+        var mongoPlayer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         return mongoPlayer is null
             ? throw new PlayerNotFoundException(id)
             : _mapper.Map<Player>(mongoPlayer);
+    }
+
+    public async Task UpdateAsync(Player playerUpdated, CancellationToken cancellationToken = default)
+    {
+        var mongoPlayer = _mapper.Map<MongoPlayer>(playerUpdated);
+        await _collection.ReplaceOneAsync(p => p.Id == playerUpdated.Id, mongoPlayer, cancellationToken: cancellationToken);
     }
 }

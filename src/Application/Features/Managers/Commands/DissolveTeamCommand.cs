@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Managers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Managers.Commands;
 public record DissolveTeamCommand : IRequest
@@ -13,11 +14,13 @@ public class DissolveTeamCommandHandler : IRequestHandler<DissolveTeamCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public DissolveTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
+    public DissolveTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
     {
         _logger = logger;
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(DissolveTeamCommandHandler));
+        _bus = bus;
     }
 
     public async Task Handle(DissolveTeamCommand request, CancellationToken cancellationToken)
@@ -30,8 +33,11 @@ public class DissolveTeamCommandHandler : IRequestHandler<DissolveTeamCommand>
         }
         manager.DissolveTheTeam();
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TeamDissolvedEvent(request.ManagerId), cancellationToken);
     }
 }
+
+public record TeamDissolvedEvent(Guid ManagerId);
 
 public class DissolveTeamCommandValidator : AbstractValidator<DissolveTeamCommand>
 {

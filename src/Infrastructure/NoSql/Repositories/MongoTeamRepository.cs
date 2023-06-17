@@ -18,7 +18,7 @@ public class MongoTeamRepository : ITeamRepository
         _collection = db.GetCollection<MongoManager>(dbSettings.ManagerCollectionName);
         _mapper = mapper;
     }
-    public async Task<Team> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Team> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.TeamId, id);
         var manager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);

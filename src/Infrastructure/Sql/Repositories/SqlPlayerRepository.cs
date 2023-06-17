@@ -16,8 +16,12 @@ public class SqlPlayerRepository : IPlayerRepository
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var player = await _db.Players.SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
-        return player is null
-            ? throw new PlayerNotFoundException(id)
-            : player;
+        return player ?? throw new PlayerNotFoundException(id);
+    }
+
+    public Task UpdateAsync(Player playerUpdated, CancellationToken cancellationToken = default)
+    {
+        _db.Players.Update(playerUpdated);
+        return Task.CompletedTask;
     }
 }

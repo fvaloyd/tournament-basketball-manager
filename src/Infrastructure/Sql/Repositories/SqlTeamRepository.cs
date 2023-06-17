@@ -9,11 +9,9 @@ public class SqlTeamRepository : ITeamRepository
     private readonly TournamentBasketballManagerDbContext _db;
     public SqlTeamRepository(TournamentBasketballManagerDbContext db) => _db = db;
 
-    public async Task<Team> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Team> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
     {
         var team = await _db.Teams.SingleOrDefaultAsync(t => t.Id == id, cancellationToken);
-        return team is null
-            ? throw new TeamNotFoundException(id)
-            : team;
+        return team ?? throw new TeamNotFoundException(id);
     }
 }

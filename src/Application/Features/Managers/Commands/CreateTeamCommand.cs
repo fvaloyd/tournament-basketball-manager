@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Managers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Managers.Commands;
 public record CreateTeamCommand : IRequest<Guid?>
@@ -14,11 +15,13 @@ public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid?
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public CreateTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
+    public CreateTeamCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
     {
         _logger = logger;
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(CreateTeamCommandHandler));
+        _bus = bus;
     }
 
     public async Task<Guid?> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
@@ -31,9 +34,12 @@ public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid?
         }
         manager.CreateTeam(request.TeamName!);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new TeamCreatedEvent(request.ManagerId, manager.TeamId), cancellationToken);
         return manager.TeamId;
     }
 }
+
+public record TeamCreatedEvent(Guid ManagerId, Guid? TeamId);
 
 public class CreateTeamCommandValidator : AbstractValidator<CreateTeamCommand>
 {

@@ -16,7 +16,7 @@ public class CreateManagerCommandTests
         managerCreatedId.Should().NotBeEmpty();
         managerRepoMock.Verify(mr => mr.CreateAsync(It.IsAny<Manager>(), default), Times.Once);
         unitOfWorkMock.Verify(tuow => tuow.SaveChangesAsync(default), Times.Once);
-        busMock.Verify(m => m.Publish(It.IsAny<ManagerCreatedEvent>(), It.IsAny<CancellationToken>()));
+        busMock.Verify(m => m.Publish(It.IsAny<ManagerCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     static(

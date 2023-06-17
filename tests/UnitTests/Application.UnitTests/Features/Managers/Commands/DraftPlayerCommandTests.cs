@@ -3,6 +3,7 @@ using Domain.Players;
 using Domain.Managers;
 using Domain.Managers.Exceptions;
 using Application.Features.Managers.Commands;
+using MassTransit;
 
 namespace Application.UnitTests.Features.Managers.Commands;
 public class DraftPlayerCommandTests
@@ -10,7 +11,7 @@ public class DraftPlayerCommandTests
     [Fact]
     public async Task ShouldThrowAManagerNotFoundException_WhenManagerNotFound()
     {
-        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullManager);
+        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullManager);
 
         Func<Task> handlerFunc = () => draftPlayerCommandHandler.Handle(draftPlayerCommand, default);
 
@@ -18,12 +19,13 @@ public class DraftPlayerCommandTests
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         playerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
         managerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<PlayerDraftedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldThrowAPlayerNotFoundException_WhenPlayerNotFound()
     {
-        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullPlayer);
+        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullPlayer);
 
         Func<Task> handlerFunc = () => draftPlayerCommandHandler.Handle(draftPlayerCommand, default);
 
@@ -31,25 +33,28 @@ public class DraftPlayerCommandTests
         managerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         playerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        busMock.Verify(m => m.Publish(It.IsAny<PlayerDraftedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldSuccess_WhenManagerIsInValidState()
     {
-        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
         await draftPlayerCommandHandler.Handle(draftPlayerCommand, default);
 
         managerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         playerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        busMock.Verify(m => m.Publish(It.IsAny<PlayerDraftedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     static (DraftPlayerCommandHandler draftPlayerCommandHandler,
             DraftPlayerCommand draftPlayerCommand,
             Mock<IUnitOfWork> unitOfWorkMock,
             Mock<IManagerRepository> managerRepoMock,
-            Mock<IPlayerRepository> playerRepoMock)
+            Mock<IPlayerRepository> playerRepoMock,
+            Mock<IBus> busMock)
     GetHandlerAndMocks(HandlerCallOption option)
     {
         Player? player = option switch {
@@ -64,6 +69,7 @@ public class DraftPlayerCommandTests
             HandlerCallOption.NullPlayer => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
+        var busMock = new Mock<IBus>();
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
         unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
@@ -74,9 +80,9 @@ public class DraftPlayerCommandTests
         unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
         unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
         var draftPlayerCommand = new DraftPlayerCommand(){ManagerId = Guid.NewGuid(), PlayerId = Guid.NewGuid()};
-        var draftPlayerCommandHandler = new DraftPlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkFactoryMock.Object);
+        var draftPlayerCommandHandler = new DraftPlayerCommandHandler(new Mock<ILoggerManager>().Object, unitOfWorkFactoryMock.Object, busMock.Object);
 
-        return (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock);
+        return (draftPlayerCommandHandler, draftPlayerCommand, unitOfWorkMock, managerRepoMock, playerRepoMock, busMock);
     }
     enum HandlerCallOption
     {

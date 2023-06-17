@@ -2,6 +2,7 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Managers.Exceptions;
+using MassTransit;
 
 namespace Application.Features.Managers.Commands;
 public record ReleasePlayerCommand : IRequest
@@ -14,11 +15,13 @@ public class ReleasePlayerCommandHandler : IRequestHandler<ReleasePlayerCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggerManager _logger;
+    private readonly IBus _bus;
 
-    public ReleasePlayerCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory)
+    public ReleasePlayerCommandHandler(ILoggerManager logger, IUnitOfWorkFactory unitOfWorkFactory, IBus bus)
     {
         _logger = logger;
         _unitOfWork = unitOfWorkFactory.CreateUnitOfWork(nameof(ReleasePlayerCommandHandler));
+        _bus = bus;
     }
 
     public async Task Handle(ReleasePlayerCommand request, CancellationToken cancellationToken)
@@ -31,8 +34,11 @@ public class ReleasePlayerCommandHandler : IRequestHandler<ReleasePlayerCommand>
         }
         manager.ReleasePlayer(request.PlayerId);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bus.Publish(new PlayerReleasedEvent(request.ManagerId, request.PlayerId), cancellationToken);
     }
 }
+
+public record PlayerReleasedEvent(Guid ManagerId, Guid PlayerId);
 
 public class ReleasePlayerCommandValidator : AbstractValidator<ReleasePlayerCommand>
 {

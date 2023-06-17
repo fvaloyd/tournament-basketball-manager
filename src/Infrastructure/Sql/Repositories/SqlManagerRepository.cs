@@ -16,9 +16,13 @@ public class SqlManagerRepository : IManagerRepository
         var manager = await _db.Managers
             .Include(m => m.Team).ThenInclude(t => t!.Tournament)
             .Include(m => m.Team).ThenInclude(t => t!.Players)
-            .SingleOrDefaultAsync(m => m.Id == id);
-        return manager is null
-            ? throw new ManagerNotFoundException(id)
-            : manager;
+            .SingleOrDefaultAsync(m => m.Id == id, cancellationToken);
+        return manager ?? throw new ManagerNotFoundException(id);
+    }
+
+    public Task UpdateAsync(Manager managerUpdated, CancellationToken cancellationToken)
+    {
+        _db.Managers.Update(managerUpdated);
+        return Task.CompletedTask;
     }
 }

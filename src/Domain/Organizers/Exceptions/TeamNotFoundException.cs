@@ -7,7 +7,7 @@ public sealed class TeamNotFoundException : NotFoundException
 
     public TeamNotFoundException(string? message) : base(message) {}
 
-    public TeamNotFoundException(Guid teamId) : base($"Team with id: {teamId} was not found") {}
+    public TeamNotFoundException(Guid? teamId) : base($"Team with id: {teamId} was not found") {}
 
     public TeamNotFoundException(string? message, Exception? innerException) : base(message, innerException) {}
 }

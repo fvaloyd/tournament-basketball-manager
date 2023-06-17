@@ -29,4 +29,10 @@ public class MongoManagerRepository : IManagerRepository
         var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         return _mapper.Map<Manager>(mongoManager!);
     }
+
+    public async Task UpdateAsync(Manager managerUpdated, CancellationToken cancellationToken)
+    {
+        var mongoManager = _mapper.Map<MongoManager>(managerUpdated);
+        await _collection.ReplaceOneAsync(m => m.Id == managerUpdated.Id, mongoManager, cancellationToken: cancellationToken);
+    }
 }
