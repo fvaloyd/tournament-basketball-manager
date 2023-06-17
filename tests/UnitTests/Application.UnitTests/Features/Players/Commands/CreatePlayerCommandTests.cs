@@ -16,7 +16,7 @@ public class CreatePlayerCommandTests
         playerCreatedId.Should().NotBeEmpty();
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         playerRepoMock.Verify(m => m.CreateAsync(It.IsAny<Player>(), It.IsAny<CancellationToken>()), Times.Once);
-        busMock.Verify(m => m.Publish(It.IsAny<PlayerCreatedEvent>(), It.IsAny<CancellationToken>()));
+        busMock.Verify(m => m.Publish(It.IsAny<PlayerCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     static(
