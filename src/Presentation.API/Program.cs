@@ -42,4 +42,28 @@ app.MapPost("/managers", async ([FromBody]CreateManagerCommand command, ISender 
     return Results.Ok(managerCreatedId);
 });
 
+app.MapPost("/managers/{id:guid}/teams", async (Guid id, [FromBody]CreateTeamCommand command, ISender sender, CancellationToken ct) =>
+{
+    var teamIdCreated = await sender.Send(command, ct);
+    return Results.Ok(teamIdCreated);
+});
+
+app.MapDelete("/managers/{id:guid}/teams", async (Guid id, ISender sender, CancellationToken ct) =>
+{
+    await sender.Send(new DissolveTeamCommand { ManagerId = id}, ct);
+    return Results.NoContent();
+});
+
+app.MapPut("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
+{
+    await sender.Send(new DraftPlayerCommand { ManagerId = id, PlayerId = playerId}, ct);
+    return Results.NoContent();
+});
+
+app.MapPut("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
+{
+    await sender.Send(new ReleasePlayerCommand{ ManagerId = id, PlayerId = playerId }, ct);
+    return Results.NoContent();
+});
+
 app.Run();
