@@ -218,8 +218,8 @@ public class TeamTests
         team.ReleaseAllPlayers();
 
         p1.Team.Should().BeNull();
-        p1.TeamId.Should().Be(Guid.Empty);
+        p1.TeamId.Should().Be(null);
         p2.Team.Should().BeNull();
-        p2.TeamId.Should().Be(Guid.Empty);
+        p2.TeamId.Should().Be(null);
     }
 }

@@ -42,7 +42,7 @@ public sealed class Player : Entity
     {
         if (Team is null)
             return;
-        TeamId = Guid.Empty;
+        TeamId = null;
         Team = default;
     }
 }

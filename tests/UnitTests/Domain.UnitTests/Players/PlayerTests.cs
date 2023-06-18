@@ -96,7 +96,7 @@ public class PlayerTests
         player.LeaveTheTeam();
 
         player.Team.Should().BeNull();
-        player.TeamId.Should().Be(Guid.Empty);
+        player.TeamId.Should().Be(null);
     }
 
     [Fact]
