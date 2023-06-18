@@ -33,6 +33,7 @@ public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid?
             throw new ManagerNotFoundException(request.ManagerId);
         }
         manager.CreateTeam(request.TeamName!);
+        await _unitOfWork.Teams.CreateAsync(manager.Team!, cancellationToken: cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         await _bus.Publish(new TeamCreatedEvent(request.ManagerId, manager.TeamId), cancellationToken);
         return manager.TeamId;

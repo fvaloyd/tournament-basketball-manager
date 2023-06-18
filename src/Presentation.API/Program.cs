@@ -42,9 +42,9 @@ app.MapPost("/managers", async ([FromBody]CreateManagerCommand command, ISender 
     return Results.Ok(managerCreatedId);
 });
 
-app.MapPost("/managers/{id:guid}/teams", async (Guid id, [FromBody]CreateTeamCommand command, ISender sender, CancellationToken ct) =>
+app.MapPost("/managers/{id:guid}/teams", async (Guid id, string teamName, ISender sender, CancellationToken ct) =>
 {
-    var teamIdCreated = await sender.Send(command, ct);
+    var teamIdCreated = await sender.Send(new CreateTeamCommand { ManagerId = id, TeamName = teamName}, ct);
     return Results.Ok(teamIdCreated);
 });
 

@@ -11,10 +11,11 @@ public class CreateTeamCommandTests
     public async Task ShouldThrowAnManagerNotFoundException_WhenNoManagerNotFound()
     {
         var unitOfWorkMock = UnitOfWorkMock.Instance;
-        var (CreateTeamCommandHandlerFunc, mockManagerRepo, busMock) = new CreateTeamCommandHandlerBuilder(unitOfWorkMock).WithNulldManager().Build();
+        var (CreateTeamCommandHandlerFunc, mockManagerRepo, busMock, teamRepoMock) = new CreateTeamCommandHandlerBuilder(unitOfWorkMock).WithNulldManager().Build();
 
         await CreateTeamCommandHandlerFunc.Should().ThrowAsync<ManagerNotFoundException>();
         mockManagerRepo.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), default), Times.Once);
+        teamRepoMock.Verify(m => m.CreateAsync(It.IsAny<Team>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Never);
         busMock.Verify(m => m.Publish(It.IsAny<TeamCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -23,12 +24,13 @@ public class CreateTeamCommandTests
     public async Task ShouldReturnTheTeamIdCreated_WhenValidHandlerIsCall()
     {
         var unitOfWorkMock = UnitOfWorkMock.Instance;
-        var (CreateTeamCommandHandlerFunc, mockManagerRepo, busMock) = new CreateTeamCommandHandlerBuilder(unitOfWorkMock).WithValidManager().Build();
+        var (CreateTeamCommandHandlerFunc, mockManagerRepo, busMock, teamRepoMock) = new CreateTeamCommandHandlerBuilder(unitOfWorkMock).WithValidManager().Build();
 
         var teamId = await CreateTeamCommandHandlerFunc();
 
         teamId.Should().NotBeEmpty();
         mockManagerRepo.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), default), Times.Once);
+        teamRepoMock.Verify(m => m.CreateAsync(It.IsAny<Team>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
         busMock.Verify(m => m.Publish(It.IsAny<TeamCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -60,13 +62,15 @@ public class CreateTeamCommandHandlerBuilder
         return this;
     }
 
-    public (Func<Task<Guid?>> func, Mock<IManagerRepository> managerRepo, Mock<IBus> busMock) Build()
+    public (Func<Task<Guid?>> func, Mock<IManagerRepository> managerRepo, Mock<IBus> busMock, Mock<ITeamRepository> teamRepoMock) Build()
     {
         var busMock = new Mock<IBus>();
+        var teamRepoMock = new Mock<ITeamRepository>();
+        _unitOfWork.Setup(m => m.Teams).Returns(teamRepoMock.Object);
         var createTeamCommand = new CreateTeamCommand(){ManagerId = Guid.NewGuid(), TeamName = "test"};
         var createTeamCommandHandler = new CreateTeamCommandHandler(new Mock<ILoggerManager>().Object, _unitOfWorkFactoryMock.Object, busMock.Object);
         Task<Guid?> func() => createTeamCommandHandler.Handle(createTeamCommand, default);
 
-        return (func, _managerRepoMock, busMock);
+        return (func, _managerRepoMock, busMock, teamRepoMock);
     }
 }

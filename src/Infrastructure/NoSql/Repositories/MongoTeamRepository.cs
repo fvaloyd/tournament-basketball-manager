@@ -26,4 +26,12 @@ public class MongoTeamRepository : ITeamRepository
             ? throw new TeamNotFoundException(id)
             : _mapper.Map<Team>(manager.Team!);
     }
+
+    public async Task CreateAsync(Team team, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<MongoManager>.Filter.Eq(m => m.Id, team.ManagerId);
+        var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var mongoManagerUpdated = mongoManager with { Team = _mapper.Map<MongoTeam>(team), TeamId = team.Id };
+        await _collection.ReplaceOneAsync(filter, mongoManagerUpdated, cancellationToken: cancellationToken);
+    }
 }
