@@ -54,13 +54,13 @@ app.MapDelete("/managers/{id:guid}/teams", async (Guid id, ISender sender, Cance
     return Results.NoContent();
 });
 
-app.MapPut("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
+app.MapPost("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
 {
     await sender.Send(new DraftPlayerCommand { ManagerId = id, PlayerId = playerId}, ct);
     return Results.NoContent();
 });
 
-app.MapPut("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
+app.MapDelete("/managers/{id:guid}/teams/players/{playerId:guid}", async (Guid id, Guid playerId, ISender sender, CancellationToken ct) =>
 {
     await sender.Send(new ReleasePlayerCommand{ ManagerId = id, PlayerId = playerId }, ct);
     return Results.NoContent();
