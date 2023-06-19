@@ -33,6 +33,7 @@ public class CreateTournamentCommandHandler : IRequestHandler<CreateTournamentCo
             throw new OrganizerNotFoundException(request.OrganizerId);
         }
         organizer.CreateTournament(request.TournamentName);
+        await _unitOfWork.Tournaments.CreateAsync(organizer.Tournament!, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         await _bus.Publish(new TournamentCreatedEvent(request.OrganizerId), cancellationToken);
         return organizer.TournamentId;
