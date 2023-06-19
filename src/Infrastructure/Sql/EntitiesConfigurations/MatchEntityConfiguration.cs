@@ -14,7 +14,7 @@ public class MatchEntityConfiguration : IEntityTypeConfiguration<Match>
         builder
             .HasOne(m => m.Tournament)
             .WithMany(t => t.Matches)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasOne(m => m.TeamA)
