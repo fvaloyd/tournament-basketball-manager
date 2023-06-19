@@ -21,7 +21,9 @@ public class SqlManagerRepository : IManagerRepository
     }
 
     public async Task<IEnumerable<Manager>> GetByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-        => await _db.Managers.Where(m => ids.Contains(m.Id)).ToListAsync(cancellationToken);
+        => await _db.Managers
+            .Include(m => m.Team).ThenInclude(t => t!.Tournament)
+            .Include(m => m.Team).ThenInclude(t => t!.Players).ToListAsync(cancellationToken);
 
     public Task UpdateAsync(Manager managerUpdated, CancellationToken cancellationToken)
     {
