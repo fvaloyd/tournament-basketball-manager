@@ -20,5 +20,8 @@ public class SyncMongoOnTeamDiscarded : IConsumer<TeamDiscardedEvent>
     {
         var organizer = await _sqlUnitOfWork.Organizers.GetByIdAsync(context.Message.OrganizerId, context.CancellationToken);
         await _mongoUnitOfWork.Organizers.UpdateAsync(organizer, context.CancellationToken);
+        var team = await _sqlUnitOfWork.Teams.GetByIdAsync(context.Message.TeamId, context.CancellationToken);
+        var manager = await _sqlUnitOfWork.Managers.GetByIdAsync(team.ManagerId, context.CancellationToken);
+        await _mongoUnitOfWork.Managers.UpdateAsync(manager, context.CancellationToken);
     }
 }
