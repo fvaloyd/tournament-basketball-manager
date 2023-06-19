@@ -191,7 +191,7 @@ public class TeamTests
         team.LeaveTheTournament();
 
         team.Tournament.Should().BeNull();
-        team.TournamentId.Should().Be(Guid.Empty);
+        team.TournamentId.Should().Be(null);
     }
 
     [Fact]

@@ -85,6 +85,6 @@ public sealed class Team : Entity
         if (Tournament is null && TournamentId == Guid.Empty)
             return;
         Tournament = default;
-        TournamentId = Guid.Empty;
+        TournamentId = null;
     }
 }

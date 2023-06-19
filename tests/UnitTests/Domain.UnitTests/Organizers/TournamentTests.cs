@@ -121,9 +121,9 @@ public class TournamentTests
         tournament.ReleaseAllTeams();
 
         t1.Tournament.Should().BeNull();
-        t1.TournamentId.Should().Be(Guid.Empty);
+        t1.TournamentId.Should().Be(null);
         t2.Tournament.Should().BeNull();
-        t2.TournamentId.Should().Be(Guid.Empty);
+        t2.TournamentId.Should().Be(null);
         tournament.Teams.Should().BeNullOrEmpty();
     }
 
