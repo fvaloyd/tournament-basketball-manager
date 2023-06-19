@@ -21,11 +21,9 @@ public class SyncMongoOnTournamentFinished : IConsumer<TournamentFinishedEvent>
         var organizer = await _sqlUnitOfWork.Organizers.GetByIdAsync(context.Message.OrganizerId, context.CancellationToken);
         await _mongoUnitOfWork.Organizers.UpdateAsync(organizer, context.CancellationToken);
         var managers = await _sqlUnitOfWork.Managers.GetByIds(context.Message.ManagerIds, context.CancellationToken);
-        var updateManagersTasks = new List<Task>();
         foreach (var manager in managers)
         {
-            updateManagersTasks.Add(_mongoUnitOfWork.Managers.UpdateAsync(manager, context.CancellationToken));
+            await _mongoUnitOfWork.Managers.UpdateAsync(manager, context.CancellationToken);
         }
-        await Task.WhenAll(updateManagersTasks);
     }
 }
