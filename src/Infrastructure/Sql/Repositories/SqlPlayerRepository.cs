@@ -19,6 +19,8 @@ public class SqlPlayerRepository : IPlayerRepository
         return player ?? throw new PlayerNotFoundException(id);
     }
 
+    public async Task<IEnumerable<Player>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default) => await _db.Players.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
+
     public Task UpdateAsync(Player playerUpdated, CancellationToken cancellationToken = default)
     {
         _db.Players.Update(playerUpdated);

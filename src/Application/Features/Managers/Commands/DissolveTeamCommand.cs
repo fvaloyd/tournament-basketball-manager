@@ -26,18 +26,20 @@ public class DissolveTeamCommandHandler : IRequestHandler<DissolveTeamCommand>
     public async Task Handle(DissolveTeamCommand request, CancellationToken cancellationToken)
     {
         var manager = await _unitOfWork.Managers.GetByIdAsync(request.ManagerId, cancellationToken);
+        
         if (manager is null)
         {
             _logger.LogWarn($"Handler::{nameof(DissolveTeamCommandHandler)} - Manager with id::{request.ManagerId} was not found.");
             throw new ManagerNotFoundException(request.ManagerId);
         }
+        var playersReleasedIds = manager.Team?.Players.Select(p => p.Id).ToList() ?? Array.Empty<Guid>().ToList();
         manager.DissolveTheTeam();
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        await _bus.Publish(new TeamDissolvedEvent(request.ManagerId), cancellationToken);
+        await _bus.Publish(new TeamDissolvedEvent(request.ManagerId, playersReleasedIds), cancellationToken);
     }
 }
 
-public record TeamDissolvedEvent(Guid ManagerId);
+public record TeamDissolvedEvent(Guid ManagerId, IEnumerable<Guid> PlayersReleasedIds);
 
 public class DissolveTeamCommandValidator : AbstractValidator<DissolveTeamCommand>
 {

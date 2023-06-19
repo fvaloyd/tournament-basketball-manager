@@ -43,4 +43,11 @@ public class MongoPlayerRepository : IPlayerRepository
         var mongoPlayer = _mapper.Map<MongoPlayer>(playerUpdated);
         await _collection.ReplaceOneAsync(p => p.Id == playerUpdated.Id, mongoPlayer, cancellationToken: cancellationToken);
     }
+
+    public async Task<IEnumerable<Player>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<MongoPlayer>.Filter.In(p => p.Id, ids);
+        var mongoPlayers = await _collection.Find(filter).ToListAsync(cancellationToken);
+        return mongoPlayers.Select(p => _mapper.Map<Player>(p));
+    }
 }

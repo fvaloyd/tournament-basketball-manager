@@ -20,5 +20,10 @@ public class SyncMongoOnTeamDissolved : IConsumer<TeamDissolvedEvent>
     {
         var manager = await _sqlUnitOfWork.Managers.GetByIdAsync(context.Message.ManagerId, context.CancellationToken);
         await _mongoUnitOfWork.Managers.UpdateAsync(manager, context.CancellationToken);
+        var playersReleased = await _sqlUnitOfWork.Players.GetByIdsAsync(context.Message.PlayersReleasedIds, context.CancellationToken);
+        foreach(var player in playersReleased)
+        {
+            await _mongoUnitOfWork.Players.UpdateAsync(player, context.CancellationToken);
+        }
     }
 }
