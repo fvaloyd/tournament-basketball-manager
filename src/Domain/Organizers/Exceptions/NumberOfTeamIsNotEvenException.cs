@@ -1,7 +1,7 @@
 ﻿using Domain.Common.Exceptions;
 
 namespace Domain.Organizers.Exceptions;
-public class NumberOfTeamIsNotEvenException : BadRequestException
+public sealed class NumberOfTeamIsNotEvenException : BadRequestException
 {
     public NumberOfTeamIsNotEvenException()
     {
