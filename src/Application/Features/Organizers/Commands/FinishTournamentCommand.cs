@@ -30,7 +30,7 @@ public class FinishTournamentCommandHandler : IRequestHandler<FinishTournamentCo
             _logger.LogWarn($"Handler::{nameof(FinishTournamentCommandHandler)} - Organizer with id::{request.OrganizerId} was not found.");
             throw new OrganizerNotFoundException(request.OrganizerId);
         }
-        var managerIds = organizer.Tournament!.Teams.Select(t => t.ManagerId);
+        var managerIds = organizer.Tournament!.Teams.Select(t => t.ManagerId).ToList();
         organizer.FinishTournament();
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         await _bus.Publish(new TournamentFinishedEvent(request.OrganizerId, managerIds), cancellationToken);
