@@ -12,6 +12,7 @@ public class SqlUnitOfWork : IUnitOfWork
     private readonly Lazy<IPlayerRepository> _playerRepository;
     private readonly Lazy<IOrganizerRepository> _organizerRepository;
     private readonly Lazy<ITeamRepository> _teamRepository;
+    private readonly Lazy<ITournamentRepository> _tournamentRepository;
 
     public SqlUnitOfWork(TournamentBasketballManagerDbContext db)
     {
@@ -20,6 +21,7 @@ public class SqlUnitOfWork : IUnitOfWork
         _playerRepository = new Lazy<IPlayerRepository>(() => new SqlPlayerRepository(_db));
         _organizerRepository = new Lazy<IOrganizerRepository>(() => new SqlOrganizerRepository(_db));
         _teamRepository = new Lazy<ITeamRepository>(() => new SqlTeamRepository(_db));
+        _tournamentRepository = new Lazy<ITournamentRepository>(() => new SqlTournamentRepository(_db));
     }
 
     public IManagerRepository Managers => _managerRepository.Value;
@@ -29,6 +31,8 @@ public class SqlUnitOfWork : IUnitOfWork
     public IOrganizerRepository Organizers => _organizerRepository.Value;
 
     public ITeamRepository Teams => _teamRepository.Value;
+
+    public ITournamentRepository Tournaments => _tournamentRepository.Value;
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => _db.SaveChangesAsync(cancellationToken);

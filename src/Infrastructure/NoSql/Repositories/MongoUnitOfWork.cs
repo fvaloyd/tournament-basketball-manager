@@ -13,6 +13,7 @@ public class MongoUnitOfWork : IUnitOfWork
     private readonly Lazy<MongoOrganizerRepository> _organizerRepository;
     private readonly Lazy<MongoPlayerRepository> _playerRepository;
     private readonly Lazy<MongoTeamRepository> _teamRepository;
+    private readonly Lazy<MongoTournamentRepository> _tournamentRepository;
 
     public MongoUnitOfWork(IOptions<MongoDatabaseSettings> mongoDbSettingsOptions, IMapper mapper)
     {
@@ -20,6 +21,7 @@ public class MongoUnitOfWork : IUnitOfWork
         _organizerRepository = new(() => new MongoOrganizerRepository(mongoDbSettingsOptions, mapper));
         _playerRepository = new(() => new MongoPlayerRepository(mongoDbSettingsOptions, mapper));
         _teamRepository = new(() => new MongoTeamRepository(mongoDbSettingsOptions, mapper));
+        _tournamentRepository = new(() => new MongoTournamentRepository(mongoDbSettingsOptions, mapper));
     }
 
     public IManagerRepository Managers => _managerRepository.Value;
@@ -29,6 +31,8 @@ public class MongoUnitOfWork : IUnitOfWork
     public IOrganizerRepository Organizers => _organizerRepository.Value;
 
     public ITeamRepository Teams => _teamRepository.Value;
+
+    public ITournamentRepository Tournaments => _tournamentRepository.Value;
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => Task.FromResult(1);
