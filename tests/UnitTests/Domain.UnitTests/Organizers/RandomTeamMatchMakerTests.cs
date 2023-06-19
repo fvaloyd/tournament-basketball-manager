@@ -1,7 +1,7 @@
-using Domain.Common;
 using Domain.Services;
 using Domain.Managers;
 using Domain.Organizers;
+using Domain.Organizers.Exceptions;
 
 namespace Domain.UnitTests.Organizers;
 public class RandomTeamMatchMakerTests
@@ -18,14 +18,12 @@ public class RandomTeamMatchMakerTests
     }
 
     [Fact]
-    public void CreateMatches_ShouldInitializeAMatchPropertyTeamBWithADefaultTeam_WhenNoTeamAvailableToMatch()
+    public void CreateMatches_ShouldThrowAnException_WhenTheNumbersOfTeamsIsNotEven()
     {
         var maker = new RandomTeamMatchMaker();
-        var tournament = GetTournamentWithSpecifiedTeams(11);
-
-        var matches =  maker.CreateMatches(tournament).ToList();
-
-        matches.Last().TeamB.Should().Be(default(Team));
+        var tounament = GetTournamentWithSpecifiedTeams(9);
+        Action act = () => maker.CreateMatches(tounament).ToList();
+        act.Should().Throw<NumberOfTeamIsNotEvenException>();
     }
 
     private static Tournament GetTournamentWithSpecifiedTeams(int numbOfTeams)
