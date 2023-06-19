@@ -10,26 +10,28 @@ public class CreateTournamentCommandTests
     [Fact]
     public async Task ShouldThrowAOrganizerNotFoundException_WhenOrganizerNotFound()
     {
-        var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
+        var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock, tournamentRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
 
         Func<Task<Guid?>> handlerFunc = () => createTournamentCommandHandler.Handle(createTournamentCommand, default);
 
         await handlerFunc.Should().ThrowAsync<OrganizerNotFoundException>();
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        tournamentRepoMock.Verify(m => m.CreateAsync(It.IsAny<Tournament>(), It.IsAny<CancellationToken>()), Times.Never);
         busMock.Verify(m => m.Publish(It.IsAny<TournamentCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldCreateATournamnet_WhenOrganizerIsInValidState()
     {
-        var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (createTournamentCommandHandler, createTournamentCommand, unitOfWorkMock, organizerRepoMock, tournamentRepoMock, busMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
         Guid? tournamentIdCreated = await createTournamentCommandHandler.Handle(createTournamentCommand, default);
 
         tournamentIdCreated.Should().NotBeEmpty();
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        tournamentRepoMock.Verify(m => m.CreateAsync(It.IsAny<Tournament>(), It.IsAny<CancellationToken>()), Times.Once);
         busMock.Verify(m => m.Publish(It.IsAny<TournamentCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -38,6 +40,7 @@ public class CreateTournamentCommandTests
         CreateTournamentCommand createTournamentCommand,
         Mock<IUnitOfWork> unitOfWorkMock,
         Mock<IOrganizerRepository> organizerRepoMock,
+        Mock<ITournamentRepository> tournamentRepoMock,
         Mock<IBus> busMock
     )
     GetHandlerAndMocks(HandlerCallOption option)
@@ -48,11 +51,13 @@ public class CreateTournamentCommandTests
             _ => throw new NotImplementedException()
         };
         var busMock = new Mock<IBus>();
+        var tournamentRepoMock = new Mock<ITournamentRepository>();
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
         unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
+        unitOfWorkMock.Setup(m => m.Tournaments).Returns(tournamentRepoMock.Object);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
         var createTournamentCommand = new CreateTournamentCommand()
         {
@@ -66,6 +71,7 @@ public class CreateTournamentCommandTests
             createTournamentCommand,
             unitOfWorkMock,
             organizerRepoMock,
+            tournamentRepoMock,
             busMock
         );
     }
