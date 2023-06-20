@@ -38,24 +38,46 @@ public class CreatePlayerCommandValidator : AbstractValidator<CreatePlayerComman
 {
     public CreatePlayerCommandValidator()
     {
-        RuleFor(c => c.PlayerPersonalInfo).NotNull().WithMessage("Invalid PlayerPersonalInfo.");
-        RuleFor(c => c.PlayerPersonalInfo.City).NotNull().WithMessage("City is required.");
-        RuleFor(c => c.PlayerPersonalInfo.Country).NotNull().WithMessage("Country is required.");
-        RuleFor(c => c.PlayerPersonalInfo.Code).NotNull().WithMessage("PostalCode is required.");
-        RuleFor(c => c.PlayerPersonalInfo.HouseNumber).NotNull().WithMessage("HouseNumber is required.");
-        RuleFor(c => c.PlayerPersonalInfo.Street).NotNull().WithMessage("Street is required.");
-        RuleFor(c => c.PlayerPersonalInfo.DateOfBirth).NotNull().WithMessage("DateOfBirth is required.");
-        RuleFor(c => c.PlayerPersonalInfo.Email).EmailAddress().WithMessage("Email should be a valid email address.");
-        RuleFor(c => c.PlayerPersonalInfo.FirstName).NotNull().NotEmpty().WithMessage("FirstName is required.")
-                                                    .MaximumLength(75).WithMessage("Max length for FirstName is 75 characters.")
-                                                    .MinimumLength(2).WithMessage("Min length for FirstName is 2 characters.");
-        RuleFor(c => c.PlayerPersonalInfo.LastName).NotNull().NotEmpty().WithMessage("LastName is required.")
-                                                    .MaximumLength(100).WithMessage("Max length for LastName is 100 characters.")
-                                                    .MinimumLength(2).WithMessage("Min length for LastName is 2 characters.");
-        RuleFor(c => c.PlayerPersonalInfo.Weight).GreaterThan(30f).WithMessage("The weight could not be less than 30 kg.")
-                                                .LessThan(200f).WithMessage("The weight could not be greater than 200kg.");
-        RuleFor(c => c.PlayerPersonalInfo.Height).GreaterThan(1f).WithMessage("The height could not be less than 1m.")
-                                                .LessThan(2.5f).WithMessage("The height could not be greater than 2.5m.");
+        RuleFor(c => c.PlayerPersonalInfo)
+            .SetValidator(new PlayerPersonalInfoValidator());
         RuleFor(c => c.Position).IsInEnum();
+    }
+}
+
+
+public class PlayerPersonalInfoValidator : AbstractValidator<PlayerPersonalInfo>
+{
+    public PlayerPersonalInfoValidator()
+    {
+        RuleFor(c => c.City)
+            .NotNull().WithMessage("City is required.");
+        RuleFor(c => c.Country)
+            .NotNull().WithMessage("Country is required.");
+        RuleFor(c => c.Code)
+            .NotNull().WithMessage("PostalCode is required.");
+        RuleFor(c => c.HouseNumber)
+            .NotNull().WithMessage("HouseNumber is required.");
+        RuleFor(c => c.Street)
+            .NotNull().WithMessage("Street is required.");
+        RuleFor(c => c.DateOfBirth)
+            .NotNull().WithMessage("DateOfBirth is required.");
+        RuleFor(c => c.Email)
+            .EmailAddress().WithMessage("Email should be a valid email address.");
+        RuleFor(c => c.FirstName)
+            .NotNull()
+            .NotEmpty().WithMessage("FirstName is required.")
+            .MaximumLength(75).WithMessage("Max length for FirstName is 75 characters.")
+            .MinimumLength(2).WithMessage("Min length for FirstName is 2 characters.");
+        RuleFor(c => c.LastName)
+            .NotNull()
+            .NotEmpty().WithMessage("LastName is required.")
+            .MaximumLength(100).WithMessage("Max length for LastName is 100 characters.")
+            .MinimumLength(2).WithMessage("Min length for LastName is 2 characters.");
+        RuleFor(c => c.Weight)
+            .GreaterThan(30f).WithMessage("The weight could not be less than 30 kg.")
+            .LessThan(200f).WithMessage("The weight could not be greater than 200kg.");
+        RuleFor(c => c.Height)
+            .GreaterThan(1f).WithMessage("The height could not be less than 1m.")
+            .LessThan(2.5f).WithMessage("The height could not be greater than 2.5m.");
     }
 }
