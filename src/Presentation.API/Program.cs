@@ -23,4 +23,6 @@ app.MapPlayerEndpoints();
 app.MapManagerEndpoints();
 app.MapOrganizerEndpoints();
 
+app.MigrateDatabase();
+
 app.Run();

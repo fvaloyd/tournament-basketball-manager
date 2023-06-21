@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Sql.Context;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
 
@@ -44,9 +45,25 @@ public static class ServicesExtensions
         services.AddDbContext<TournamentBasketballManagerDbContext>(
             opt => opt.UseSqlServer(
                 connectionString: configuration.GetConnectionString("TournamentBasketballManagerDb"),
-                sqlServerOptionsAction: s => s.MigrationsAssembly(typeof(Program).Assembly.FullName)), 
-            contextLifetime: ServiceLifetime.Transient, 
+                sqlServerOptionsAction: s => s.MigrationsAssembly(typeof(Program).Assembly.FullName)),
+            contextLifetime: ServiceLifetime.Transient,
             optionsLifetime: ServiceLifetime.Transient);
         return services;
+    }
+
+    public static void MigrateDatabase(this WebApplication app)
+    {
+        using var appContext = app.Services.GetRequiredService<TournamentBasketballManagerDbContext>();
+        try
+        {
+            if (appContext.Database.EnsureCreated())
+            {
+                appContext.Database.Migrate();
+            }
+        }
+        catch (SqlException)
+        {
+            app.Logger.LogError("The server was not found or was not accessible.");
+        }
     }
 }
