@@ -5,11 +5,12 @@ using Infrastructure.Common;
 using Infrastructure.Messaging;
 using Infrastructure.Sql.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure;
 public static class ConfigureServices
 {
-    public static void AddInfrastructureServices(this IServiceCollection services)
+    public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var applicationLayerAssemby = typeof(ApplicationReference).Assembly;
         var infrastructureAssembly = typeof(InfrastructureReference).Assembly;
@@ -23,16 +24,19 @@ public static class ConfigureServices
         services.AddSingleton<ILoggerManager, SerilogLoggerManager>();
 
         services.ConfigureOptions<MongoDatabaseSettingsSetup>();
+
+        RabbitMQOptions rabbitOptions = new();
+        configuration.GetSection("RabbitMQSettings").Bind(rabbitOptions);
         services.AddMassTransit(x =>
         {
             x.AddConsumers(typeof(InfrastructureReference).Assembly);
             x.UsingRabbitMq((ctx, cfg) =>
             {
                 cfg.ConfigureEndpoints(ctx);
-                cfg.Host("localhost", r =>
+                cfg.Host(rabbitOptions.Host, r =>
                 {
-                    r.Username("user");
-                    r.Password("francis.123");
+                    r.Username(rabbitOptions.User);
+                    r.Password(rabbitOptions.Password);
                 });
             });
         });
