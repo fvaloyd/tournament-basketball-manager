@@ -50,7 +50,7 @@ public class RegisterTeamCommandValidator : AbstractValidator<RegisterTeamComman
 {
     public RegisterTeamCommandValidator()
     {
-        RuleFor(c => c.OrganizerId).Empty().WithMessage("OrganizerId is required.");
-        RuleFor(c => c.TeamId).Empty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.OrganizerId).NotNull().NotEmpty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.TeamId).NotNull().NotEmpty().WithMessage("OrganizerId is required.");
     }
 }

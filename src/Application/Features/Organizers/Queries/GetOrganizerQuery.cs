@@ -40,6 +40,6 @@ public class GetOrganizerQueryValidator : AbstractValidator<GetOrganizerQuery>
 {
     public GetOrganizerQueryValidator()
     {
-        RuleFor(c => c.OrganizerId).Empty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.OrganizerId).NotEmpty().NotNull().WithMessage("OrganizerId is required.");
     }
 }

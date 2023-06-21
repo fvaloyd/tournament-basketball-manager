@@ -46,9 +46,11 @@ public class CreateTeamCommandValidator : AbstractValidator<CreateTeamCommand>
 {
     public CreateTeamCommandValidator()
     {
-        RuleFor(c => c.ManagerId).Empty().WithMessage("ManagerId is required.");
-        RuleFor(c => c.TeamName).NotNull().NotEmpty().WithMessage("TeamName is required.")
-                                .MaximumLength(75).WithMessage("Max length for TeamName is 75 characters.")
-                                .MinimumLength(4).WithErrorCode("Min length for TeamName is 4 characters.");
+        RuleFor(c => c.ManagerId)
+            .NotNull().NotEmpty().WithMessage("ManagerId is required.");
+        RuleFor(c => c.TeamName)
+            .NotNull().NotEmpty().WithMessage("TeamName is required.")
+            .MaximumLength(75).WithMessage("Max length for TeamName is 75 characters.")
+            .MinimumLength(4).WithErrorCode("Min length for TeamName is 4 characters.");
     }
 }

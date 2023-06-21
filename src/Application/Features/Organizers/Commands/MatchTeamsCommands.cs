@@ -46,6 +46,6 @@ public class MatchTeamsCommandValidator : AbstractValidator<MatchTeamsCommand>
 {
     public MatchTeamsCommandValidator()
     {
-        RuleFor(c => c.OrganizerId).Empty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.OrganizerId).NotNull().NotEmpty().WithMessage("OrganizerId is required.");
     }
 }

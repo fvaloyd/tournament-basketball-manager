@@ -46,7 +46,7 @@ public class CreateTournamentCommandValidator : AbstractValidator<CreateTourname
 {
     public CreateTournamentCommandValidator()
     {
-        RuleFor(c => c.OrganizerId).Empty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.OrganizerId).NotNull().NotEmpty().WithMessage("OrganizerId is required.");
         RuleFor(c => c.TournamentName).NotNull().NotEmpty().WithMessage("TournamentName is requried.")
             .MaximumLength(75).WithMessage("Max length for TournamentName is 75 characters.")
             .MinimumLength(2).WithMessage("Min length for TournamentName is 2 characters.");

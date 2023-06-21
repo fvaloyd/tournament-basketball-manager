@@ -40,6 +40,6 @@ public class GetManagerQueryValidator : AbstractValidator<GetManagerQuery>
 {
     public GetManagerQueryValidator()
     {
-        RuleFor(c => c.ManagerId).Empty().WithMessage("ManagerId is required.");
+        RuleFor(c => c.ManagerId).NotNull().NotEmpty().WithMessage("ManagerId is required.");
     }
 }

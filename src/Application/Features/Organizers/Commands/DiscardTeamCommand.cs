@@ -44,7 +44,7 @@ public class DiscardTeamCommandValidator : AbstractValidator<DiscardTeamCommand>
 {
     public DiscardTeamCommandValidator()
     {
-        RuleFor(c => c.OrganizerId).Empty().WithMessage("OrganizerId is required.");
-        RuleFor(c => c.TeamId).Empty().WithMessage("TeamId is required.");
+        RuleFor(c => c.OrganizerId).NotNull().NotEmpty().WithMessage("OrganizerId is required.");
+        RuleFor(c => c.TeamId).NotNull().NotEmpty().WithMessage("TeamId is required.");
     }
 }

@@ -50,7 +50,7 @@ public class DraftPlayerCommandValidator : AbstractValidator<DraftPlayerCommand>
 {
     public DraftPlayerCommandValidator()
     {
-        RuleFor(c => c.ManagerId).Empty().WithMessage("ManagerId is required.");
-        RuleFor(c => c.PlayerId).Empty().WithMessage("PlayerId is required.");
+        RuleFor(c => c.ManagerId).NotNull().NotEmpty().WithMessage("ManagerId is required.");
+        RuleFor(c => c.PlayerId).NotNull().NotEmpty().WithMessage("PlayerId is required.");
     }
 }

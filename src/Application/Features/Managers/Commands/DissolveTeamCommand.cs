@@ -45,6 +45,6 @@ public class DissolveTeamCommandValidator : AbstractValidator<DissolveTeamComman
 {
     public DissolveTeamCommandValidator()
     {
-        RuleFor(c => c.ManagerId).Empty().WithMessage("ManagerId is required.");
+        RuleFor(c => c.ManagerId).NotNull().NotEmpty().WithMessage("ManagerId is required.");
     }
 }
