@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret.123
+    ports:
+      - 37017:37017
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2022-CU5-ubuntu-20.04
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=secret.123
+    ports:
+      - 1433:1433
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.10-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=secret.123
+    ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+  tournament-manager:
+    image: tournament-manager:v1
+    build:
+      context: .
+    depends_on:
+      - mssql
+      - rabbitmq
+      - mongodb
+    ports:
+      - "8080:80"
+      - "8081:443"
+    volumes:
+        - ~/.aspnet/https:/https
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=secret.123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/TournamentBasketballManager.pfx
+      - ConnectionStrings__TournamentBasketballManagerDb=server=mssql; user=sa; password=secret.123; database=TournamentBasketballManagerDb; TrustServerCertificate=True; Encrypt=False;
+      - RabbitMQSettings__Host=rabbitmq
+      - RabbitMQSettings__User=root
+      - RabbitMQSettings__Password=secret.123
+      - MongoDatabaseSettings__ConnectionString=mongodb://root:secret.123@mongodb:27017
