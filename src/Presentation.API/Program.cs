@@ -14,20 +14,31 @@ using Presentation.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<TournamentBasketballManagerDbContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("TournamentBasketballManagerDb"),
-        s => s.MigrationsAssembly(typeof(Program).Assembly.FullName)), contextLifetime: ServiceLifetime.Transient, optionsLifetime: ServiceLifetime.Transient);
+builder.Services.ConfigureSqlServerDbContext(builder.Configuration);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
+
+builder.Services
+    .ConfigureCors()
+    .ConfigureRateLimiting();
 
 var app = builder.Build();
 
 app.ConfigureExceptionHandlerMiddlware();
 
-var playersGroup = app.MapGroup("/api/players");
-var managersGroup = app.MapGroup("api/managers");
-var organizersGroup = app.MapGroup("/api/organizers");
+var playersGroup = app.MapGroup("/api/players")
+    .RequireCors("CorsPolicy")
+    .CacheOutput()
+    .RequireRateLimiting("GlobalLimiter");
+var managersGroup = app.MapGroup("api/managers")
+    .RequireCors("CorsPolicy")
+    .CacheOutput()
+    .RequireRateLimiting("GlobalLimiter");
+var organizersGroup = app.MapGroup("/api/organizers")
+    .RequireCors("CorsPolicy")
+    .CacheOutput()
+    .RequireRateLimiting("GlobalLimiter");
 
 playersGroup.MapGet("/", async (ISender sender, CancellationToken ct) =>
 {
