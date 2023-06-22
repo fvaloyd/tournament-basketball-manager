@@ -20,15 +20,6 @@ public class SqlOrganizerRepository : IOrganizerRepository
         return organizer ?? throw new OrganizerNotFoundException(id);
     }
 
-    public async Task<IEnumerable<Match>> GetTournamentMatches(Guid organizerId, CancellationToken cancellationToken = default)
-    {
-        var tournament = await _db.Tournaments.SingleOrDefaultAsync(t => t.OrganizerId == organizerId, cancellationToken: cancellationToken) ?? throw new TournamentNotFoundException("The organizer has no team assigned.");
-        var matches = await _db.Matches.Where(m => m.TournamentId == tournament.Id).ToListAsync(cancellationToken: cancellationToken);
-        return matches.Any()
-            ? matches
-            : throw new TeamsAreNotPairedYetException();
-    }
-
     public Task UpdateAsync(Organizer organizerUpdated, CancellationToken cancellationToken)
     {
         _db.Organizers.Update(organizerUpdated);

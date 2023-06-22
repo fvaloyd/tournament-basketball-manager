@@ -31,14 +31,6 @@ public class MongoOrganizerRepository : IOrganizerRepository
         return _mapper.Map<Organizer>(mongoOrganizer);
     }
 
-    public async Task<IEnumerable<Match>> GetTournamentMatches(Guid organizerId, CancellationToken cancellationToken = default)
-    {
-        var filter = Builders<MongoOrganizer>.Filter.Eq(m => m.Id, organizerId);
-        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
-        var mongoMatches = mongoOrganizer.Tournament!.Matches.AsQueryable();
-        return mongoMatches.ProjectTo<Match>(_mapper.ConfigurationProvider).ToList();
-    }
-
     public async Task UpdateAsync(Organizer organizerUpdated, CancellationToken cancellationToken)
     {
         var mongoOrganizer = _mapper.Map<MongoOrganizer>(organizerUpdated);

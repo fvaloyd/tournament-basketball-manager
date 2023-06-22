@@ -3,6 +3,7 @@ using Domain.Common;
 using FluentValidation;
 using Application.Features.Organizers.DTOs;
 using AutoMapper;
+using Domain.Organizers.Exceptions;
 
 namespace Application.Features.Organizers.Queries;
 public record GetTournamentMatchesQuery : IRequest<IEnumerable<MatchResponse>>
@@ -25,7 +26,13 @@ public class GetTournamentMatchesQueryHandler : IRequestHandler<GetTournamentMat
 
     public async Task<IEnumerable<MatchResponse>> Handle(GetTournamentMatchesQuery request, CancellationToken cancellationToken)
     {
-        var matches = await _unitOfWork.Organizers.GetTournamentMatches(request.OrganizerId, cancellationToken);
+        var organizer = await _unitOfWork.Organizers.GetByIdAsync(request.OrganizerId, cancellationToken);
+        if (organizer is null)
+        {
+            _logger.LogWarn($"Handler::{nameof(GetOrganizerQueryHandler)} - Organizer with id::{request.OrganizerId} was not found.");
+            throw new OrganizerNotFoundException(request.OrganizerId);
+        }
+        var matches = organizer.GetTournamentMatches();
         return _mapper.Map<IEnumerable<MatchResponse>>(matches);
     }
 }
