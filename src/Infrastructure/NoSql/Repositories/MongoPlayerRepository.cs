@@ -32,7 +32,7 @@ public class MongoPlayerRepository : IPlayerRepository
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoPlayer>.Filter.Eq(m => m.TeamId, id);
-        var mongoPlayer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var mongoPlayer = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         return mongoPlayer is null
             ? throw new PlayerNotFoundException(id)
             : _mapper.Map<Player>(mongoPlayer);

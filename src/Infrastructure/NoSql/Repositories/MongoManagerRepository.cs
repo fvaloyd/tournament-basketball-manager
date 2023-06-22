@@ -27,7 +27,7 @@ public class MongoManagerRepository : IManagerRepository
     public async Task<Manager> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.Id, id);
-        var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var mongoManager = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         return _mapper.Map<Manager>(mongoManager!);
     }
 

@@ -21,7 +21,7 @@ public class MongoTeamRepository : ITeamRepository
     public async Task<Team> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.TeamId, id);
-        var manager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var manager = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         return manager.Team is null
             ? throw new TeamNotFoundException(id)
             : _mapper.Map<Team>(manager.Team!);
@@ -30,7 +30,7 @@ public class MongoTeamRepository : ITeamRepository
     public async Task CreateAsync(Team team, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoManager>.Filter.Eq(m => m.Id, team.ManagerId);
-        var mongoManager = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var mongoManager = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         var mongoManagerUpdated = mongoManager with { Team = _mapper.Map<MongoTeam>(team), TeamId = team.Id };
         await _collection.ReplaceOneAsync(filter, mongoManagerUpdated, cancellationToken: cancellationToken);
     }

@@ -20,7 +20,7 @@ public class MongoTournamentRepository : ITournamentRepository
     public async Task CreateAsync(Tournament tournament, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoOrganizer>.Filter.Eq(o => o.Id, tournament.OrganizerId);
-        var organizer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var organizer = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         var organizerUpdated = organizer with { Tournament = _mapper.Map<MongoTournament>(tournament), TournamentId = tournament.Id };
         await _collection.ReplaceOneAsync(filter, organizerUpdated, cancellationToken: cancellationToken);
     }

@@ -27,7 +27,7 @@ public class MongoOrganizerRepository : IOrganizerRepository
     public async Task<Organizer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var filter = Builders<MongoOrganizer>.Filter.Eq(m => m.Id, id);
-        var mongoOrganizer = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        var mongoOrganizer = await _collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
         return _mapper.Map<Organizer>(mongoOrganizer);
     }
 
