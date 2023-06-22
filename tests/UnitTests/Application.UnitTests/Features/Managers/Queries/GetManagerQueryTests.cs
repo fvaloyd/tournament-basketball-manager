@@ -4,62 +4,68 @@ using Domain.Managers.Exceptions;
 using Application.Features.Managers.DTOs;
 using Application.Features.Managers.Queries;
 using AutoMapper;
+using Application.Features.Players;
+using Application.Features.Organizers.DTOs;
 
 namespace Application.UnitTests.Features.Managers.Queries;
 public class GetManagerQueryTests
 {
-    [Fact]
-    public void ShouldThrowAManagerNotFoundException_WhenManagerNotFound()
+    private readonly IMapper _mapper;
+
+    public GetManagerQueryTests()
     {
-        var (getManagerQueryHandler, getManagerQuery, managerRepoMock, _) = GetHandlerAndMocks(HandlerCallOption.NullManager);
+        _mapper = new MapperConfiguration(x =>
+        {
+            x.AddProfile(new OrganizerMappingProfile());
+            x.AddProfile(new ManagerMappingProfile());
+            x.AddProfile(new PlayerMappingProfile());
+        }).CreateMapper();
+    }
+
+    [Fact]
+    public async Task ShouldThrowAManagerNotFoundException_WhenManagerNotFoundAsync()
+    {
+        var (getManagerQueryHandler, getManagerQuery, managerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullManager);
 
         Func<Task<ManagerResponse>> handlerFunc = () => getManagerQueryHandler.Handle(getManagerQuery, default);
 
-        handlerFunc.Should().ThrowAsync<ManagerNotFoundException>();
+        await handlerFunc.Should().ThrowAsync<ManagerNotFoundException>();
         managerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task ShouldReturnAManagerResponse_WhenManagerWasFound()
     {
-        var (getManagerQueryHandler, getManagerQuery, managerRepoMock, mapperMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (getManagerQueryHandler, getManagerQuery, managerRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
         ManagerResponse managerResponse = await getManagerQueryHandler.Handle(getManagerQuery, default);
 
         managerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        mapperMock.Verify(m => m.Map<ManagerResponse>(It.IsAny<Manager>()), Times.Once);
+        managerResponse.Should().NotBeNull();
     }
 
-    static(
-        GetManagerQueryHandler getManagerQueryHandler,
-        GetManagerQuery getManagerQuery,
-        Mock<IManagerRepository> managerRepoMock,
-        Mock<IMapper> mapperMock
-    )
-    GetHandlerAndMocks(HandlerCallOption option)
+    private (GetManagerQueryHandler getManagerQueryHandler, GetManagerQuery getManagerQuery, Mock<IManagerRepository> managerRepoMock) GetHandlerAndMocks(HandlerCallOption option)
     {
         Manager? manager = option switch{
             HandlerCallOption.NullManager => null,
             HandlerCallOption.Valid => Manager.Create(new ManagerPersonalInfo("test", "test", "test", DateTime.Now, "test", "test", "test", "test", "test"), "teamName"),
             _ => throw new NotImplementedException()
         };
+
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
-        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var managerRepoMock = new Mock<IManagerRepository>();
-        var mapperMock = new Mock<IMapper>();
-        managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager!);
-        mapperMock.Setup(m => m.Map<ManagerResponse>(It.IsAny<Manager>())).Returns(new ManagerResponse());
-        unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
-        var getManagerQuery = new GetManagerQuery(){ManagerId = Guid.NewGuid()};
-        var getManagerQueryHandler = new GetManagerQueryHandler(unitOfWorkFactoryMock.Object, new Mock<ILoggerManager>().Object, mapperMock.Object);
+        var loggerMock = new Mock<ILoggerManager>();
 
-        return(
-            getManagerQueryHandler,
-            getManagerQuery,
-            managerRepoMock,
-            mapperMock
-        );
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
+        managerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(manager!);
+        unitOfWorkMock.Setup(m => m.Managers).Returns(managerRepoMock.Object);
+        
+        var getManagerQuery = new GetManagerQuery(){ManagerId = manager?.Id ?? Guid.NewGuid()};
+        
+        var getManagerQueryHandler = new GetManagerQueryHandler(unitOfWorkFactoryMock.Object, loggerMock.Object, _mapper);
+
+        return(getManagerQueryHandler, getManagerQuery, managerRepoMock);
     }
 
     enum HandlerCallOption

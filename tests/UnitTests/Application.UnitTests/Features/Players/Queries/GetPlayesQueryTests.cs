@@ -3,44 +3,53 @@ using Application.Features.Players;
 using Application.Features.Players.Queries;
 using AutoMapper;
 using Domain.Common;
+using Application.Features.Managers.DTOs;
+using Application.Features.Organizers.DTOs;
 
 namespace Application.UnitTests.Features.Players.Queries;
 public class GetPlayersQueryTests
 {
+    private readonly IMapper _mapper;
+
+    public GetPlayersQueryTests()
+    {
+        _mapper = new MapperConfiguration(x =>
+        {
+            x.AddProfile(new OrganizerMappingProfile());
+            x.AddProfile(new ManagerMappingProfile());
+            x.AddProfile(new PlayerMappingProfile());
+        }).CreateMapper();
+    }
+
     [Fact]
     public async Task ShouldReturnACollectionOfPlayerResponse()
     {
-        var (getPlayersQueryHandler, getPlayersQuery, playerRepoMock, mapperMock) = GetHandlerAndMocks();
+        var (getPlayersQueryHandler, getPlayersQuery, playerRepoMock) = GetHandlerAndMocks();
 
-        IEnumerable<PlayerResponse> result = await getPlayersQueryHandler.Handle(getPlayersQuery, default);
+        IEnumerable<PlayerResponse> players = await getPlayersQueryHandler.Handle(getPlayersQuery, default);
 
         playerRepoMock.Verify(m => m.GetAllAsync(It.IsAny<CancellationToken>()), Times.Once);
-        mapperMock.Verify(m => m.Map<IEnumerable<PlayerResponse>>(It.IsAny<IEnumerable<Player>>()), Times.Once);
+        players.Should().NotBeEmpty();
     }
 
-    static (
-        GetPlayersQueryHandler getPlayersQueryHandler,
-        GetPlayersQuery getPlayersQuery,
-        Mock<IPlayerRepository> playerRepoMock,
-        Mock<IMapper> mapperMock
-    )
-    GetHandlerAndMocks()
+    private (GetPlayersQueryHandler getPlayersQueryHandler, GetPlayersQuery getPlayersQuery, Mock<IPlayerRepository> playerRepoMock) GetHandlerAndMocks()
     {
+        List<Player> players = new()
+        {
+            Player.Create(new("player", "test", "test@test.com", DateTime.Now, 1.80f, 80.5f, "RD", "SJO", "S", "57", "93000"), Position.PointGuard)
+        };
+
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
-        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
-        var mapperMock = new Mock<IMapper>();
         var playerRepoMock = new Mock<IPlayerRepository>();
-        playerRepoMock.Setup(m => m.GetAllAsync(It.IsAny<CancellationToken>()).Result).Returns(new List<Player>());
-        unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
-        var getPlayersQuery = new GetPlayersQuery();
-        var getPlayersQueryHandler = new GetPlayersQueryHandler(unitOfWorkFactoryMock.Object, mapperMock.Object);
 
-        return(
-            getPlayersQueryHandler,
-            getPlayersQuery,
-            playerRepoMock,
-            mapperMock
-        );
+        playerRepoMock.Setup(m => m.GetAllAsync(It.IsAny<CancellationToken>()).Result).Returns(players);
+        unitOfWorkMock.Setup(m => m.Players).Returns(playerRepoMock.Object);
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
+        
+        var getPlayersQuery = new GetPlayersQuery();
+        var getPlayersQueryHandler = new GetPlayersQueryHandler(unitOfWorkFactoryMock.Object, _mapper);
+
+        return (getPlayersQueryHandler, getPlayersQuery, playerRepoMock);
     }
 }

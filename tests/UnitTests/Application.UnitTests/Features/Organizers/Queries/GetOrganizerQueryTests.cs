@@ -5,41 +5,47 @@ using Domain.Organizers.Exceptions;
 using Application.Features.Organizers.DTOs;
 using Application.Features.Organizers.Queries;
 using AutoMapper;
+using Application.Features.Managers.DTOs;
+using Application.Features.Players;
 
 namespace Application.UnitTests.Features.Organizers.Queries;
 public class GetOrganizerQueryTests
 {
-    [Fact]
-    public async Task ShouldThrowAOrganizerNotFoundException_WhenOrganizerNotFound()
+    private readonly IMapper _mapper;
+
+    public GetOrganizerQueryTests()
     {
-        var (getOrganizerQueryHandler, getOrganizerQuery, organizerRepoMock, mapperMock, _) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
+        _mapper = new MapperConfiguration(x =>
+        {
+            x.AddProfile(new OrganizerMappingProfile());
+            x.AddProfile(new ManagerMappingProfile());
+            x.AddProfile(new PlayerMappingProfile());
+        }).CreateMapper();
+    }
+
+    [Fact]
+    public async Task ShouldThrowAOrganizerNotFoundException_WhenOrganizerIsNotFound()
+    {
+        var (getOrganizerQueryHandler, getOrganizerQuery, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.NullOrganizer);
 
         Func<Task<OrganizerResponse>> handlerFunc = () => getOrganizerQueryHandler.Handle(getOrganizerQuery, default);
 
         await handlerFunc.Should().ThrowAsync<OrganizerNotFoundException>();
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        mapperMock.Verify(m => m.Map<OrganizerResponse>(It.IsAny<Organizer>()), Times.Never);
     }
 
     [Fact]
     public async Task ShouldReturnAOrganizerResponse_WhenOrganizerIsFound()
     {
-        var (getOrganizerQueryHandler, getOrganizerQuery, organizerRepoMock, mapperMock, _) = GetHandlerAndMocks(HandlerCallOption.Valid);
+        var (getOrganizerQueryHandler, getOrganizerQuery, organizerRepoMock) = GetHandlerAndMocks(HandlerCallOption.Valid);
 
-        OrganizerResponse result = await getOrganizerQueryHandler.Handle(getOrganizerQuery, default);
+        OrganizerResponse organizer = await getOrganizerQueryHandler.Handle(getOrganizerQuery, default);
 
         organizerRepoMock.Verify(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
-        mapperMock.Verify(m => m.Map<OrganizerResponse>(It.IsAny<Organizer>()), Times.Once);
+        organizer.Should().NotBeNull();
     }
 
-    static(
-        GetOrganizerQueryHandler getOrganizerQueryHandler,
-        GetOrganizerQuery getOrganizerQuery,
-        Mock<IOrganizerRepository> organizerRepoMock,
-        Mock<IMapper> mapperMock,
-        Mock<IUnitOfWork> unitOfWorkMock
-    )
-    GetHandlerAndMocks(HandlerCallOption option)
+    private (GetOrganizerQueryHandler getOrganizerQueryHandler, GetOrganizerQuery getOrganizerQuery, Mock<IOrganizerRepository> organizerRepoMock) GetHandlerAndMocks(HandlerCallOption option)
     {
         Organizer? organizer = option switch
         {
@@ -47,24 +53,19 @@ public class GetOrganizerQueryTests
             HandlerCallOption.Valid => GetOrganizerWithTournamentAndTeams(),
             _ => throw new NotImplementedException()
         };
+
         var unitOfWorkFactoryMock = new Mock<IUnitOfWorkFactory>();
         var unitOfWorkMock = UnitOfWorkMock.Instance;
-        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         var organizerRepoMock = new Mock<IOrganizerRepository>();
+        
+        unitOfWorkFactoryMock.Setup(uowf => uowf.CreateUnitOfWork(It.IsAny<string>())).Returns(unitOfWorkMock.Object);
         organizerRepoMock.Setup(m => m.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()).Result).Returns(organizer!);
         unitOfWorkMock.Setup(m => m.Organizers).Returns(organizerRepoMock.Object);
-        var mapperMock = new Mock<IMapper>();
-        mapperMock.Setup(m => m.Map<OrganizerResponse>(It.IsAny<Organizer>())).Returns(new OrganizerResponse());
-        var getOrganizerQuery = new GetOrganizerQuery();
-        var getOrganizerQueryHandler = new GetOrganizerQueryHandler(unitOfWorkFactoryMock.Object, mapperMock.Object, new Mock<ILoggerManager>().Object);
 
-        return(
-            getOrganizerQueryHandler,
-            getOrganizerQuery,
-            organizerRepoMock,
-            mapperMock,
-            unitOfWorkMock
-        );
+        var getOrganizerQuery = new GetOrganizerQuery();
+        var getOrganizerQueryHandler = new GetOrganizerQueryHandler(unitOfWorkFactoryMock.Object, _mapper, new Mock<ILoggerManager>().Object);
+
+        return(getOrganizerQueryHandler, getOrganizerQuery, organizerRepoMock);
     }
 
     enum HandlerCallOption
