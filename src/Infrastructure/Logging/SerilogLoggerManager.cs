@@ -5,11 +5,15 @@ namespace Infrastructure;
 
 public class SerilogLoggerManager : ILoggerManager
 {
-    public void LogDebug(string message) => Log.Debug(message);
+    private readonly ILogger _logger;
 
-    public void LogError(string message) => Log.Error(message);
+    public SerilogLoggerManager(ILogger logger) => _logger = logger;
 
-    public void LogInfo(string message) => Log.Information(message);
+    public void LogDebug(string message) => _logger.Debug(message);
 
-    public void LogWarn(string message) => Log.Warning(message);
+    public void LogError(string message) => _logger.Error(message);
+
+    public void LogInfo(string message) => _logger.Information(message);
+
+    public void LogWarn(string message) => _logger.Warning(message);
 }

@@ -12,7 +12,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services
     .ConfigureCors()
-    .ConfigureRateLimiting();
+    .ConfigureRateLimiting()
+    .ConfigureSerilog();
 
 var app = builder.Build();
 

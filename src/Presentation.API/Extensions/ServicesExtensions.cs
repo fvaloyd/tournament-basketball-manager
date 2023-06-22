@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Sql.Context;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Threading.RateLimiting;
 
 namespace Presentation.API.Extensions;
@@ -65,5 +66,19 @@ public static class ServicesExtensions
         {
             app.Logger.LogError("The server was not found or was not accessible.");
         }
+    }
+
+    public static void ConfigureSerilog(this IServiceCollection services)
+    {
+        var currentDir = Directory.GetCurrentDirectory();
+        var logsDirInfo = Directory.CreateDirectory(Path.Combine(currentDir, "logs"));
+        var logsFilePath = Path.Combine(logsDirInfo.ToString(), "logs.txt");
+        
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.File(logsFilePath)
+            .CreateLogger();
+
+        services.AddSerilog(Log.Logger);
     }
 }
