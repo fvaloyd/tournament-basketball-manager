@@ -2,11 +2,12 @@ using Domain.Common;
 using Domain.Managers;
 using Domain.Organizers;
 using Domain.Organizers.Exceptions;
-using Application.Features.Organizers.DTOs;
 using Application.Features.Organizers.Queries;
 using AutoMapper;
-using Application.Features.Managers.DTOs;
 using Application.Features.Players;
+using Application.Features.Organizers;
+using Application.Features.Managers;
+using Shared;
 
 namespace Application.UnitTests.Features.Organizers.Queries;
 public class GetOrganizerQueryTests

@@ -3,8 +3,9 @@ using Application.Features.Players;
 using Application.Features.Players.Queries;
 using AutoMapper;
 using Domain.Common;
-using Application.Features.Managers.DTOs;
-using Application.Features.Organizers.DTOs;
+using Application.Features.Organizers;
+using Application.Features.Managers;
+using Shared;
 
 namespace Application.UnitTests.Features.Players.Queries;
 public class GetPlayersQueryTests

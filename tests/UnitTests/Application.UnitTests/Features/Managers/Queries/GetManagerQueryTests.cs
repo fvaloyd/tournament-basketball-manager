@@ -1,11 +1,12 @@
 using Domain.Common;
 using Domain.Managers;
 using Domain.Managers.Exceptions;
-using Application.Features.Managers.DTOs;
 using Application.Features.Managers.Queries;
 using AutoMapper;
 using Application.Features.Players;
-using Application.Features.Organizers.DTOs;
+using Application.Features.Organizers;
+using Application.Features.Managers;
+using Shared;
 
 namespace Application.UnitTests.Features.Managers.Queries;
 public class GetManagerQueryTests

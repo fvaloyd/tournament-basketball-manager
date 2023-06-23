@@ -1,6 +1,6 @@
 using Domain.Managers;
 
-namespace Application.Features.Managers.DTOs;
+namespace Shared;
 public record ManagerResponse
 {
     public Guid Id { get; init; }

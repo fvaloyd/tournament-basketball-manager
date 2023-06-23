@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Organizers;
+using Shared;
 
-namespace Application.Features.Organizers.DTOs;
+namespace Application.Features.Organizers;
 public class OrganizerMappingProfile : Profile
 {
     public OrganizerMappingProfile()
