@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Application;
 public static class ConfigureServices
 {
-    public static void AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddMediatR(cfg =>
         {
@@ -18,5 +18,6 @@ public static class ConfigureServices
         });
         services.AddValidatorsFromAssembly(typeof(ApplicationReference).Assembly);
         services.AddSingleton<ITeamMatchMaker, RandomTeamMatchMaker>();
+        return services;
     }
 }

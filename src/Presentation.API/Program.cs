@@ -5,10 +5,12 @@ using Presentation.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureSqlServerDbContext(builder.Configuration);
+builder.Services.AddRazorPages();
 
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services
+    .ConfigureSqlServerDbContext(builder.Configuration)
+    .AddApplicationServices()
+    .AddInfrastructureServices(builder.Configuration);
 
 builder.Services
     .ConfigureCors()
@@ -18,8 +20,26 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseCors("CorsPolicy");
+if (app.Environment.IsDevelopment())
+{
+    app.UseWebAssemblyDebugging();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
 app.ConfigureExceptionHandlerMiddlware();
+
+app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseCors("CorsPolicy");
+app.MapFallbackToFile("index.html");
+
+app.MapRazorPages();
 
 app.MapPlayerEndpoints();
 app.MapManagerEndpoints();
