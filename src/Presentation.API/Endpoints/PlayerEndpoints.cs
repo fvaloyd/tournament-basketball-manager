@@ -12,7 +12,7 @@ public static class PlayerEndpoints
         var playerGroup = builder
             .MapGroup("/api/players")
             .RequireCors("CorsPolicy")
-            .CacheOutput()
+            .CacheOutput("OutputCachePolicy")
             .RequireRateLimiting("GlobalLimiter");
 
         playerGroup.MapGet("/", async (ISender sender, CancellationToken ct) =>

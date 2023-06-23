@@ -12,7 +12,7 @@ public static class ManagerEndpoints
         var managersGroup = builder
             .MapGroup("api/managers")
             .RequireCors("CorsPolicy")
-            .CacheOutput()
+            .CacheOutput("OutputCachePolicy")
             .RequireRateLimiting("GlobalLimiter");
 
         managersGroup.MapGet("/{id:guid}", async (Guid id, ISender sender, CancellationToken ct) =>

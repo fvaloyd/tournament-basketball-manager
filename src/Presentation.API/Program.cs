@@ -13,6 +13,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services
     .ConfigureCors()
     .ConfigureRateLimiting()
+    .ConfigureOutputCache()
     .ConfigureSerilog();
 
 var app = builder.Build();

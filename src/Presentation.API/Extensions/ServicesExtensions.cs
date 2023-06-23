@@ -41,6 +41,18 @@ public static class ServicesExtensions
         return services;
     }
 
+    public static IServiceCollection ConfigureOutputCache(this IServiceCollection services)
+    {
+        services.AddOutputCache(cfg =>
+        {
+            cfg.AddPolicy("OutputCachePolicy", builder =>
+            {
+                builder.Expire(TimeSpan.FromSeconds(10));
+            });
+        });
+        return services;
+    }
+
     public static IServiceCollection ConfigureSqlServerDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<TournamentBasketballManagerDbContext>(

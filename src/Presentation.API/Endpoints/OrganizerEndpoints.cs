@@ -12,7 +12,7 @@ public static class OrganizerEndpoints
         var organizersGroup = builder
             .MapGroup("/api/organizers")
             .RequireCors("CorsPolicy")
-            .CacheOutput()
+            .CacheOutput("OutputCachePolicy")
             .RequireRateLimiting("GlobalLimiter");
 
         organizersGroup.MapPost("/", async ([FromBody] CreateOrganizerCommand command, ISender sender, CancellationToken ct) =>
