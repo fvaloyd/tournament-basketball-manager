@@ -1,6 +1,4 @@
-using Application.Features.Players;
-
-namespace Application.Features.Managers.DTOs;
+namespace Shared;
 public record TeamResponse
 {
     public Guid Id { get; init; }

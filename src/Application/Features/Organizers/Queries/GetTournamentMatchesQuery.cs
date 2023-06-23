@@ -1,9 +1,9 @@
 using MediatR;
 using Domain.Common;
 using FluentValidation;
-using Application.Features.Organizers.DTOs;
 using AutoMapper;
 using Domain.Organizers.Exceptions;
+using Shared;
 
 namespace Application.Features.Organizers.Queries;
 public record GetTournamentMatchesQuery : IRequest<IEnumerable<MatchResponse>>

@@ -1,14 +1,15 @@
 using Domain.Common;
-using Application.Features.Organizers.DTOs;
 using Application.Features.Organizers.Queries;
 using Domain.Organizers;
 using AutoMapper;
-using Application.Features.Managers.DTOs;
 using Application.Features.Players;
 using Match = Domain.Organizers.Match;
 using Domain.Managers;
 using Domain.Services;
 using Domain.Organizers.Exceptions;
+using Application.Features.Organizers;
+using Application.Features.Managers;
+using Shared;
 
 namespace Application.UnitTests.Features.Organizers.Queries;
 public class GetTournamentMatchesTests

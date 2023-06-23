@@ -1,6 +1,6 @@
 using Domain.Organizers;
 
-namespace Application.Features.Organizers.DTOs;
+namespace Shared;
 public record OrganizerResponse
 {
     public Guid Id { get; set; }

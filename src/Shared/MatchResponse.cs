@@ -1,6 +1,4 @@
-using Application.Features.Managers.DTOs;
-
-namespace Application.Features.Organizers.DTOs;
+namespace Shared;
 public record MatchResponse
 {
     public Guid TournamentId { get; set; }

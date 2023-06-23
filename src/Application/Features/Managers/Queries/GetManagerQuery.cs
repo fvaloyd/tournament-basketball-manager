@@ -2,8 +2,8 @@ using MediatR;
 using Domain.Common;
 using FluentValidation;
 using Domain.Managers.Exceptions;
-using Application.Features.Managers.DTOs;
 using AutoMapper;
+using Shared;
 
 namespace Application.Features.Managers.Queries;
 public record GetManagerQuery : IRequest<ManagerResponse>

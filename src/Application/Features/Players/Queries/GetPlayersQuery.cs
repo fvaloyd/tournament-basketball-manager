@@ -1,6 +1,7 @@
 using MediatR;
 using Domain.Common;
 using AutoMapper;
+using Shared;
 
 namespace Application.Features.Players.Queries;
 public record GetPlayersQuery : IRequest<IEnumerable<PlayerResponse>>;
