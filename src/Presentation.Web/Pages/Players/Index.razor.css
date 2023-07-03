@@ -1,0 +1,23 @@
+﻿.player-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 5px 5px 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.player-box__info {
+    display: flex;
+    flex-direction: column;
+}
+    .player-box__info p {
+        margin: 0 0 0 0;
+    }
+
+.player-box__action {
+    display: flex;
+    align-self: center;
+}
+    .player-box__action button:first-child {
+        margin-right: 10px;
+    }

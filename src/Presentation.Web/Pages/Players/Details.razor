@@ -1,0 +1,61 @@
+﻿@page "/players/details/{id}"
+@inject HttpClient httpClient
+@inject PlayersState playersState
+
+<h1>Player details</h1>
+
+<div class="row p-0">
+    <div class="col">
+        @if (playersState.CurrentPlayer is not null)
+        {
+            <div class="card" style="max-width: 40rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@playersState.CurrentPlayer.PersonalInfo.FirstName @playersState.CurrentPlayer.PersonalInfo.LastName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@playersState.CurrentPlayer.Position</h6>
+                    <ul>
+                        <li><strong>Height: </strong>@playersState.CurrentPlayer.PersonalInfo.Height</li>
+                        <li><strong>Weight: </strong>@playersState.CurrentPlayer.PersonalInfo.Weight</li>
+                        <li><strong>Email: </strong>@playersState.CurrentPlayer.PersonalInfo.Email</li>
+                        <li><strong>Country: </strong>@playersState.CurrentPlayer.PersonalInfo.Country</li>
+                        <li><strong>City: </strong>@playersState.CurrentPlayer.PersonalInfo.City</li>
+                        <li><strong>Postal code: </strong>@playersState.CurrentPlayer.PersonalInfo.Code</li>
+                        <li><strong>Street: </strong>@playersState.CurrentPlayer.PersonalInfo.Street</li>
+                        <li><strong>House number: </strong>@playersState.CurrentPlayer.PersonalInfo.HouseNumber</li>
+                    </ul>
+                    @if (playersState.CurrentPlayer.TeamId == Guid.Empty)
+                    {
+                        <p>Player is free to draft.</p>
+                    } else
+                    {
+                        <p>Player is currrently in a team.</p>
+                    }
+                    <NavLink href="players" class="card-link">Go back</NavLink>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Loading player...</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (playersState.CurrentPlayer is null)
+        {
+            if (id is not null)
+            {
+                playersState.CurrentPlayer = await httpClient.GetFromJsonAsync<PlayerResponse>($"api/players/{id}");
+            }
+        }
+        await base.OnParametersSetAsync();
+    }
+}

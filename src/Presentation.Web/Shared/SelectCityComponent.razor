@@ -1,0 +1,41 @@
+﻿<!--TODO: write onselect event to change the city prop-->
+
+<MudSelect T="string" Label="City" AnchorOrigin="Origin.BottomCenter" @For="@(() => City)" @bind-Value="City">
+    <MudSelectItem Value="@("Azua")" />
+    <MudSelectItem Value="@("Bahoruco")" />
+    <MudSelectItem Value="@("Barahona")" />
+    <MudSelectItem Value="@("Dajabón")" />
+    <MudSelectItem Value="@("Distrito Nacional")" />
+    <MudSelectItem Value="@("Duarte")" />
+    <MudSelectItem Value="@("Elías Piña")" />
+    <MudSelectItem Value="@("El Seibo")" />
+    <MudSelectItem Value="@("Espaillat")" />
+    <MudSelectItem Value="@("Hato Mayor")" />
+    <MudSelectItem Value="@("Hermanas Mirabal")" />
+    <MudSelectItem Value="@("Independencia")" />
+    <MudSelectItem Value="@("La Altagracia")" />
+    <MudSelectItem Value="@("La Romana")" />
+    <MudSelectItem Value="@("La Vega")" />
+    <MudSelectItem Value="@("María Trinidad Sánchez")" />
+    <MudSelectItem Value="@("Monseñor Nouel")" />
+    <MudSelectItem Value="@("Monte Cristi")" />
+    <MudSelectItem Value="@("Monte Plata")" />
+    <MudSelectItem Value="@("Pedernales")" />
+    <MudSelectItem Value="@("Peravia")" />
+    <MudSelectItem Value="@("Puerto Plata")" />
+    <MudSelectItem Value="@("Samaná")" />
+    <MudSelectItem Value="@("Sánchez Ramírez")" />
+    <MudSelectItem Value="@("San Cristóbal")" />
+    <MudSelectItem Value="@("San José de Ocoa")" />
+    <MudSelectItem Value="@("San Juan")" />
+    <MudSelectItem Value="@("San Pedro de Macorís")" />
+    <MudSelectItem Value="@("Santiago")" />
+    <MudSelectItem Value="@("Santiago Rodríguez")" />
+    <MudSelectItem Value="@("Santo Domingo")" />
+    <MudSelectItem Value="@("Valverde")" />
+</MudSelect>
+
+@code
+{
+    [Parameter]public string City { get; set; }
+}

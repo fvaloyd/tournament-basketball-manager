@@ -1,0 +1,8 @@
+﻿<MudSelect T="string" Label="Country" AnchorOrigin="Origin.BottomCenter" For="@(() => Country)" @bind-Value="Country">
+    <MudSelectItem Value="@("Dominican Republic")" />
+</MudSelect>
+
+@code
+{
+    [Parameter]public string Country { get; set; }
+}

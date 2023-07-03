@@ -1,0 +1,67 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@FormModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MudTextField Label="FirstName" For="@(() => FormModel.FirstName)" @bind-Value="FormModel.FirstName" />
+                <MudTextField Label="LastName" For="@(() => FormModel.LastName)" @bind-Value="FormModel.LastName" />
+                <MudTextField Label="Email" For="@(() => FormModel.Email)" @bind-Value="FormModel.Email" />
+                <MudDatePicker Label="Date of birth" For="@(() => FormModel.DateOfBirth)" @bind-Date="FormModel.DateOfBirth" />
+                <SelectCountryComponent @bind-Country="FormModel.Country" />
+                <SelectCityComponent @bind-City="FormModel.City"/>
+                <MudTextField Label="Street" For="@(() => FormModel.Street)" @bind-Value="FormModel.Street" />
+                <MudTextField Label="House number" For="@(() => FormModel.HouseNumber)" @bind-Value="FormModel.HouseNumber" />
+                <MudTextField Label="Postal code" For="@(() => FormModel.Code)" @bind-Value="FormModel.Code" />
+            </MudPaper>
+            <MudPaper Class="pa-4 mt-4">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">Create</MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation summary</MudText>
+                <MudText Color="@Color.Error">
+                    <ValidationSummary />
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    [Parameter]public bool Success { get; set; }
+    [Parameter]public CreateOrganizerForm FormModel { get; set; } = new();
+    [Parameter]public EventCallback<EditContext> HandleSubmit { get; set; }
+
+    public class CreateOrganizerForm
+    {
+        [Required, MinLength(2), MaxLength(100)]
+        public string FirstName { get; set; }
+
+        [Required, MinLength(2), MaxLength(100)]
+        public string LastName { get; set; }
+
+        [Required, EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Required]
+        public string Country { get; set; }
+
+        [Required]
+        public string City { get; set; }
+
+        [Required]
+        public string Street { get; set; }
+
+        [Required]
+        public string HouseNumber { get; set; }
+
+        [Required]
+        public string Code { get; set; }
+    }
+}
