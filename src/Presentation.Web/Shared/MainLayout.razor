@@ -1,12 +1,38 @@
 ﻿@inherits LayoutComponentBase
 
-<div>
-    <header class="content px-3">
-        <Navbar />
-    </header>
-    <main>
-        <article class="content px-4">
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Color="Color.Dark" Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer Color="Color.Dark" @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">Tournament Manager</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu Color="Color.Inherit">
+            <MudNavLink IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" Href="">Home</MudNavLink>
+            <MudNavLink IconColor="Color.Surface" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All" Href="/organizers">Organizers</MudNavLink>
+            <MudNavLink IconColor="Color.Surface" Icon="@Icons.Material.Filled.Person4" Match="NavLinkMatch.All" Href="/managers">Managers</MudNavLink>
+            <MudNavLink IconColor="Color.Surface" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All" Href="/Players">Players</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer class="mt-6">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

@@ -1,0 +1,25 @@
+﻿@page "/organizers"
+@using static Presentation.Web.Pages.Organizers.CreateOrganizerComponent;
+
+<MudText Typo="Typo.h3">Organizers</MudText>
+<MudStack>
+    <div style="display: @(showCreateOrganizerComponent == true ? "block" : "none")">
+        <CreateOrganizerComponent 
+            Success="IsSuccessForm"
+            FormModel="CreateOrganizerForm"
+            HandleSubmit="HandleCreateOrganizerForm" />
+    </div>
+    
+</MudStack>
+
+@code {
+    bool showCreateOrganizerComponent = true;
+    CreateOrganizerForm CreateOrganizerForm = new();
+    bool IsSuccessForm;
+    void HandleCreateOrganizerForm(EditContext context)
+    {
+        IsSuccessForm = true;
+        CreateOrganizerForm = default!;
+        Console.WriteLine("Submit");
+    }
+}
