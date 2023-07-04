@@ -1,5 +1,6 @@
 ﻿@page "/players"
 @inject HttpClient httpClient
+@inject IPlayerClient playerClient
 @inject NavigationManager navigationManager
 @inject PlayersState playersState
 
@@ -17,7 +18,7 @@
                     <p>Reside: <strong>@player.PersonalInfo.Country - @player.PersonalInfo.City</strong></p>
                 </div>
                 <div class="player-box__action">
-                    @if (player.TeamId != Guid.Empty)
+                    @if (player.TeamId == Guid.Empty)
                     {
                         <button class="btn btn-warning">Draft player</button>
                     }
@@ -31,7 +32,7 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        playersState.Players = await httpClient.GetFromJsonAsync<List<PlayerResponse>>("api/players");
+        playersState.Players = (await playerClient.GetPlayersAsync()).ToList();
         await base.OnInitializedAsync();
     }
 
