@@ -31,37 +31,28 @@
 </EditForm>
 
 @code {
+    public CreateOrganizerForm FormModel { get; set; } = new();
     [Parameter]public bool Success { get; set; }
-    [Parameter]public CreateOrganizerForm FormModel { get; set; } = new();
     [Parameter]public EventCallback<EditContext> HandleSubmit { get; set; }
 
     public class CreateOrganizerForm
     {
-        [Required, MinLength(2), MaxLength(100)]
-        public string FirstName { get; set; }
+        [Required, MinLength(2), MaxLength(100)]public string? FirstName { get; set; }
 
-        [Required, MinLength(2), MaxLength(100)]
-        public string LastName { get; set; }
+        [Required, MinLength(2), MaxLength(100)]public string? LastName { get; set; }
 
-        [Required, EmailAddress]
-        public string Email { get; set; }
+        [Required, EmailAddress]public string? Email { get; set; }
 
-        [Required]
-        public DateTime? DateOfBirth { get; set; }
+        [Required]public DateTime? DateOfBirth { get; set; }
 
-        [Required]
-        public string Country { get; set; }
+        [Required]public string? Country { get; set; }
 
-        [Required]
-        public string City { get; set; }
+        [Required]public string? City { get; set; }
 
-        [Required]
-        public string Street { get; set; }
+        [Required]public string? Street { get; set; }
 
-        [Required]
-        public string HouseNumber { get; set; }
+        [Required]public string? HouseNumber { get; set; }
 
-        [Required]
-        public string Code { get; set; }
+        [Required]public string? Code { get; set; }
     }
 }

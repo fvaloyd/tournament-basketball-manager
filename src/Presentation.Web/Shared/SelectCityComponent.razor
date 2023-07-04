@@ -1,6 +1,4 @@
-﻿<!--TODO: write onselect event to change the city prop-->
-
-<MudSelect T="string" Label="City" AnchorOrigin="Origin.BottomCenter" @For="@(() => City)" @bind-Value="City">
+﻿<MudSelect T="string" Label="City" AnchorOrigin="Origin.BottomCenter" @bind-Value="City">
     <MudSelectItem Value="@("Azua")" />
     <MudSelectItem Value="@("Bahoruco")" />
     <MudSelectItem Value="@("Barahona")" />
@@ -37,5 +35,17 @@
 
 @code
 {
-    [Parameter]public string City { get; set; }
+    string _value = string.Empty;
+    [Parameter]public string City 
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            CityChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]public EventCallback<string> CityChanged { get; set; }
 }
