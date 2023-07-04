@@ -1,0 +1,20 @@
+﻿<MudSelect T="string" Label="Country" AnchorOrigin="Origin.BottomCenter" @bind-Value="Country">
+    <MudSelectItem Value="@("Dominican Republic")" />
+</MudSelect>
+
+@code
+{
+    string _value = string.Empty;
+    [Parameter]public string Country 
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            CountryChanged.InvokeAsync(value);
+        }
+    }
+    [Parameter]public EventCallback<string> CountryChanged { get; set; }
+
+}

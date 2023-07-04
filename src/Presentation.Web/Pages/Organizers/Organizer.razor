@@ -1,0 +1,21 @@
+﻿@page "/organizers"
+@inject HttpClient httpClient
+
+<MudText Typo="Typo.h3">Organizers</MudText>
+<MudStack>
+    <div style="display: @(showCreateOrganizerComponent == true ? "block" : "none")">
+        <CreateOrganizerComponent 
+            Success="IsSuccessForm"
+            HandleSubmit="HandleCreateOrganizerSubmit" />
+    </div>
+    
+</MudStack>
+
+@code {
+    bool showCreateOrganizerComponent = true;
+    bool IsSuccessForm;
+    void HandleCreateOrganizerSubmit(EditContext context)
+    {
+        System.Console.WriteLine("Submit");
+    }
+}

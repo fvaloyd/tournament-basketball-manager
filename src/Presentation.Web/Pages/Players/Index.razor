@@ -1,0 +1,43 @@
+﻿@page "/players"
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject PlayersState playersState
+
+<h3>Players</h3>
+
+<div class="row m-0">
+    @if (playersState.Players is not null && playersState.Players.Count > 0)
+    {
+        @foreach (var player in playersState.Players)
+        {
+            <div class="player-box col-lg-10 col-12 col-xxl-8">
+                <div class="player-box__info">
+                    <h5>@player.PersonalInfo.FirstName @player.PersonalInfo.LastName</h5>
+                    <p>Position: <strong>@player.Position</strong></p>
+                    <p>Reside: <strong>@player.PersonalInfo.Country - @player.PersonalInfo.City</strong></p>
+                </div>
+                <div class="player-box__action">
+                    @if (player.TeamId != Guid.Empty)
+                    {
+                        <button class="btn btn-warning">Draft player</button>
+                    }
+                    <button class="btn btn-primary" @onclick="() => RedirectToDetaild(player.Id)">Details</button>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        playersState.Players = await httpClient.GetFromJsonAsync<List<PlayerResponse>>("api/players");
+        await base.OnInitializedAsync();
+    }
+
+    private void RedirectToDetaild(Guid id)
+    {
+        playersState.CurrentPlayer = playersState.Players.SingleOrDefault(p => p.Id == id);
+        navigationManager.NavigateTo($"players/details/{id}");
+    }
+}
