@@ -5,6 +5,8 @@ public interface IOrganizerClient
 {
     [Post("/api/organizers")]
     Task<Guid> CreateAsync([Body]object request);
+    [Get("/api/organizers")]
+    Task<IEnumerable<OrganizerResponse>> GetAllAsync();
     [Post("/api/organizers/{id}/tournaments")]
     Task<Guid> CreateTournamentAsync(Guid id, string tournamentName);
     [Post("/api/organizers/{id}/tournaments/teams/{teamId}")]
