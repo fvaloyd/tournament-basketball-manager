@@ -26,7 +26,7 @@ public class MongoPlayerRepository : IPlayerRepository
         await _collection.InsertOneAsync(mongoPlayer, default, cancellationToken);
     }
 
-    public async Task<IEnumerable<Player>> GetAllAsync(CancellationToken cancellationToken = default) 
+    public async Task<IEnumerable<Player>> GetAllAsync(CancellationToken cancellationToken = default)
         => _collection.AsQueryable().ProjectTo<Player>(_mapper.ConfigurationProvider);
 
     public async Task<Player> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
