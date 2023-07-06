@@ -11,6 +11,15 @@ public class SqlOrganizerRepository : IOrganizerRepository
 
     public async Task CreateAsync(Organizer organizer, CancellationToken cancellationToken = default) => await _db.Organizers.AddAsync(organizer, cancellationToken);
 
+    public async Task<IEnumerable<Organizer>> GetAllOrganizersAsync(CancellationToken cancellationToken = default)
+    {
+        var organizer = await _db.Organizers
+            .Include(o => o.Tournament).ThenInclude(t => t!.Matches)
+            .Include(o => o.Tournament).ThenInclude(t => t!.Teams)
+            .ToListAsync(cancellationToken);
+        return organizer ?? Enumerable.Empty<Organizer>();
+    }
+
     public async Task<Organizer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var organizer = await _db.Organizers

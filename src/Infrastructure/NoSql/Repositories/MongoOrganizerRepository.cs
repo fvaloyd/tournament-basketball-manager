@@ -36,4 +36,7 @@ public class MongoOrganizerRepository : IOrganizerRepository
         var mongoOrganizer = _mapper.Map<MongoOrganizer>(organizerUpdated);
         await _collection.ReplaceOneAsync(o => o.Id == organizerUpdated.Id, mongoOrganizer, cancellationToken: cancellationToken);
     }
+
+    public async Task<IEnumerable<Organizer>> GetAllOrganizersAsync(CancellationToken cancellationToken = default)
+        => _collection.AsQueryable().ProjectTo<Organizer>(_mapper.ConfigurationProvider);
 }

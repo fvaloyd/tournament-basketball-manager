@@ -57,6 +57,12 @@ public static class OrganizerEndpoints
             return Results.Ok(organizer);
         });
 
+        organizersGroup.MapGet("/", async (ISender sender, CancellationToken ct) =>
+        {
+            var organizers = await sender.Send(new GetOrganizersQuery(), ct);
+            return Results.Ok(organizers);
+        });
+
         organizersGroup.MapGet("/{id:guid}/tournaments/matches", async (Guid id, ISender sender, CancellationToken ct) =>
         {
             var matches = await sender.Send(new GetTournamentMatchesQuery { OrganizerId = id }, ct);
