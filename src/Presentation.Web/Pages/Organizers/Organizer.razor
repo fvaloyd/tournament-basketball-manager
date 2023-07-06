@@ -1,21 +1,60 @@
 ﻿@page "/organizers"
-@inject HttpClient httpClient
+@inject IOrganizerClient organizerClient
+@inject NavigationManager navigationManager
 
 <MudText Typo="Typo.h3">Organizers</MudText>
 <MudStack>
-    <div style="display: @(showCreateOrganizerComponent == true ? "block" : "none")">
-        <CreateOrganizerComponent 
-            Success="IsSuccessForm"
-            HandleSubmit="HandleCreateOrganizerSubmit" />
-    </div>
-    
+    <MudRadioGroup @bind-SelectedOption="CurrentFeature">
+        <MudRadio Option="@PageFeatures.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">Create organizer
+        </MudRadio>
+        <MudRadio Option="@PageFeatures.List" Color="Color.Dark" UnCheckedColor="Color.Default">List organizers
+        </MudRadio>
+    </MudRadioGroup>
+    @switch (CurrentFeature)
+    {
+        case PageFeatures.Creation:
+            <CreateOrganizerComponent Success="IsSuccessForm" HandleSubmit="HandleCreateOrganizerSubmit" />
+            break;
+        case PageFeatures.List:
+            <ul>
+                @foreach (OrganizerResponse organizer in Organizers)
+                {
+                    <li>@organizer.PersonalInfo.FirstName @organizer.PersonalInfo.LastName</li>
+                }
+            </ul>
+            break;
+        default:
+            <p>Select a feature</p>
+            break;
+    }
 </MudStack>
 
 @code {
-    bool showCreateOrganizerComponent = true;
+    IEnumerable<OrganizerResponse> Organizers = new List<OrganizerResponse>();
+    PageFeatures CurrentFeature = PageFeatures.List;
     bool IsSuccessForm;
-    void HandleCreateOrganizerSubmit(EditContext context)
+
+    protected override async Task OnInitializedAsync()
     {
-        System.Console.WriteLine("Submit");
+        Organizers = await organizerClient.GetAllAsync();
+    }
+
+    async Task HandleCreateOrganizerSubmit(EditContext context)
+    {
+        try
+        {
+            await organizerClient.CreateAsync(context.Model);
+            IsSuccessForm = true;
+        }
+        catch (ApiException)
+        {
+            IsSuccessForm = false;
+        }
+    }
+
+    enum PageFeatures
+    {
+        Creation,
+        List
     }
 }

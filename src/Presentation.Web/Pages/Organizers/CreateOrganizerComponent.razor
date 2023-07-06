@@ -16,7 +16,7 @@
                 <MudTextField Label="Postal code" For="@(() => FormModel.Code)" @bind-Value="FormModel.Code" />
             </MudPaper>
             <MudPaper Class="pa-4 mt-4">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">Create</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" @onclick="CleanForm" Variant="Variant.Filled">Create</MudButton>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="5">
@@ -34,6 +34,12 @@
     public CreateOrganizerForm FormModel { get; set; } = new();
     [Parameter]public bool Success { get; set; }
     [Parameter]public EventCallback<EditContext> HandleSubmit { get; set; }
+
+    void CleanForm()
+    {
+        FormModel = new();
+        // Create a local handle submit
+    }
 
     public class CreateOrganizerForm
     {
