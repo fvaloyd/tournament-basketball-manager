@@ -1,42 +1,15 @@
 ﻿<MudSelect T="string" Label="City" AnchorOrigin="Origin.BottomCenter" @bind-Value="City">
-    <MudSelectItem Value="@("Azua")" />
-    <MudSelectItem Value="@("Bahoruco")" />
-    <MudSelectItem Value="@("Barahona")" />
-    <MudSelectItem Value="@("Dajabón")" />
-    <MudSelectItem Value="@("Distrito Nacional")" />
-    <MudSelectItem Value="@("Duarte")" />
-    <MudSelectItem Value="@("Elías Piña")" />
-    <MudSelectItem Value="@("El Seibo")" />
-    <MudSelectItem Value="@("Espaillat")" />
-    <MudSelectItem Value="@("Hato Mayor")" />
-    <MudSelectItem Value="@("Hermanas Mirabal")" />
-    <MudSelectItem Value="@("Independencia")" />
-    <MudSelectItem Value="@("La Altagracia")" />
-    <MudSelectItem Value="@("La Romana")" />
-    <MudSelectItem Value="@("La Vega")" />
-    <MudSelectItem Value="@("María Trinidad Sánchez")" />
-    <MudSelectItem Value="@("Monseñor Nouel")" />
-    <MudSelectItem Value="@("Monte Cristi")" />
-    <MudSelectItem Value="@("Monte Plata")" />
-    <MudSelectItem Value="@("Pedernales")" />
-    <MudSelectItem Value="@("Peravia")" />
-    <MudSelectItem Value="@("Puerto Plata")" />
-    <MudSelectItem Value="@("Samaná")" />
-    <MudSelectItem Value="@("Sánchez Ramírez")" />
-    <MudSelectItem Value="@("San Cristóbal")" />
-    <MudSelectItem Value="@("San José de Ocoa")" />
-    <MudSelectItem Value="@("San Juan")" />
-    <MudSelectItem Value="@("San Pedro de Macorís")" />
-    <MudSelectItem Value="@("Santiago")" />
-    <MudSelectItem Value="@("Santiago Rodríguez")" />
-    <MudSelectItem Value="@("Santo Domingo")" />
-    <MudSelectItem Value="@("Valverde")" />
+    @foreach(var city in Cities)
+    {
+        <MudSelectItem Value="@(city)" />
+    }
 </MudSelect>
 
 @code
 {
     string _value = string.Empty;
-    [Parameter]public string City 
+    [Parameter]
+    public string City
     {
         get => _value;
         set
@@ -47,5 +20,41 @@
         }
     }
 
-    [Parameter]public EventCallback<string> CityChanged { get; set; }
+    [Parameter] public EventCallback<string> CityChanged { get; set; }
+
+    string[] Cities = new string[]
+    {
+        "Azua",
+        "Bahoruco",
+        "Barahona",
+        "Dajabón",
+        "Distrito Nacional",
+        "Duarte",
+        "Elías Piña",
+        "El Seibo",
+        "Espaillat",
+        "Hato Mayor",
+        "Hermanas Mirabal",
+        "Independencia",
+        "La Altagracia",
+        "La Romana",
+        "La Vega",
+        "María Trinidad Sánchez",
+        "Monseñor Nouel",
+        "Monte Cristi",
+        "Monte Plata",
+        "Pedernales",
+        "Peravia",
+        "Puerto Plata",
+        "Samaná",
+        "Sánchez Ramírez",
+        "San Cristóbal",
+        "San José de Ocoa",
+        "San Juan",
+        "San Pedro de Macorís",
+        "Santiago",
+        "Santiago Rodríguez",
+        "Santo Domingo",
+        "Valverde"
+    };
 }
