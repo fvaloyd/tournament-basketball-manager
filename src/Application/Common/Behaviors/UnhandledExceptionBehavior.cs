@@ -15,7 +15,7 @@ public class UnhandledExceptionBehavior<TRequest, TResponse> : IPipelineBehavior
 		{
 			return await next();
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			_logger.LogError($"Request: Unhandled Exception for Request {typeof(TRequest).Name}");
             throw;

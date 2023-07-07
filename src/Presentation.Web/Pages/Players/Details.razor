@@ -41,19 +41,14 @@
 </div>
 
 @code {
-    [Parameter] public string? id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
+    [Parameter] public string id { get; set; } = string.Empty;
     protected override async Task OnParametersSetAsync()
     {
         if (playersState.CurrentPlayer is null)
         {
             if (id is not null)
             {
-                playersState.CurrentPlayer = await httpClient.GetFromJsonAsync<PlayerResponse>($"api/players/{id}");
+                playersState.CurrentPlayer = await httpClient.GetFromJsonAsync<PlayerResponse>($"api/players/{id}") ?? new();
             }
         }
         await base.OnParametersSetAsync();

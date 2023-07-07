@@ -38,7 +38,7 @@
 
     private void RedirectToDetaild(Guid id)
     {
-        playersState.CurrentPlayer = playersState.Players.SingleOrDefault(p => p.Id == id);
+        playersState.CurrentPlayer = playersState.Players.SingleOrDefault(p => p.Id == id) ?? new();
         navigationManager.NavigateTo($"players/details/{id}");
     }
 }
