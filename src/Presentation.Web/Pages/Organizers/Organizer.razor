@@ -13,7 +13,7 @@
     @switch (CurrentFeature)
     {
         case PageFeatures.Creation:
-            <CreateOrganizerComponent Success="IsSuccessForm" HandleSubmit="HandleCreateOrganizerSubmit" />
+            <CreateOrganizerComponent Success="IsSuccessForm" OnSubmit="OnCreateOrganizerSubmit" />
             break;
         case PageFeatures.List:
             <ul>
@@ -39,11 +39,13 @@
         Organizers = await organizerClient.GetAllAsync();
     }
 
-    async Task HandleCreateOrganizerSubmit(EditContext context)
+    async Task OnCreateOrganizerSubmit(EditContext context)
     {
+        System.Console.WriteLine("OnSubmit hit");
         try
         {
             await organizerClient.CreateAsync(context.Model);
+            // TODO: we need a global state for organizers
             IsSuccessForm = true;
         }
         catch (ApiException)

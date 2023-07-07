@@ -5,18 +5,18 @@
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-4">
-                <MudTextField Label="FirstName" For="@(() => FormModel.FirstName)" @bind-Value="FormModel.FirstName" />
-                <MudTextField Label="LastName" For="@(() => FormModel.LastName)" @bind-Value="FormModel.LastName" />
-                <MudTextField Label="Email" For="@(() => FormModel.Email)" @bind-Value="FormModel.Email" />
-                <MudDatePicker Label="Date of birth" For="@(() => FormModel.DateOfBirth)" @bind-Date="FormModel.DateOfBirth" />
-                <SelectCountryComponent @bind-Country="FormModel.Country" />
-                <SelectCityComponent @bind-City="FormModel.City"/>
-                <MudTextField Label="Street" For="@(() => FormModel.Street)" @bind-Value="FormModel.Street" />
-                <MudTextField Label="House number" For="@(() => FormModel.HouseNumber)" @bind-Value="FormModel.HouseNumber" />
-                <MudTextField Label="Postal code" For="@(() => FormModel.Code)" @bind-Value="FormModel.Code" />
+                <MudTextField Label="FirstName" For="@(() => FormModel.OrganizerPersonalInfo.FirstName)" @bind-Value="FormModel.OrganizerPersonalInfo.FirstName" />
+                <MudTextField Label="LastName" For="@(() => FormModel.OrganizerPersonalInfo.LastName)" @bind-Value="FormModel.OrganizerPersonalInfo.LastName" />
+                <MudTextField Label="Email" For="@(() => FormModel.OrganizerPersonalInfo.Email)" @bind-Value="FormModel.OrganizerPersonalInfo.Email" />
+                <MudDatePicker Label="Date of birth" For="@(() => FormModel.OrganizerPersonalInfo.DateOfBirth)" @bind-Date="FormModel.OrganizerPersonalInfo.DateOfBirth" />
+                <SelectCountryComponent @bind-Country="FormModel.OrganizerPersonalInfo.Country" />
+                <SelectCityComponent @bind-City="FormModel.OrganizerPersonalInfo.City"/>
+                <MudTextField Label="Street" For="@(() => FormModel.OrganizerPersonalInfo.Street)" @bind-Value="FormModel.OrganizerPersonalInfo.Street" />
+                <MudTextField Label="House number" For="@(() => FormModel.OrganizerPersonalInfo.HouseNumber)" @bind-Value="FormModel.OrganizerPersonalInfo.HouseNumber" />
+                <MudTextField Label="Postal code" For="@(() => FormModel.OrganizerPersonalInfo.Code)" @bind-Value="FormModel.OrganizerPersonalInfo.Code" />
             </MudPaper>
             <MudPaper Class="pa-4 mt-4">
-                <MudButton ButtonType="ButtonType.Submit" @onclick="CleanForm" Variant="Variant.Filled">Create</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">Create</MudButton>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="5">
@@ -33,15 +33,20 @@
 @code {
     public CreateOrganizerForm FormModel { get; set; } = new();
     [Parameter]public bool Success { get; set; }
-    [Parameter]public EventCallback<EditContext> HandleSubmit { get; set; }
+    [Parameter]public EventCallback<EditContext> OnSubmit { get; set; }
+
+    async Task HandleSubmit(EditContext context)
+    {
+        await OnSubmit.InvokeAsync(context);
+        CleanForm();
+    }
 
     void CleanForm()
     {
         FormModel = new();
-        // Create a local handle submit
     }
 
-    public class CreateOrganizerForm
+    public class OrganizerPersonalInfo
     {
         [Required, MinLength(2), MaxLength(100)]public string? FirstName { get; set; }
 
@@ -60,5 +65,10 @@
         [Required]public string? HouseNumber { get; set; }
 
         [Required]public string? Code { get; set; }
+    }
+
+    public class CreateOrganizerForm
+    {
+        public OrganizerPersonalInfo OrganizerPersonalInfo { get; set; } = new();
     }
 }
