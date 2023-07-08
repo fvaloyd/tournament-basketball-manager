@@ -5,9 +5,9 @@
 <MudText Typo="Typo.h3">Organizers</MudText>
 <MudStack>
     <MudRadioGroup @bind-SelectedOption="CurrentFeature">
-        <MudRadio Option="@PageFeatures.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">Create organizer
-        </MudRadio>
         <MudRadio Option="@PageFeatures.List" Color="Color.Dark" UnCheckedColor="Color.Default">List organizers
+        </MudRadio>
+        <MudRadio Option="@PageFeatures.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">Create organizer
         </MudRadio>
     </MudRadioGroup>
     @switch (CurrentFeature)
