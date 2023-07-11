@@ -32,21 +32,20 @@
 
 @code {
     public CreateOrganizerForm FormModel { get; set; } = new();
-    [Parameter]public bool Success { get; set; }
     [Parameter]public EventCallback<EditContext> OnSubmit { get; set; }
 
     async Task HandleSubmit(EditContext context)
     {
         await OnSubmit.InvokeAsync(context);
-        CleanForm();
+        ClearForm();
     }
 
-    void CleanForm()
+    void ClearForm()
     {
         FormModel = new();
     }
 
-    public class OrganizerPersonalInfo
+    public class OrganizerPersonalInfoFormModel
     {
         [Required, MinLength(2), MaxLength(100)]public string? FirstName { get; set; }
 
@@ -54,7 +53,7 @@
 
         [Required, EmailAddress]public string? Email { get; set; }
 
-        [Required]public DateTime? DateOfBirth { get; set; }
+        [Required] public DateTime? DateOfBirth { get; set; }
 
         [Required]public string? Country { get; set; }
 
@@ -69,6 +68,6 @@
 
     public class CreateOrganizerForm
     {
-        public OrganizerPersonalInfo OrganizerPersonalInfo { get; set; } = new();
+        public OrganizerPersonalInfoFormModel OrganizerPersonalInfo { get; set; } = new();
     }
 }

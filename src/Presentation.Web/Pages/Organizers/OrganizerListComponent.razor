@@ -1,0 +1,32 @@
+﻿@inject NavigationManager navigationManager
+@inject OrganizerState organizerState
+
+@foreach (var organizer in Organizers)
+{
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>@organizer.PersonalInfo.FirstName @organizer.PersonalInfo.LastName</MudText>
+            <MudText Typo="Typo.body2">@organizer.PersonalInfo.Email</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="() => RedirectToOrganizerDetail(organizer.Id)">Details</MudButton>
+            <CreateTournamentBtnComponent Organizer="organizer" />
+        </MudCardActions>
+    </MudCard>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<OrganizerResponse> Organizers { get; set; }
+
+    void RedirectToOrganizerDetail(Guid id)
+    {
+        organizerState.InitializeCurrentOrganizer(id);
+        navigationManager.NavigateTo($"organizers/details/{id}");
+    }
+
+    void RedirectToCreateTournamentForm(Guid id)
+    {
+        Console.WriteLine("Create tournament form");
+    }
+}

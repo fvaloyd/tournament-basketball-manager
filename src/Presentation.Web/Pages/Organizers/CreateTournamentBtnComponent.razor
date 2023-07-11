@@ -1,0 +1,14 @@
+﻿@inject NavigationManager navigationManager
+
+@if(Organizer.TournamentId == Guid.Empty)
+{
+    <MudButton Variant="Variant.Text" Color="Color.Dark" @onclick="() => RedirectToCreateTournamentForm(Organizer.Id)">Create tournament</MudButton>
+}
+
+@code {
+    [Parameter]public OrganizerResponse Organizer { get; set; }
+    void RedirectToCreateTournamentForm(Guid id)
+    {
+        navigationManager.NavigateTo($"organizers/{Organizer.Id}/create-tournament");
+    }
+}
