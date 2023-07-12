@@ -8,7 +8,7 @@ using Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddSingleton<PlayersState>();
+builder.Services.AddSingleton<PlayerState>();
 builder.Services.AddSingleton<OrganizerState>();
 
 builder.Services.AddMudServices();

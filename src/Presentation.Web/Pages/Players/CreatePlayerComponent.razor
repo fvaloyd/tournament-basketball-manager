@@ -1,0 +1,79 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@FormModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MudTextField Label="FirstName" For="@(() => FormModel.PlayerPersonalInfo.FirstName)" @bind-Value="FormModel.PlayerPersonalInfo.FirstName" />
+                <MudTextField Label="LastName" For="@(() => FormModel.PlayerPersonalInfo.LastName)" @bind-Value="FormModel.PlayerPersonalInfo.LastName" />
+                <MudTextField Label="Weight" For="@(() => FormModel.PlayerPersonalInfo.Weight)" @bind-Value="FormModel.PlayerPersonalInfo.Weight" />
+                <MudTextField Label="Height" For="@(() => FormModel.PlayerPersonalInfo.Height)" @bind-Value="FormModel.PlayerPersonalInfo.Height" />
+                <MudTextField Label="Email" For="@(() => FormModel.PlayerPersonalInfo.Email)" @bind-Value="FormModel.PlayerPersonalInfo.Email" />
+                <MudDatePicker Label="Date of birth" For="@(() => FormModel.PlayerPersonalInfo.DateOfBirth)" @bind-Date="FormModel.PlayerPersonalInfo.DateOfBirth" />
+                <SelectCountryComponent @bind-Country="FormModel.PlayerPersonalInfo.Country" />
+                <SelectCityComponent @bind-City="FormModel.PlayerPersonalInfo.City" />
+                <MudTextField Label="Street" For="@(() => FormModel.PlayerPersonalInfo.Street)" @bind-Value="FormModel.PlayerPersonalInfo.Street" />
+                <MudTextField Label="House number" For="@(() => FormModel.PlayerPersonalInfo.HouseNumber)" @bind-Value="FormModel.PlayerPersonalInfo.HouseNumber" />
+                <MudTextField Label="Postal code" For="@(() => FormModel.PlayerPersonalInfo.Code)" @bind-Value="FormModel.PlayerPersonalInfo.Code" />
+            </MudPaper>
+            <MudPaper Class="pa-4 mt-4">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">Create</MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation summary</MudText>
+                <MudText Color="@Color.Error">
+                    <ValidationSummary />
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    public CreatePlayerForm FormModel { get; set; } = new();
+    [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }
+
+    async Task HandleSubmit(EditContext context)
+    {
+        await OnSubmit.InvokeAsync(context);
+        ClearForm();
+    }
+
+    void ClearForm()
+    {
+        FormModel = new();
+    }
+
+    public class PlayerPersonalInfoFormModel
+    {
+        [Required, MinLength(2), MaxLength(100)] public string? FirstName { get; set; }
+
+        [Required, MinLength(2), MaxLength(100)] public string? LastName { get; set; }
+        
+        [Required] public float Weight { get; set; }
+        
+        [Required] public float Height{ get; set; }
+
+        [Required, EmailAddress] public string? Email { get; set; }
+
+        [Required] public DateTime? DateOfBirth { get; set; }
+
+        [Required] public string? Country { get; set; }
+
+        [Required] public string? City { get; set; }
+
+        [Required] public string? Street { get; set; }
+
+        [Required] public string? HouseNumber { get; set; }
+
+        [Required] public string? Code { get; set; }
+    }
+
+    public class CreatePlayerForm
+    {
+        public PlayerPersonalInfoFormModel PlayerPersonalInfo { get; set; } = new();
+    }
+}

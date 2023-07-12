@@ -1,0 +1,56 @@
+﻿@page "/players"
+@inject IPlayerClient playerClient
+@inject NavigationManager navigationManager
+@inject PlayerState playerState
+
+<MudText Typo="Typo.h3">Players</MudText>
+<MudStack>
+    <MudRadioGroup @bind-SelectedOption="CurrentFeature">
+        <MudRadio Option="@PageFeatures.List" Color="Color.Dark" UnCheckedColor="Color.Default">
+            List players
+        </MudRadio>
+        <MudRadio Option="@PageFeatures.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">
+            Create player
+        </MudRadio>
+    </MudRadioGroup>
+    @switch (CurrentFeature)
+    {
+        case PageFeatures.Creation:
+            <CreatePlayerComponent OnSubmit="OnCreatePlayerSubmit" />
+            break;
+        case PageFeatures.List:
+            <PlayerListComponent Players="playerState.Players" />
+            break;
+        default:
+            <p>Select a feature</p>
+            break;
+    }
+</MudStack>
+
+@code {
+    PageFeatures CurrentFeature = PageFeatures.List;
+    protected override async Task OnInitializedAsync()
+    {
+        playerState.InitializePlayers(await playerClient.GetPlayersAsync());
+        await base.OnInitializedAsync();
+    }
+
+    async Task OnCreatePlayerSubmit(EditContext context)
+    {
+        try
+        {
+            var playerCreatedId = await playerClient.CreateAsync(context.Model);
+            playerState.AddPlayer(context.Model, playerCreatedId);
+            CurrentFeature = PageFeatures.List;
+        }
+        catch (ApiException)
+        {
+        }
+    }
+
+    enum PageFeatures
+    {
+        List,
+        Creation
+    }
+}

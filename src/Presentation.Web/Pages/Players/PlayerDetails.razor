@@ -1,0 +1,53 @@
+﻿@page "/players/details/{id:guid}"
+@inject HttpClient httpClient
+@inject PlayerState playerState
+
+<h1>Player details</h1>
+
+<div class="row p-0">
+    <div class="col">
+        @if (playerState.CurrentPlayer is not null)
+        {
+            <div class="card" style="max-width: 40rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@playerState.CurrentPlayer.PersonalInfo.FirstName @playerState.CurrentPlayer.PersonalInfo.LastName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@playerState.CurrentPlayer.Position</h6>
+                    <ul>
+                        <li><strong>Height: </strong>@playerState.CurrentPlayer.PersonalInfo.Height</li>
+                        <li><strong>Weight: </strong>@playerState.CurrentPlayer.PersonalInfo.Weight</li>
+                        <li><strong>Email: </strong>@playerState.CurrentPlayer.PersonalInfo.Email</li>
+                        <li><strong>Country: </strong>@playerState.CurrentPlayer.PersonalInfo.Country</li>
+                        <li><strong>City: </strong>@playerState.CurrentPlayer.PersonalInfo.City</li>
+                        <li><strong>Postal code: </strong>@playerState.CurrentPlayer.PersonalInfo.Code</li>
+                        <li><strong>Street: </strong>@playerState.CurrentPlayer.PersonalInfo.Street</li>
+                        <li><strong>House number: </strong>@playerState.CurrentPlayer.PersonalInfo.HouseNumber</li>
+                    </ul>
+                    @if (playerState.CurrentPlayer.TeamId == Guid.Empty)
+                    {
+                        <p>Player is free to draft.</p>
+                    } else
+                    {
+                        <p>Player is currrently in a team.</p>
+                    }
+                    <NavLink href="players" class="card-link">Go back</NavLink>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Loading player...</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid id { get; set; }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (playerState.CurrentPlayer is null)
+        {
+            playerState.SetCurrentPlayer(id);
+        }
+        await base.OnParametersSetAsync();
+    }
+}

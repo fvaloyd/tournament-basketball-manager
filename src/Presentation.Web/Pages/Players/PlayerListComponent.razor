@@ -1,0 +1,26 @@
+﻿@inject PlayerState playerState
+@inject NavigationManager navigationManager
+
+@foreach (var player in Players)
+{
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>@player.PersonalInfo.FirstName @player.PersonalInfo.LastName</MudText>
+            <MudText Typo="Typo.body2">@player.PersonalInfo.Email</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="() => RedirectToplayerDetail(player.Id)">Details</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<PlayerResponse> Players { get; set; }
+
+    void RedirectToplayerDetail(Guid id)
+    {
+        playerState.SetCurrentPlayer(id);
+        navigationManager.NavigateTo($"players/details/{id}");
+    }
+}
