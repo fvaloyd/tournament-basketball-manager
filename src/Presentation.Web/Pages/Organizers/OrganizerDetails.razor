@@ -29,7 +29,7 @@
     {
         if (organizerState.CurrentOrganizer is null)
         {
-            organizerState.InitializeCurrentOrganizer(id);
+            organizerState.SetCurrentOrganizer(id);
         }
         return base.OnParametersSetAsync();
     }

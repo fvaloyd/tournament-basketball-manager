@@ -11,7 +11,7 @@ public class OrganizerState
     public OrganizerResponse CurrentOrganizer => _currentOrganizer;
     public IReadOnlyCollection<OrganizerResponse> Organizers => _organizers.AsReadOnly();
 
-    public void InitializeCurrentOrganizer(Guid id)
+    public void SetCurrentOrganizer(Guid id)
         => _currentOrganizer = _organizers.First(o => o.Id == id);
     public void AddOrganizer(OrganizerResponse organizer)
         => _organizers.Add(organizer);
