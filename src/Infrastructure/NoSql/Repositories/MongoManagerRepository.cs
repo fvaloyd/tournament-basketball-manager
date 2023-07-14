@@ -44,4 +44,7 @@ public class MongoManagerRepository : IManagerRepository
         var mongoManagers = await mongoManagersCursor.ToListAsync(cancellationToken: cancellationToken);
         return mongoManagers.AsQueryable().ProjectTo<Manager>(_mapper.ConfigurationProvider);
     }
+
+    public async Task<IEnumerable<Manager>> GetAllAsync(CancellationToken cancellationToken = default)
+        => _collection.AsQueryable().ProjectTo<Manager>(_mapper.ConfigurationProvider);
 }

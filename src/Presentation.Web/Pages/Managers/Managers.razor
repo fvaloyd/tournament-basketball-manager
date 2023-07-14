@@ -1,7 +1,38 @@
 ﻿@page "/managers"
 
-<h3>Managers</h3>
+@using static Presentation.Web.Components.FeatureSectionTemplate;
+
+@inject IManagerClient managerClient
+@inject ManagerState managerState
+
+
+<FeatureSectionTemplate PageName="Managers" PageNameSingular="Manager" CurrentFeature="CurrentFeature">
+    <CreateComponent>
+        <CreateManagerComponent OnSubmit="OnCreateManagerSubmit" />
+    </CreateComponent>
+    <ListComponent>
+        <ListManagersComponent Managers="managerState.Managers" />
+    </ListComponent>
+</FeatureSectionTemplate>
 
 @code {
+    PageFeature CurrentFeature = PageFeature.List;
 
+    protected override async Task OnInitializedAsync()
+    {
+        managerState.InitializeManagers(await managerClient.GetAllAsync());
+    }
+
+    async Task OnCreateManagerSubmit(EditContext context)
+    {
+        try
+        {
+            var managerCreatedId = await managerClient.CreateAsync(context.Model);
+            managerState.AddManager(context.Model, managerCreatedId);
+            CurrentFeature = PageFeature.List;
+        }
+        catch (ApiException)
+        {
+        }
+    }
 }

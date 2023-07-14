@@ -15,6 +15,11 @@ public static class ManagerEndpoints
             .CacheOutput("OutputCachePolicy")
             .RequireRateLimiting("GlobalLimiter");
 
+        managersGroup.MapGet("/", async (ISender sender, CancellationToken ct) =>
+        {
+            var managers = await sender.Send(new GetManagersQuery(), ct);
+            return Results.Ok(managers);
+        });
         managersGroup.MapGet("/{id:guid}", async (Guid id, ISender sender, CancellationToken ct) =>
         {
             var manager = await sender.Send(new GetManagerQuery { ManagerId = id }, ct);

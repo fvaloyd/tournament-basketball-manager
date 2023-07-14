@@ -1,0 +1,26 @@
+﻿@inject NavigationManager navigationManager
+@inject ManagerState managerState
+
+@foreach (var manager in Managers)
+{
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>@manager.PersonalInfo.FirstName @manager.PersonalInfo.LastName</MudText>
+            <MudText Typo="Typo.body2">@manager.PersonalInfo.Email</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="() => RedirectToManagerDetail(manager.Id)">Details</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<ManagerResponse> Managers { get; set; }
+
+    void RedirectToManagerDetail(Guid id)
+    {
+        managerState.SetCurrentManager(id);
+        navigationManager.NavigateTo($"managers/details/{id}");
+    }
+}

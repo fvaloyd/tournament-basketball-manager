@@ -11,6 +11,15 @@ public class SqlManagerRepository : IManagerRepository
 
     public async Task CreateAsync(Manager manager, CancellationToken cancellationToken = default) => await _db.Managers.AddAsync(manager, cancellationToken);
 
+    public async Task<IEnumerable<Manager>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var managers = await _db.Managers
+            .Include(m => m.Team).ThenInclude(t => t!.Tournament)
+            .Include(m => m.Team).ThenInclude(t => t!.Players)
+            .ToListAsync(cancellationToken);
+        return managers;
+    }
+
     public async Task<Manager> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var manager = await _db.Managers
