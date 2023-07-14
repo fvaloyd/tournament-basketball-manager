@@ -1,35 +1,22 @@
 ﻿@page "/organizers"
-@using Domain.Organizers;
+
+@using static Presentation.Web.Components.FeatureSectionTemplate;
+
 @inject IOrganizerClient organizerClient
-@inject NavigationManager navigationManager
 @inject OrganizerState organizerState
 
-<MudText Typo="Typo.h3">Organizers</MudText>
-<MudStack>
-    <MudRadioGroup @bind-SelectedOption="CurrentFeature">
-        <MudRadio Option="@PageFeatures.List" Color="Color.Dark" UnCheckedColor="Color.Default">
-            List organizers
-        </MudRadio>
-        <MudRadio Option="@PageFeatures.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">
-            Create organizer
-        </MudRadio>
-    </MudRadioGroup>
-    @switch (CurrentFeature)
-    {
-        case PageFeatures.Creation:
-            <CreateOrganizerComponent OnSubmit="OnCreateOrganizerSubmit" />
-            break;
-        case PageFeatures.List:
-            <OrganizerListComponent Organizers="organizerState.Organizers" />
-            break;
-        default:
-            <p>Select a feature</p>
-            break;
-    }
-</MudStack>
+
+<FeatureSectionTemplate PageName="Organizers" PageNameSingular="Organizer" CurrentFeature="CurrentFeature">
+    <CreateComponent>
+        <CreateOrganizerComponent OnSubmit="OnCreateOrganizerSubmit" />
+    </CreateComponent>
+    <ListComponent>
+        <OrganizerListComponent Organizers="organizerState.Organizers" />
+    </ListComponent>
+</FeatureSectionTemplate>
 
 @code {
-    PageFeatures CurrentFeature = PageFeatures.List;
+    PageFeature CurrentFeature = PageFeature.List;
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,16 +29,10 @@
         {
             var organizerCreatedId = await organizerClient.CreateAsync(context.Model);
             organizerState.AddOrganizer(context.Model, organizerCreatedId);
-            CurrentFeature = PageFeatures.List;
+            CurrentFeature = PageFeature.List;
         }
         catch (ApiException)
         {
         }
-    }
-
-    enum PageFeatures
-    {
-        Creation,
-        List
     }
 }

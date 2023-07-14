@@ -1,0 +1,37 @@
+﻿<MudText Typo="Typo.h3">@PageName</MudText>
+<MudStack>
+    <MudRadioGroup @bind-SelectedOption="CurrentFeature">
+        <MudRadio Option="@PageFeature.List" Color="Color.Dark" UnCheckedColor="Color.Default">
+            List @(PageNameSingular ?? PageName)
+        </MudRadio>
+        <MudRadio Option="@PageFeature.Creation" Color="Color.Dark" UnCheckedColor="Color.Default">
+            Create @(PageNameSingular ?? PageName)
+        </MudRadio>
+    </MudRadioGroup>
+    @switch (CurrentFeature)
+    {
+        case PageFeature.Creation:
+            @CreateComponent
+            break;
+        case PageFeature.List:
+            @ListComponent
+            break;
+        default:
+            <p>Select a feature</p>
+            break;
+    }
+</MudStack>
+
+@code {
+    [Parameter]public string PageName { get; set; }
+    [Parameter]public string? PageNameSingular { get; set; }
+    [Parameter]public RenderFragment CreateComponent { get; set; }
+    [Parameter]public RenderFragment ListComponent { get; set; }
+    [Parameter]public PageFeature CurrentFeature { get; set; } = PageFeature.List;
+
+    public enum PageFeature
+    {
+        List,
+        Creation
+    };
+}
