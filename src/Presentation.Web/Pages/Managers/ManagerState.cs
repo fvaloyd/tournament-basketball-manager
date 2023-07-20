@@ -7,7 +7,7 @@ public class ManagerState
     private ManagerResponse _currentManager= default!;
     private List<ManagerResponse> _managers = new();
 
-    public ManagerResponse CurrentOrganizer => _currentManager;
+    public ManagerResponse CurrentManager => _currentManager;
     public IReadOnlyCollection<ManagerResponse> Managers => _managers.AsReadOnly();
 
     public void SetCurrentManager(Guid id)

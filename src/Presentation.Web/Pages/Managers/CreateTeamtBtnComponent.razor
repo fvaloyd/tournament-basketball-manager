@@ -1,0 +1,14 @@
+﻿@inject NavigationManager navigationManager
+
+@if(Manager.TeamId == Guid.Empty)
+{
+    <MudButton Variant="Variant.Text" Color="Color.Dark" @onclick="() => RedirectToCreateTeam(Manager.Id)">Create team</MudButton>
+}
+
+@code {
+    [Parameter]public ManagerResponse Manager { get; set; }
+    void RedirectToCreateTeam(Guid id)
+    {
+        navigationManager.NavigateTo($"managers/{Manager.Id}/create-team");
+    }
+}

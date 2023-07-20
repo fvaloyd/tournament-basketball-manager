@@ -51,7 +51,6 @@
         if (editContext.Validate())
         {
             var tournamentId = await organizerClient.CreateTournamentAsync(id, FormModel.TournamentName);
-            organizerState.CurrentOrganizer.TournamentId = tournamentId;
             navigationManager.NavigateTo("organizers");
         }
     }

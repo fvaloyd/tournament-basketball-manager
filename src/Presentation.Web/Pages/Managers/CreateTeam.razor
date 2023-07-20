@@ -1,0 +1,62 @@
+﻿@page "/managers/{id:guid}/create-team"
+@using System.ComponentModel.DataAnnotations;
+
+@inject ManagerState managerState
+@inject NavigationManager navigationManager
+@inject IManagerClient managerClient
+
+<MudText Typo="Typo.h3">Create tournament</MudText>
+<EditForm Model="@FormModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MudTextField Label="Manager name" Disabled For="@(() => managerName)" @bind-Value="managerName" />
+                <MudTextField Label="Team name" For="@(() => FormModel.TeamName)" @bind-Value="FormModel.TeamName" />
+
+            </MudPaper>
+            <MudPaper Class="pa-4 mt-4">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">Create</MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation summary</MudText>
+                <MudText Color="@Color.Error">
+                    <ValidationSummary />
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    [Parameter] public Guid id { get; set; }
+    CreateTeamFormModel FormModel { get; set; } = new();
+    string managerName = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        managerState.SetCurrentManager(id);
+        var crtManager = managerState.CurrentManager;
+        if (crtManager.Team is not null || crtManager.TeamId != Guid.Empty)
+        {
+            navigationManager.NavigateTo("managers");
+        }
+        managerName = crtManager.PersonalInfo.FirstName + " " + crtManager.PersonalInfo.LastName;
+    }
+
+    async Task HandleSubmit(EditContext editContext)
+    {
+        if (editContext.Validate())
+        {
+            var tournamentId = await managerClient.CreateTeamAsync(id, FormModel.TeamName);
+            navigationManager.NavigateTo("managers");
+        }
+    }
+
+    public class CreateTeamFormModel
+    {
+        [Required][StringLength(maximumLength: 50, MinimumLength = 5)] public string TeamName { get; set; } = string.Empty;
+    }
+}
