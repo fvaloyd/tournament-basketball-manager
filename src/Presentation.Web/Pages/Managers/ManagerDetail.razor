@@ -1,41 +1,28 @@
 ﻿@page "/managers/details/{id:guid}"
 @inject ManagerState managerState
 
-<h1>Manager details</h1>
+<MudText Typo="Typo.h3">Manager details</MudText>
 
-<div class="row p-0">
-    <div class="col">
-        @if (managerState.CurrentManager is not null)
-        {
-            <div class="card" style="max-width: 40rem;">
-                <div class="card-body">
-                    <h5 class="card-title">@managerState.CurrentManager.PersonalInfo.FirstName @managerState.CurrentManager.PersonalInfo.LastName</h5>
-                    <ul>
-                        <li><strong>Email: </strong>@managerState.CurrentManager.PersonalInfo.Email</li>
-                        <li><strong>Country: </strong>@managerState.CurrentManager.PersonalInfo.Country</li>
-                        <li><strong>City: </strong>@managerState.CurrentManager.PersonalInfo.City</li>
-                        <li><strong>Postal code: </strong>@managerState.CurrentManager.PersonalInfo.Code</li>
-                        <li><strong>Street: </strong>@managerState.CurrentManager.PersonalInfo.Street</li>
-                        <li><strong>House number: </strong>@managerState.CurrentManager.PersonalInfo.HouseNumber</li>
-                    </ul>
-                    @if (managerState.CurrentManager.TeamId == Guid.Empty)
-                    {
-                        <CreateTeamtBtnComponent Manager="managerState.CurrentManager" />
-                    }
-                    else
-                    {
-                        <p>@managerState.CurrentManager.Team!.Name</p>
-                    }
-                    <NavLink href="managers" class="card-link">Go back</NavLink>
-                </div>
-            </div>
-        }
-        else
-        {
-            <p>Loading manager...</p>
-        }
-    </div>
-</div>
+<MudCard Outlined="true">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@managerState.CurrentManager.PersonalInfo.FirstName @managerState.CurrentManager.PersonalInfo.LastName</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText><strong>Email: </strong>@managerState.CurrentManager.PersonalInfo.Email</MudText>
+        <MudText><strong>Country: </strong>@managerState.CurrentManager.PersonalInfo.Country</MudText>
+        <MudText><strong>City: </strong>@managerState.CurrentManager.PersonalInfo.City</MudText>
+        <MudText><strong>Postal code: </strong>@managerState.CurrentManager.PersonalInfo.Code</MudText>
+        <MudText><strong>Street: </strong>@managerState.CurrentManager.PersonalInfo.Street</MudText>
+        <MudText><strong>House number: </strong>@managerState.CurrentManager.PersonalInfo.HouseNumber</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <CreateTeamtBtnComponent Manager="managerState.CurrentManager" />
+        <MudLink Href="managers">Go back</MudLink>
+    </MudCardActions>
+</MudCard>
+
 
 @code {
     [Parameter] public Guid id { get; set; }
