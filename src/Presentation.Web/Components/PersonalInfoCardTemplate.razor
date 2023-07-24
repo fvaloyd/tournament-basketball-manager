@@ -1,0 +1,31 @@
+﻿@using Domain.Common;
+<MudText Typo="Typo.h3">@Title</MudText>
+
+<MudCard Outlined="true">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@PersonalInfo.FirstName @PersonalInfo.LastName</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        @MoreInfo
+        <MudText><strong>Email: </strong>@PersonalInfo.Email</MudText>
+        <MudText><strong>Country: </strong>@PersonalInfo.Country</MudText>
+        <MudText><strong>City: </strong>@PersonalInfo.City</MudText>
+        <MudText><strong>Postal code: </strong>@PersonalInfo.Code</MudText>
+        <MudText><strong>Street: </strong>@PersonalInfo.Street</MudText>
+        <MudText><strong>House number: </strong>@PersonalInfo.HouseNumber</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        @CardActions
+        <MudLink Href="@GoBackPath">Go back</MudLink>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Details";
+    [Parameter] public PersonalInfo PersonalInfo { get; set; } = default!;
+    [Parameter] public RenderFragment MoreInfo { get; set; }
+    [Parameter] public RenderFragment CardActions { get; set; }
+    [Parameter] public string GoBackPath { get; set; } = "/";
+}

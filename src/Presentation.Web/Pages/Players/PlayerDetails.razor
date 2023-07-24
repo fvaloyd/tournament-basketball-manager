@@ -1,28 +1,15 @@
 ﻿@page "/players/details/{id:guid}"
 @inject PlayerState playerState
 
-<MudText Typo="Typo.h3">Player details</MudText>
-
-<MudCard Outlined="true">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">@playerState.CurrentPlayer.PersonalInfo.FirstName @playerState.CurrentPlayer.PersonalInfo.LastName</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
+<PersonalInfoCardTemplate
+    PersonalInfo="playerState.CurrentPlayer.PersonalInfo"
+    Title="Player details"
+    GoBackPath="players">
+    <MoreInfo>
         <MudText><strong>Weight: </strong>@playerState.CurrentPlayer.PersonalInfo.Weight</MudText>
         <MudText><strong>Height: </strong>@playerState.CurrentPlayer.PersonalInfo.Height</MudText>
-        <MudText><strong>Email: </strong>@playerState.CurrentPlayer.PersonalInfo.Email</MudText>
-        <MudText><strong>Country: </strong>@playerState.CurrentPlayer.PersonalInfo.Country</MudText>
-        <MudText><strong>City: </strong>@playerState.CurrentPlayer.PersonalInfo.City</MudText>
-        <MudText><strong>Postal code: </strong>@playerState.CurrentPlayer.PersonalInfo.Code</MudText>
-        <MudText><strong>Street: </strong>@playerState.CurrentPlayer.PersonalInfo.Street</MudText>
-        <MudText><strong>House number: </strong>@playerState.CurrentPlayer.PersonalInfo.HouseNumber</MudText>
-    </MudCardContent>
-    <MudCardActions>
-        <MudLink Href="players">Go back</MudLink>
-    </MudCardActions>
-</MudCard>
+    </MoreInfo>
+</PersonalInfoCardTemplate>
 
 @code {
     [Parameter] public Guid id { get; set; }

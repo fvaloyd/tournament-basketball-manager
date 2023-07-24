@@ -1,28 +1,14 @@
 ﻿@page "/managers/details/{id:guid}"
 @inject ManagerState managerState
 
-<MudText Typo="Typo.h3">Manager details</MudText>
-
-<MudCard Outlined="true">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">@managerState.CurrentManager.PersonalInfo.FirstName @managerState.CurrentManager.PersonalInfo.LastName</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
-        <MudText><strong>Email: </strong>@managerState.CurrentManager.PersonalInfo.Email</MudText>
-        <MudText><strong>Country: </strong>@managerState.CurrentManager.PersonalInfo.Country</MudText>
-        <MudText><strong>City: </strong>@managerState.CurrentManager.PersonalInfo.City</MudText>
-        <MudText><strong>Postal code: </strong>@managerState.CurrentManager.PersonalInfo.Code</MudText>
-        <MudText><strong>Street: </strong>@managerState.CurrentManager.PersonalInfo.Street</MudText>
-        <MudText><strong>House number: </strong>@managerState.CurrentManager.PersonalInfo.HouseNumber</MudText>
-    </MudCardContent>
-    <MudCardActions>
+<PersonalInfoCardTemplate
+    PersonalInfo="managerState.CurrentManager.PersonalInfo"
+    Title="Manager details"
+    GoBackPath="managers">
+    <CardActions>
         <CreateTeamtBtnComponent Manager="managerState.CurrentManager" />
-        <MudLink Href="managers">Go back</MudLink>
-    </MudCardActions>
-</MudCard>
-
+    </CardActions>
+</PersonalInfoCardTemplate>
 
 @code {
     [Parameter] public Guid id { get; set; }
