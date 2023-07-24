@@ -20,7 +20,7 @@
 
     void RedirectToplayerDetail(Guid id)
     {
-        playerState.SetCurrentPlayer(id);
+        playerState.SetCurrent(id);
         navigationManager.NavigateTo($"players/details/{id}");
     }
 }

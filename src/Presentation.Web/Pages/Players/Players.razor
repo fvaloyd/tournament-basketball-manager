@@ -10,7 +10,7 @@
         <CreatePlayerComponent OnSubmit="OnCreatePlayerSubmit" />
     </CreateComponent>
     <ListComponent>
-        <PlayerListComponent Players="playerState.Players" />
+        <PlayerListComponent Players="playerState.Entites" />
     </ListComponent>
 </FeatureSectionTemplate>
 
@@ -18,7 +18,7 @@
     PageFeature CurrentFeature = PageFeature.List;
     protected override async Task OnInitializedAsync()
     {
-        playerState.InitializePlayers(await playerClient.GetPlayersAsync());
+        playerState.InitializeEntities(await playerClient.GetPlayersAsync());
         await base.OnInitializedAsync();
     }
 
@@ -27,7 +27,7 @@
         try
         {
             var playerCreatedId = await playerClient.CreateAsync(context.Model);
-            playerState.AddPlayer(context.Model, playerCreatedId);
+            playerState.AddEntity(context.Model, playerCreatedId);
             CurrentFeature = PageFeature.List;
         }
         catch (ApiException)

@@ -2,12 +2,12 @@
 @inject PlayerState playerState
 
 <PersonalInfoCardTemplate
-    PersonalInfo="playerState.CurrentPlayer.PersonalInfo"
+    PersonalInfo="playerState.Current.PersonalInfo"
     Title="Player details"
     GoBackPath="players">
     <MoreInfo>
-        <MudText><strong>Weight: </strong>@playerState.CurrentPlayer.PersonalInfo.Weight</MudText>
-        <MudText><strong>Height: </strong>@playerState.CurrentPlayer.PersonalInfo.Height</MudText>
+        <MudText><strong>Weight: </strong>@playerState.Current.PersonalInfo.Weight</MudText>
+        <MudText><strong>Height: </strong>@playerState.Current.PersonalInfo.Height</MudText>
     </MoreInfo>
 </PersonalInfoCardTemplate>
 
@@ -15,9 +15,9 @@
     [Parameter] public Guid id { get; set; }
     protected override async Task OnParametersSetAsync()
     {
-        if (playerState.CurrentPlayer is null)
+        if (playerState.Current is null)
         {
-            playerState.SetCurrentPlayer(id);
+            playerState.SetCurrent(id);
         }
         await base.OnParametersSetAsync();
     }

@@ -21,7 +21,7 @@
 
     void RedirectToManagerDetail(Guid id)
     {
-        managerState.SetCurrentManager(id);
+        managerState.SetCurrent(id);
         navigationManager.NavigateTo($"managers/details/{id}");
     }
 }

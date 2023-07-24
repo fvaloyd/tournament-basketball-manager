@@ -37,8 +37,8 @@
 
     protected override void OnInitialized()
     {
-        organizerState.SetCurrentOrganizer(id);
-        var crtOrganizer = organizerState.CurrentOrganizer;
+        organizerState.SetCurrent(id);
+        var crtOrganizer = organizerState.Current;
         if (crtOrganizer.Tournament is not null || crtOrganizer.TournamentId != Guid.Empty)
         {
             navigationManager.NavigateTo("organizers");

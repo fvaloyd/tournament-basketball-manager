@@ -11,7 +11,7 @@
         <CreateManagerComponent OnSubmit="OnCreateManagerSubmit" />
     </CreateComponent>
     <ListComponent>
-        <ListManagersComponent Managers="managerState.Managers" />
+        <ListManagersComponent Managers="managerState.Entites" />
     </ListComponent>
 </FeatureSectionTemplate>
 
@@ -20,7 +20,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        managerState.InitializeManagers(await managerClient.GetAllAsync());
+        managerState.InitializeEntities(await managerClient.GetAllAsync());
     }
 
     async Task OnCreateManagerSubmit(EditContext context)
@@ -28,7 +28,7 @@
         try
         {
             var managerCreatedId = await managerClient.CreateAsync(context.Model);
-            managerState.AddManager(context.Model, managerCreatedId);
+            managerState.AddEntity(context.Model, managerCreatedId);
             CurrentFeature = PageFeature.List;
         }
         catch (ApiException)

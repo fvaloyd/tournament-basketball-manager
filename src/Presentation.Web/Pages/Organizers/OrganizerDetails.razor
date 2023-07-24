@@ -2,11 +2,11 @@
 @inject OrganizerState organizerState
 
 <PersonalInfoCardTemplate
-    PersonalInfo="organizerState.CurrentOrganizer.PersonalInfo"
+    PersonalInfo="organizerState.Current.PersonalInfo"
     Title="Organizer details"
     GoBackPath="organizers">
     <CardActions>
-        <CreateTournamentBtnComponent Organizer="organizerState.CurrentOrganizer" />
+        <CreateTournamentBtnComponent Organizer="organizerState.Current" />
     </CardActions>
 </PersonalInfoCardTemplate>
 
@@ -14,9 +14,9 @@
     [Parameter] public Guid id { get; set; }
     protected override Task OnParametersSetAsync()
     {
-        if (organizerState.CurrentOrganizer is null)
+        if (organizerState.Current is null)
         {
-            organizerState.SetCurrentOrganizer(id);
+            organizerState.SetCurrent(id);
         }
         return base.OnParametersSetAsync();
     }

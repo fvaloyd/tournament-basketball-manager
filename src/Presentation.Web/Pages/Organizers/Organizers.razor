@@ -11,7 +11,7 @@
         <CreateOrganizerComponent OnSubmit="OnCreateOrganizerSubmit" />
     </CreateComponent>
     <ListComponent>
-        <OrganizerListComponent Organizers="organizerState.Organizers" />
+        <OrganizerListComponent Organizers="organizerState.Entites" />
     </ListComponent>
 </FeatureSectionTemplate>
 
@@ -20,7 +20,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        organizerState.InitializeOrganizers(await organizerClient.GetAllAsync());
+        organizerState.InitializeEntities(await organizerClient.GetAllAsync());
     }
 
     async Task OnCreateOrganizerSubmit(EditContext context)
@@ -28,7 +28,7 @@
         try
         {
             var organizerCreatedId = await organizerClient.CreateAsync(context.Model);
-            organizerState.AddOrganizer(context.Model, organizerCreatedId);
+            organizerState.AddEntity(context.Model, organizerCreatedId);
             CurrentFeature = PageFeature.List;
         }
         catch (ApiException)

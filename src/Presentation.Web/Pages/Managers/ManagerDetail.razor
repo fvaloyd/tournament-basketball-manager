@@ -2,11 +2,11 @@
 @inject ManagerState managerState
 
 <PersonalInfoCardTemplate
-    PersonalInfo="managerState.CurrentManager.PersonalInfo"
+    PersonalInfo="managerState.Current.PersonalInfo"
     Title="Manager details"
     GoBackPath="managers">
     <CardActions>
-        <CreateTeamtBtnComponent Manager="managerState.CurrentManager" />
+        <CreateTeamtBtnComponent Manager="managerState.Current" />
     </CardActions>
 </PersonalInfoCardTemplate>
 
@@ -14,9 +14,9 @@
     [Parameter] public Guid id { get; set; }
     protected override async Task OnParametersSetAsync()
     {
-        if (managerState.CurrentManager is null)
+        if (managerState.Current is null)
         {
-            managerState.SetCurrentManager(id);
+            managerState.SetCurrent(id);
         }
         await base.OnParametersSetAsync();
     }

@@ -37,8 +37,8 @@
 
     protected override void OnInitialized()
     {
-        managerState.SetCurrentManager(id);
-        var crtManager = managerState.CurrentManager;
+        managerState.SetCurrent(id);
+        var crtManager = managerState.Current;
         if (crtManager.Team is not null || crtManager.TeamId != Guid.Empty)
         {
             navigationManager.NavigateTo("managers");

@@ -1,7 +1,8 @@
-﻿using Domain.Players;
+﻿using Domain;
+using Domain.Players;
 
 namespace Shared;
-public record PlayerResponse
+public record PlayerResponse : IEntity
 {
     public Guid Id { get; init; }
     public PlayerPersonalInfo PersonalInfo { get; init; } = null!;

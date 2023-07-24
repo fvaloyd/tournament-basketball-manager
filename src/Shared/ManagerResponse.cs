@@ -1,7 +1,8 @@
+using Domain;
 using Domain.Managers;
 
 namespace Shared;
-public record ManagerResponse
+public record ManagerResponse : IEntity
 {
     public Guid Id { get; init; }
     public ManagerPersonalInfo PersonalInfo { get; init; } = null!;

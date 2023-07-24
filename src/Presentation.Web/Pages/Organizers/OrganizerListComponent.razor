@@ -21,7 +21,7 @@
 
     void RedirectToOrganizerDetail(Guid id)
     {
-        organizerState.SetCurrentOrganizer(id);
+        organizerState.SetCurrent(id);
         navigationManager.NavigateTo($"organizers/details/{id}");
     }
 

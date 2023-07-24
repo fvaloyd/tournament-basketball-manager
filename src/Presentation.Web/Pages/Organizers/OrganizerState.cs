@@ -1,21 +1,22 @@
 using Domain.Organizers;
+using Presentation.Web.Common;
 using Shared;
 using static Presentation.Web.Pages.Organizers.CreateOrganizerComponent;
 
 namespace Presentation.Web.Pages.Organizers;
-public class OrganizerState
+public class OrganizerState : EntityBaseState<OrganizerResponse>
 {
-    private OrganizerResponse _currentOrganizer = default!;
-    private List<OrganizerResponse> _organizers = new();
+    //private OrganizerResponse _currentOrganizer = default!;
+    //private List<OrganizerResponse> _organizers = new();
 
-    public OrganizerResponse CurrentOrganizer => _currentOrganizer;
-    public IReadOnlyCollection<OrganizerResponse> Organizers => _organizers.AsReadOnly();
+    //public OrganizerResponse CurrentOrganizer => _currentOrganizer;
+    //public IReadOnlyCollection<OrganizerResponse> Organizers => _organizers.AsReadOnly();
 
-    public void SetCurrentOrganizer(Guid id)
-        => _currentOrganizer = _organizers.First(o => o.Id == id);
-    public void AddOrganizer(OrganizerResponse organizer)
-        => _organizers.Add(organizer);
-    public void AddOrganizer(object formModel, Guid id)
+    //public void SetCurrentOrganizer(Guid id)
+    //    => _currentOrganizer = _organizers.First(o => o.Id == id);
+    //public void AddOrganizer(OrganizerResponse organizer)
+    //    => _organizers.Add(organizer);
+    public override void AddEntity(object formModel, Guid id)
     {
         OrganizerPersonalInfoFormModel personalInfo = ((CreateOrganizerForm)formModel).OrganizerPersonalInfo;
         OrganizerResponse organizer = new()
@@ -32,8 +33,8 @@ public class OrganizerState
                 personalInfo.HouseNumber,
                 personalInfo.Code)
         };
-        AddOrganizer(organizer);
+        Add(organizer);
     }
-    public void InitializeOrganizers(IEnumerable<OrganizerResponse> organizers)
-        => _organizers = organizers.ToList();
+    //public void InitializeOrganizers(IEnumerable<OrganizerResponse> organizers)
+    //    => _organizers = organizers.ToList();
 }
